@@ -17,7 +17,7 @@ import {
   FileSignature,
   ScrollText,
 } from "lucide-react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo_new.png";
 import founderPhoto from "@/assets/founder.png";
 import { loans, insurance } from "@/lib/catalog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -149,19 +149,19 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </div>
 
           {/* Center: brand */}
-          <Link to="/" className="flex items-center justify-center gap-2">
+          <Link to="/" className="flex items-center justify-center gap-3">
             <img
               src={logo}
               alt="Instant Funds for You"
-              className="h-9 w-9"
-              width={36}
-              height={36}
+              className="h-12 w-12 object-contain"
+              width={48}
+              height={48}
             />
             <div className="flex flex-col leading-tight">
-              <span className="text-brand-gradient text-base font-extrabold sm:text-lg">
+              <span className="text-brand-gradient text-lg font-black tracking-tight sm:text-xl">
                 Instant Funds for You
               </span>
-              <span className="hidden text-[10px] font-medium uppercase tracking-widest text-muted-foreground sm:block">
+              <span className="hidden text-[10px] font-semibold uppercase tracking-widest text-muted-foreground sm:block">
                 Loans · Insurance · Advisory
               </span>
             </div>
@@ -321,9 +321,9 @@ function SiteFooter() {
     <footer className="bg-brand-navy text-white/90">
       <div className="mx-auto grid max-w-7xl gap-8 px-6 py-12 sm:grid-cols-2 md:grid-cols-4">
         <div>
-          <div className="flex items-center gap-2">
-            <img src={logo} alt="" className="h-9 w-9" width={36} height={36} />
-            <span className="text-lg font-extrabold text-white">Instant Funds for You</span>
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="" className="h-12 w-12 object-contain" width={48} height={48} />
+            <span className="text-xl font-black text-white tracking-tight">Instant Funds for You</span>
           </div>
           <p className="mt-3 text-sm text-white/70">
             A modern loan, insurance and financial-advisory partner for millions of Indians. Fast,

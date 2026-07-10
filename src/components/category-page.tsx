@@ -22,6 +22,151 @@ import {
 import { ApplyDialog } from "@/components/apply-dialog";
 import { EmiCalculator } from "@/components/emi-calculator";
 
+const SbiLogo = () => (
+  <svg viewBox="0 0 100 100" className="h-8 w-8" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="36" fill="#005BAC" />
+    <line x1="50" y1="50" x2="50" y2="86" stroke="white" strokeWidth="8" />
+    <circle cx="50" cy="50" r="10" fill="white" />
+  </svg>
+);
+
+const LicLogo = () => (
+  <svg viewBox="0 0 120 100" className="h-8 w-12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20,60 C20,30 50,20 60,10 C70,20 100,30 100,60 C100,90 20,90 20,60 Z" fill="#0054A6" />
+    <circle cx="60" cy="50" r="18" fill="#FFD200" />
+    <path d="M50,45 C50,30 70,30 70,45 C70,60 50,60 50,45 Z" fill="#E31E24" />
+    <path d="M15,50 Q10,75 40,85" stroke="white" strokeWidth="4" strokeLinecap="round" />
+    <path d="M105,50 Q110,75 80,85" stroke="white" strokeWidth="4" strokeLinecap="round" />
+  </svg>
+);
+
+const HdfcLogo = () => (
+  <svg viewBox="0 0 150 40" className="h-8 w-24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="150" height="40" rx="4" fill="#004C8F" />
+    <rect x="10" y="8" width="8" height="24" fill="#E31E24" />
+    <rect x="22" y="8" width="8" height="24" fill="white" />
+    <rect x="34" y="8" width="8" height="24" fill="white" />
+    <rect x="46" y="8" width="8" height="24" fill="white" />
+    <text x="62" y="26" fill="white" fontSize="16" fontWeight="bold" fontFamily="sans-serif">HDFC BANK</text>
+  </svg>
+);
+
+const IciciLogo = () => (
+  <svg viewBox="0 0 160 40" className="h-8 w-28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="40" rx="4" fill="#8F2A28" />
+    <circle cx="20" cy="20" r="10" fill="#FFC72C" />
+    <text x="40" y="25" fill="#FFC72C" fontSize="15" fontWeight="black" fontFamily="sans-serif">ICICI Bank</text>
+  </svg>
+);
+
+const AxisLogo = () => (
+  <svg viewBox="0 0 140 40" className="h-8 w-24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="140" height="40" rx="4" fill="#971B49" />
+    <path d="M22,12 L32,28 L27,28 L17,12 Z" fill="white" />
+    <path d="M12,28 L22,12 L17,12 L7,28 Z" fill="white" />
+    <text x="42" y="26" fill="white" fontSize="16" fontWeight="black" fontFamily="sans-serif">AXIS BANK</text>
+  </svg>
+);
+
+const MuthootLogo = () => (
+  <svg viewBox="0 0 160 40" className="h-8 w-28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="40" rx="4" fill="#E31E24" />
+    <circle cx="20" cy="20" r="8" fill="white" />
+    <circle cx="34" cy="20" r="8" fill="white" />
+    <text x="52" y="25" fill="white" fontSize="12" fontWeight="bold" fontFamily="sans-serif">MUTHOOT</text>
+  </svg>
+);
+
+const IiflLogo = () => (
+  <svg viewBox="0 0 140 40" className="h-8 w-24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="140" height="40" rx="4" fill="#F7941D" />
+    <text x="15" y="25" fill="white" fontSize="18" fontWeight="black" fontFamily="sans-serif">IIFL</text>
+    <text x="60" y="24" fill="white" fontSize="11" fontWeight="bold" fontFamily="sans-serif">FINANCE</text>
+  </svg>
+);
+
+function BankPartners({ slug }: { slug: string }) {
+  const getPartners = (slug: string) => {
+    switch (slug) {
+      case "home-loan":
+        return [
+          { name: "LIC Housing Finance", logo: LicLogo },
+          { name: "HDFC Bank", logo: HdfcLogo },
+          { name: "SBI", logo: SbiLogo },
+        ];
+      case "mortgage-loan":
+        return [
+          { name: "HDFC Bank", logo: HdfcLogo },
+          { name: "ICICI Bank", logo: IciciLogo },
+          { name: "Axis Bank", logo: AxisLogo },
+        ];
+      case "business-loan":
+        return [
+          { name: "SBI", logo: SbiLogo },
+          { name: "ICICI Bank", logo: IciciLogo },
+          { name: "Axis Bank", logo: AxisLogo },
+        ];
+      case "vehicle-loan":
+        return [
+          { name: "HDFC Bank", logo: HdfcLogo },
+          { name: "SBI", logo: SbiLogo },
+          { name: "ICICI Bank", logo: IciciLogo },
+        ];
+      case "education-loan":
+        return [
+          { name: "SBI", logo: SbiLogo },
+          { name: "HDFC Bank", logo: HdfcLogo },
+          { name: "ICICI Bank", logo: IciciLogo },
+        ];
+      case "personal-loan":
+        return [
+          { name: "HDFC Bank", logo: HdfcLogo },
+          { name: "ICICI Bank", logo: IciciLogo },
+          { name: "Axis Bank", logo: AxisLogo },
+        ];
+      case "gold-loan":
+        return [
+          { name: "SBI", logo: SbiLogo },
+          { name: "Muthoot Finance", logo: MuthootLogo },
+          { name: "IIFL Finance", logo: IiflLogo },
+        ];
+      default:
+        return [
+          { name: "SBI", logo: SbiLogo },
+          { name: "HDFC Bank", logo: HdfcLogo },
+          { name: "ICICI Bank", logo: IciciLogo },
+        ];
+    }
+  };
+
+  const partners = getPartners(slug);
+
+  return (
+    <section className="bg-card border-t border-b py-12">
+      <div className="mx-auto max-w-7xl px-6 text-center">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+          Associated Banks & Financial Institutions
+        </h3>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Official partnership channels for fast processing & lower rates.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center items-center gap-8 md:gap-12">
+          {partners.map(({ name, logo: LogoComponent }) => (
+            <div
+              key={name}
+              className="flex items-center gap-3 bg-background border px-5 py-3 rounded-2xl shadow-sm hover:shadow-md transition"
+              title={name}
+            >
+              <LogoComponent />
+              <span className="text-xs font-bold text-foreground">{name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function CategoryPage({ item }: { item: CatalogItem }) {
   return (
     <div>
@@ -106,7 +251,7 @@ export function CategoryPage({ item }: { item: CatalogItem }) {
 
       {/* Sub-types */}
       {item.subtypes && (
-        <section className="bg-white py-14">
+        <section className="bg-secondary/40 py-14 border-t border-b">
           <div className="mx-auto max-w-7xl px-6">
             <h2 className="text-2xl font-bold md:text-3xl">Available variants</h2>
             <p className="mt-2 text-muted-foreground">
@@ -168,6 +313,9 @@ export function CategoryPage({ item }: { item: CatalogItem }) {
         </div>
       </section>
 
+      {/* Associated Banks (loans only) */}
+      {item.kind === "loan" && <BankPartners slug={item.slug} />}
+
       {/* EMI Calculator (loans only) */}
       {item.kind === "loan" && (
         <section className="bg-secondary/40 py-14">
@@ -208,7 +356,7 @@ export function CategoryPage({ item }: { item: CatalogItem }) {
 
       {/* Related */}
       {item.related && item.related.length > 0 && (
-        <section className="bg-white py-14">
+        <section className="bg-secondary/40 py-14 border-t border-b">
           <div className="mx-auto max-w-7xl px-6">
             <h2 className="text-2xl font-bold md:text-3xl">You may also consider</h2>
             <div className="mt-8 grid gap-4 md:grid-cols-3">
