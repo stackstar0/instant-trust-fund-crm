@@ -1,12 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroImg from "@/assets/hero_new.png";
-import founderPhoto from "@/assets/founder.png";
 import { loans, insurance } from "@/lib/catalog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AgeCalculator } from "@/components/age-calculator";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   ArrowRight,
   ShieldCheck,
@@ -18,7 +16,6 @@ import {
   Phone,
   Mail,
   MapPin,
-  Star,
   CheckCircle2,
 } from "lucide-react";
 
@@ -43,36 +40,6 @@ const stats = [
   { label: "Cities Covered", value: "150+", icon: MapPin },
 ];
 
-const detailedTestimonials = [
-  {
-    name: "Priya Sharma",
-    amount: "₹45 Lakhs",
-    purpose: "Home Purchase",
-    institution: "LIC Housing Finance",
-    quote: "Got my home loan sanctioned in 5 days. The team walked me through every step — no hidden charges, no runaround.",
-    location: "Mumbai",
-    rating: 5,
-  },
-  {
-    name: "Rohit Mehta",
-    amount: "₹18 Lakhs",
-    purpose: "MSME Business Expansion",
-    institution: "SBI",
-    quote: "My MSME loan was approved without collateral in 72 hours. It saved my seasonal business — highly recommended.",
-    location: "Delhi",
-    rating: 5,
-  },
-  {
-    name: "Anaya Verma",
-    amount: "₹5 Lakhs",
-    purpose: "Family Health Floater Plan",
-    institution: "HDFC Bank",
-    quote: "Their family floater plan gave us peace of mind during my mother's surgery. Cashless claim in under 4 hours.",
-    location: "Bengaluru",
-    rating: 5,
-  },
-];
-
 function LandingPage() {
   return (
     <div>
@@ -83,34 +50,12 @@ function LandingPage() {
         </div>
         <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2 md:py-24">
           <div className="flex flex-col justify-center">
-            {/* Leadership Prominent Banner */}
-            <div className="mb-6 flex flex-wrap items-center gap-4 rounded-xl border border-white/20 bg-white/10 p-3 backdrop-blur-md shadow-elevated w-fit">
-              <div className="flex items-center gap-2.5">
-                <Avatar className="h-9 w-9 shrink-0 ring-2 ring-accent">
-                  <AvatarImage src={founderPhoto} alt="Founder R H Adhoni" />
-                  <AvatarFallback className="bg-primary text-white text-xs font-bold">RA</AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="text-[10px] font-semibold text-white/70 uppercase tracking-wider">Founder & MD</div>
-                  <div className="text-xs font-bold text-white">R H Adhoni</div>
-                </div>
-              </div>
-              <div className="hidden h-6 w-px bg-white/20 sm:block" />
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/25 ring-2 ring-accent text-accent font-black text-xs">
-                  BA
-                </div>
-                <div>
-                  <div className="text-[10px] font-semibold text-white/70 uppercase tracking-wider">Chief Administrator</div>
-                  <div className="text-xs font-bold text-white">Bibi Ayesha</div>
-                </div>
-              </div>
-            </div>
+
 
             <Badge className="mb-4 w-fit bg-accent text-accent-foreground hover:bg-accent font-semibold">
               Trusted since 2012
             </Badge>
-            <h1 className="text-5xl font-black leading-tight tracking-tight md:text-7xl">
+            <h1 className="text-5xl font-black leading-tight tracking-tight md:text-7xl text-accent">
               Instant Funds for You
             </h1>
             <p className="mt-3 text-lg font-bold text-accent md:text-xl">
@@ -151,7 +96,7 @@ function LandingPage() {
           </div>
           <div className="hidden md:flex md:items-center md:justify-center">
             <Card className="w-full max-w-md p-6 shadow-elevated">
-              <h3 className="text-lg font-bold text-brand-navy">Quick Loan Enquiry</h3>
+              <h3 className="text-lg font-bold text-accent">Quick Loan Enquiry</h3>
               <p className="mt-1 text-sm text-muted-foreground">Get a call back in 15 minutes.</p>
               <div className="mt-4 space-y-3">
                 <div className="flex items-center gap-3 rounded-lg border p-3 text-sm">
@@ -178,7 +123,7 @@ function LandingPage() {
       <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="flex items-end justify-between">
           <div>
-            <h2 className="text-3xl font-bold md:text-4xl text-brand-navy">Instant Loans</h2>
+            <h2 className="text-3xl font-bold md:text-4xl text-accent">Instant Loans</h2>
             <p className="mt-2 text-muted-foreground">Solutions for every stage of your life.</p>
           </div>
           <Link
@@ -207,7 +152,7 @@ function LandingPage() {
                 />
               </div>
               <div className="p-5">
-                <h3 className="font-bold text-brand-navy">{l.name}</h3>
+                <h3 className="font-bold text-accent">{l.name}</h3>
                 <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{l.tagline}</p>
                 <div className="mt-3 flex items-center justify-between text-xs">
                   <span className="rounded-full bg-secondary px-2 py-1 font-semibold text-primary">
@@ -226,7 +171,7 @@ function LandingPage() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex items-end justify-between">
             <div>
-              <h2 className="text-3xl font-bold md:text-4xl text-brand-navy">Instant Insurance</h2>
+              <h2 className="text-3xl font-bold md:text-4xl text-accent">Instant Insurance</h2>
               <p className="mt-2 text-muted-foreground">
                 Protection for you, your family, and your assets.
               </p>
@@ -257,7 +202,7 @@ function LandingPage() {
                   />
                 </div>
                 <div className="p-5">
-                  <h3 className="font-bold text-brand-navy">{i.name}</h3>
+                  <h3 className="font-bold text-accent">{i.name}</h3>
                   <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{i.tagline}</p>
                   <div className="mt-3 flex items-center justify-between text-xs">
                     <span className="rounded-full bg-secondary px-2 py-1 font-semibold text-primary">
@@ -275,7 +220,7 @@ function LandingPage() {
       {/* Why choose us */}
       <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="text-center">
-          <h2 className="text-3xl font-bold md:text-4xl text-brand-navy">Why choose Instant Funds for You</h2>
+          <h2 className="text-3xl font-bold md:text-4xl text-accent">Why choose Instant Funds for You</h2>
           <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
             Built by financial specialists who obsess about your outcome — not paperwork.
           </p>
@@ -302,7 +247,7 @@ function LandingPage() {
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Icon className="h-6 w-6" />
               </div>
-              <h3 className="mt-4 text-lg font-bold text-brand-navy">{title}</h3>
+              <h3 className="mt-4 text-lg font-bold text-accent">{title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{body}</p>
             </Card>
           ))}
@@ -325,57 +270,19 @@ function LandingPage() {
       {/* Age Calculator Tool Section */}
       <section className="mx-auto max-w-7xl px-6 py-16 border-b border-t border-dashed border-primary/20">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-extrabold md:text-4xl text-brand-navy">Check your loan & insurance eligibility by age</h2>
+          <h2 className="text-3xl font-extrabold md:text-4xl text-accent">Check your loan & insurance eligibility by age</h2>
           <p className="mt-2 text-muted-foreground">Adjust the slider to discover personalized financial matches in seconds.</p>
         </div>
         <AgeCalculator />
       </section>
 
-      {/* Testimonials */}
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold md:text-4xl text-brand-navy">Loved by customers across India</h2>
-          <p className="mt-2 text-muted-foreground">Hear from our clients who achieved their financial goals.</p>
-        </div>
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {detailedTestimonials.map((t) => (
-            <Card key={t.name} className="p-6 shadow-card hover:shadow-elevated transition border-l-4 border-l-primary flex flex-col justify-between">
-              <div>
-                <div className="flex justify-between items-start gap-2">
-                  <div className="flex gap-0.5 text-accent">
-                    {Array.from({ length: t.rating }).map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-current" />
-                    ))}
-                  </div>
-                  <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 font-bold text-xs px-2 py-0.5">
-                    {t.amount}
-                  </Badge>
-                </div>
-                <div className="mt-4">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">Purpose of Loan</span>
-                  <p className="text-xs font-bold text-foreground mt-0.5">{t.purpose} · {t.institution}</p>
-                </div>
-                <p className="mt-4 text-sm text-muted-foreground italic leading-relaxed">"{t.quote}"</p>
-              </div>
-              <div className="mt-6 border-t pt-4 flex items-center justify-between">
-                <div>
-                  <div className="font-bold text-foreground text-sm">{t.name}</div>
-                  <div className="text-xs text-muted-foreground">{t.location}</div>
-                </div>
-                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-black">
-                  {t.name.split(" ").map(n => n[0]).join("")}
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </section>
+
 
       {/* Contact */}
       <section id="contact" className="bg-secondary/40 py-16">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 md:grid-cols-2">
           <div>
-            <h2 className="text-3xl font-bold md:text-4xl text-brand-navy">Talk to an advisor</h2>
+            <h2 className="text-3xl font-bold md:text-4xl text-accent">Talk to an advisor</h2>
             <p className="mt-3 text-muted-foreground">
               Our loan and insurance specialists are available 9am–9pm, seven days a week.
             </p>
@@ -405,7 +312,7 @@ function LandingPage() {
             </ul>
           </div>
           <Card className="p-6">
-            <h3 className="text-lg font-bold text-brand-navy">Send us a message</h3>
+            <h3 className="text-lg font-bold text-accent">Send us a message</h3>
             <div className="mt-4 space-y-3">
               <input
                 placeholder="Your name"
