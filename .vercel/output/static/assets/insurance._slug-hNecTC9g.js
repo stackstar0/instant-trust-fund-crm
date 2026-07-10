@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-DUAcabCT.js";var t=e(),n=()=>(0,t.jsx)(`div`,{className:`mx-auto max-w-3xl px-6 py-24 text-center`,children:(0,t.jsx)(`h1`,{className:`text-3xl font-bold`,children:`Plan not found`})});export{n as notFoundComponent};
