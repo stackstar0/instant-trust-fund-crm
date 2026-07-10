@@ -149,7 +149,7 @@
   h6 {
     font-family: var(--font-display);
     letter-spacing: -0.015em;
-    color: var(--color-accent); /* Vibrant Gold/Yellow by default */
+    color: var(--color-brand-navy); /* Deep Purple-Navy by default instead of black */
   }
 }
 

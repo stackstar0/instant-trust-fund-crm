@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroImg from "@/assets/hero_new.png";
+import founderPhoto from "@/assets/founder.png";
 import { loans, insurance } from "@/lib/catalog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AgeCalculator } from "@/components/age-calculator";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   ArrowRight,
   ShieldCheck,
@@ -50,7 +52,31 @@ function LandingPage() {
         </div>
         <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2 md:py-24">
           <div className="flex flex-col justify-center">
-
+            {/* Leadership Prominent Banner */}
+            <div className="mb-8 flex flex-col sm:flex-row items-stretch gap-6 rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur-md shadow-elevated w-full max-w-xl">
+              <div className="flex items-center gap-4 flex-1">
+                <Avatar className="h-16 w-16 shrink-0 ring-4 ring-accent shadow-lg">
+                  <AvatarImage src={founderPhoto} alt="Founder R H Adhoni" className="object-cover" />
+                  <AvatarFallback className="bg-primary text-white text-lg font-bold">RA</AvatarFallback>
+                </Avatar>
+                <div>
+                  <div className="text-xs font-bold text-accent uppercase tracking-wider">Founder & MD</div>
+                  <div className="text-lg font-black text-white mt-0.5">R H Adhoni</div>
+                  <p className="text-[11px] text-white/80 mt-1 leading-tight">Leading Instant Funds with over a decade of trust and financial expertise.</p>
+                </div>
+              </div>
+              <div className="hidden sm:block w-px bg-white/25 self-stretch" />
+              <div className="flex items-center gap-4 flex-1">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-accent/20 ring-4 ring-accent shadow-lg text-accent font-black text-lg">
+                  BA
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-accent uppercase tracking-wider">Chief Administrator</div>
+                  <div className="text-lg font-black text-white mt-0.5">Bibi Ayesha</div>
+                  <p className="text-[11px] text-white/80 mt-1 leading-tight">Directing seamless operations, advisory services and customer success.</p>
+                </div>
+              </div>
+            </div>
 
             <Badge className="mb-4 w-fit bg-accent text-accent-foreground hover:bg-accent font-semibold">
               Trusted since 2012
@@ -96,7 +122,7 @@ function LandingPage() {
           </div>
           <div className="hidden md:flex md:items-center md:justify-center">
             <Card className="w-full max-w-md p-6 shadow-elevated">
-              <h3 className="text-lg font-bold text-accent">Quick Loan Enquiry</h3>
+              <h3 className="text-lg font-bold text-brand-navy">Quick Loan Enquiry</h3>
               <p className="mt-1 text-sm text-muted-foreground">Get a call back in 15 minutes.</p>
               <div className="mt-4 space-y-3">
                 <div className="flex items-center gap-3 rounded-lg border p-3 text-sm">
@@ -152,7 +178,7 @@ function LandingPage() {
                 />
               </div>
               <div className="p-5">
-                <h3 className="font-bold text-accent">{l.name}</h3>
+                <h3 className="font-bold text-brand-navy">{l.name}</h3>
                 <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{l.tagline}</p>
                 <div className="mt-3 flex items-center justify-between text-xs">
                   <span className="rounded-full bg-secondary px-2 py-1 font-semibold text-primary">
@@ -202,7 +228,7 @@ function LandingPage() {
                   />
                 </div>
                 <div className="p-5">
-                  <h3 className="font-bold text-accent">{i.name}</h3>
+                  <h3 className="font-bold text-brand-navy">{i.name}</h3>
                   <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{i.tagline}</p>
                   <div className="mt-3 flex items-center justify-between text-xs">
                     <span className="rounded-full bg-secondary px-2 py-1 font-semibold text-primary">
@@ -247,7 +273,7 @@ function LandingPage() {
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Icon className="h-6 w-6" />
               </div>
-              <h3 className="mt-4 text-lg font-bold text-accent">{title}</h3>
+              <h3 className="mt-4 text-lg font-bold text-brand-navy">{title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{body}</p>
             </Card>
           ))}
@@ -312,7 +338,7 @@ function LandingPage() {
             </ul>
           </div>
           <Card className="p-6">
-            <h3 className="text-lg font-bold text-accent">Send us a message</h3>
+            <h3 className="text-lg font-bold text-brand-navy">Send us a message</h3>
             <div className="mt-4 space-y-3">
               <input
                 placeholder="Your name"
