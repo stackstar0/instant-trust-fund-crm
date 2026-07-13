@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroImg from "@/assets/hero_new.png";
 import founderPhoto from "@/assets/founder.png";
+import adminPhoto from "@/assets/admin2.png";
 import { loans, insurance } from "@/lib/catalog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Home, Business, Vehicle, Education, Personal & Gold Loans plus Health, Life, Motor, Travel & Family Insurance. Apply online in minutes.",
+          "Home, Business, Vehicle, Education, Personal & Property Loans plus Health, Life, Motor, Travel & Family Insurance. Apply online in minutes.",
       },
     ],
   }),
@@ -67,13 +68,14 @@ function LandingPage() {
               </div>
               <div className="hidden sm:block w-px bg-white/25 self-stretch" />
               <div className="flex items-center gap-4 flex-1">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-accent/20 ring-4 ring-accent shadow-lg text-accent font-black text-lg">
-                  BA
-                </div>
+                <Avatar className="h-16 w-16 shrink-0 ring-4 ring-accent shadow-lg">
+                  <AvatarImage src={adminPhoto} alt="Administrator Bibi Ayesha" className="object-cover" />
+                  <AvatarFallback className="bg-primary text-white text-lg font-bold">BA</AvatarFallback>
+                </Avatar>
                 <div>
                   <div className="text-xs font-bold text-accent uppercase tracking-wider">Chief Administrator</div>
                   <div className="text-lg font-black text-white mt-0.5">Bibi Ayesha</div>
-                  <p className="text-[11px] text-white/80 mt-1 leading-tight">Directing seamless operations, advisory services and customer success.</p>
+                  <p className="text-[11px] text-white/80 mt-1 leading-tight font-medium">Directing seamless operations, advisory services and customer success.</p>
                 </div>
               </div>
             </div>

@@ -128,7 +128,7 @@ export const mockProperties: MockProperty[] = [
     status: "Verified",
     assignedTo: "R H Adhoni",
     ownerAddress: "120, Sadalga Road, Kognoli, Chikodi Taluk, Belagavi, Karnataka",
-    internalNotes: "Approved for refinance. Customer wants to apply for gold top-up.",
+    internalNotes: "Approved for refinance. Customer wants to apply for refinance top-up.",
     documents: ["RTC_Deed_PROP005.pdf"],
     available: true,
   },

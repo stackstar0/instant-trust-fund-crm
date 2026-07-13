@@ -44,8 +44,8 @@ const initialTasks: TaskItem[] = [
   },
   {
     id: "TSK-102",
-    title: "Review Gold loan replacement mapping",
-    desc: "Align updated SBA/LIC loans mapping rules in the age calculation components.",
+    title: "Review Property loan replacement mapping",
+    desc: "Align updated SBI/LIC loans mapping rules in the age calculation components.",
     priority: "Medium",
     status: "Completed",
     assignedTo: "R H Adhoni",

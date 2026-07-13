@@ -145,57 +145,139 @@ SUMMARY REPORT BACKED BY INSTANT TRUST FUND
 
       {/* Form Steps */}
       {step === "input" && (
-        <Card className="p-6 border bg-card shadow-card max-w-xl mx-auto">
-          <h3 className="text-lg font-bold text-brand-navy border-b pb-3 mb-4 flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-primary" /> Credit Bureau Consent Form
-          </h3>
+        <>
+          <Card className="p-6 border bg-card shadow-card max-w-xl mx-auto">
+            <h3 className="text-lg font-bold text-brand-navy border-b pb-3 mb-4 flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-primary" /> Credit Bureau Consent Form
+            </h3>
 
-          <form onSubmit={handleDetailsSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="fullName">Full Name (As on PAN Card) *</Label>
-              <Input
-                id="fullName"
-                placeholder="e.g. Vikram Sharma"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
+            <form onSubmit={handleDetailsSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="mobile">Mobile Number *</Label>
+                <Label htmlFor="fullName">Full Name (As on PAN Card) *</Label>
                 <Input
-                  id="mobile"
-                  placeholder="+91 98765 43210"
-                  value={mobile}
-                  onChange={(e) => setMobile(e.target.value)}
+                  id="fullName"
+                  placeholder="e.g. Vikram Sharma"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                   required
                 />
               </div>
-              <div>
-                <Label htmlFor="pan">PAN Number *</Label>
-                <Input
-                  id="pan"
-                  placeholder="e.g. ABCDE1234F"
-                  value={pan}
-                  onChange={(e) => setPan(e.target.value)}
-                  className="uppercase font-mono"
-                  maxLength={10}
-                  required
-                />
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="mobile">Mobile Number *</Label>
+                  <Input
+                    id="mobile"
+                    placeholder="+91 98765 43210"
+                    value={mobile}
+                    onChange={(e) => setMobile(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="pan">PAN Number *</Label>
+                  <Input
+                    id="pan"
+                    placeholder="e.g. ABCDE1234F"
+                    value={pan}
+                    onChange={(e) => setPan(e.target.value)}
+                    className="uppercase font-mono"
+                    maxLength={10}
+                    required
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="text-[11px] text-muted-foreground leading-relaxed bg-secondary/50 rounded-lg p-3 border">
-              ⚠️ By continuing, you authorize Instant Trust Fund CRM to initiate a credit score query with TransUnion CIBIL on your behalf. Standard platform retrieval charges apply.
-            </div>
+              <div className="text-[11px] text-muted-foreground leading-relaxed bg-secondary/50 rounded-lg p-3 border">
+                ⚠️ **TransUnion API Compliance**: This service is a simulated interface of the TransUnion CIBIL API integration. In production, real-time fetching is subject to credential verification, licensing agreements, and commercial API contracts with TransUnion. Checked score retrieves a soft inquiry on your record.
+              </div>
 
-            <Button type="submit" className="w-full bg-primary hover:bg-brand-navy text-white">
-              Proceed to Verification <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </form>
-        </Card>
+              <Button type="submit" className="w-full bg-primary hover:bg-brand-navy text-white">
+                Proceed to Verification <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </form>
+          </Card>
+
+          {/* Previous Reports Section */}
+          <Card className="mt-6 p-6 border bg-card shadow-card max-w-xl mx-auto">
+            <h3 className="text-sm font-bold text-brand-navy border-b pb-3 mb-4 flex items-center gap-2">
+              <FileText className="h-4 w-4 text-primary" /> Previously Generated Bureau Reports
+            </h3>
+            <div className="space-y-3">
+              {[
+                {
+                  id: "TU-CIBIL-112049",
+                  name: "R H Adhoni",
+                  pan: "ADHPXXXX1A",
+                  score: 812,
+                  date: "12/06/2026",
+                },
+                {
+                  id: "TU-CIBIL-905581",
+                  name: "Bibi Ayesha",
+                  pan: "AYEPXXXX2B",
+                  score: 794,
+                  date: "02/07/2026",
+                },
+                {
+                  id: "TU-CIBIL-774512",
+                  name: "Vikram Urs",
+                  pan: "URSPXXXX3C",
+                  score: 758,
+                  date: "10/07/2026",
+                },
+              ].map((rep) => (
+                <div key={rep.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0 text-xs">
+                  <div>
+                    <div className="font-bold text-brand-navy">{rep.name}</div>
+                    <div className="text-muted-foreground text-[10px] mt-0.5">
+                      PAN: {rep.pan} | Date: {rep.date}
+                    </div>
+                    <div className="text-[10px] font-mono text-muted-foreground mt-0.5">{rep.id}</div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-bold">
+                      Score: {rep.score}
+                    </Badge>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-primary hover:text-brand-navy"
+                      onClick={() => {
+                        toast.success(`Downloading historical report for ${rep.name}...`);
+                        const docContent = `
+=============================================
+         TRANSUNION CIBIL CREDIT REPORT
+=============================================
+Report ID: ${rep.id}
+Date Generated: ${rep.date}
+Subject: ${rep.name.toUpperCase()}
+PAN: ${rep.pan}
+
+CREDIT SCORE: ${rep.score} / 900
+Rating: EXCELLENT
+
+SUMMARY REPORT BACKED BY INSTANT TRUST FUND
+=============================================
+`;
+                        const element = document.createElement("a");
+                        const file = new Blob([docContent], { type: "text/plain" });
+                        element.href = URL.createObjectURL(file);
+                        element.download = `CIBIL_Report_${rep.name.replace(/\s+/g, "_")}.txt`;
+                        document.body.appendChild(element);
+                        element.click();
+                        document.body.removeChild(element);
+                      }}
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </>
       )}
 
       {step === "checkout" && !otpSent && (

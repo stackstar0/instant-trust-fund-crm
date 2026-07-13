@@ -8,7 +8,7 @@ export const Route = createFileRoute("/loans/")({
       {
         name: "description",
         content:
-          "Explore Home, Vehicle, Business, Education, Personal, Gold and Mortgage loans with instant approvals and competitive rates.",
+          "Explore Home, Vehicle, Business, Education, Personal, Property and Mortgage loans with instant approvals and competitive rates.",
       },
     ],
   }),

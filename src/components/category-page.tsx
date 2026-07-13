@@ -180,6 +180,11 @@ export function CategoryPage({ item }: { item: CatalogItem }) {
             <h1 className="text-4xl font-extrabold leading-tight md:text-5xl">{item.name}</h1>
             <p className="mt-3 text-lg text-white/85">{item.tagline}</p>
             <p className="mt-4 max-w-xl text-sm text-white/75">{item.description}</p>
+            {item.kind === "insurance" && (
+              <div className="mt-4 rounded-xl border border-white/20 bg-white/10 p-3 text-[11px] text-white/90 backdrop-blur-sm max-w-xl">
+                🛡️ **Policybazaar Partner Integration**: In production, real-time premium tables and direct policy comparison depend on official partnership API contracts with Policybazaar and regulatory IRDAI clearances.
+              </div>
+            )}
             <div className="mt-6 flex flex-wrap gap-3">
               <ApplyDialog productName={item.name} productKind={item.kind}>
                 <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">

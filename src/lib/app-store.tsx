@@ -70,11 +70,19 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
     currentUser,
     setCurrentUser: handleSetCurrentUser,
     addApplication: (a) => {
+      let assignedTo = "R H Adhoni";
+      if (a.referralCode) {
+        const ref = a.referralCode.trim().toUpperCase();
+        if (ref.includes("AYESHA") || ref.includes("EMP002") || ref === "BROKER101") {
+          assignedTo = "Bibi Ayesha";
+        }
+      }
       const newCust: MockCustomer = {
         ...a,
         id: `IFY${(10000 + customers.length + 1).toString()}`,
         status: "Pending",
         appliedOn: new Date().toISOString(),
+        assignedTo,
       };
       setCustomers((prev) => [newCust, ...prev]);
       return newCust;

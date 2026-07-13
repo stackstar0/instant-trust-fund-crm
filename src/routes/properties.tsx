@@ -278,6 +278,9 @@ function PropertySearchPage() {
         <p className="mt-3 text-muted-foreground text-sm md:text-base leading-relaxed">
           Browse our active portfolio of brokered and financed land properties in Karnataka. Locate survey boundaries, verify land classifications, and apply for properties loans.
         </p>
+        <div className="mt-4 rounded-xl border bg-amber-50/50 p-3 text-[11.5px] text-amber-800 text-center max-w-xl mx-auto dark:bg-amber-950/20 dark:text-amber-300 dark:border-amber-900/30">
+          ⚠️ **Bhoomi & Dishank Official Source Disclaimer**: Survey record listings and coordinates are simulated for demonstration. Active property title checks rely on official Bhoomi (Karnataka Land Records) credentials and Dishank geo-spatial APIs.
+        </div>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-12">

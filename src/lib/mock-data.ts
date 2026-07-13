@@ -179,7 +179,7 @@ const STATUSES: MockCustomer["status"][] = [
 
 const MOCK_BANKS = ["SBI", "HDFC Bank", "ICICI Bank", "Axis Bank", "LIC Housing Finance"];
 const MOCK_INS_TYPES = ["Term Life", "Health Plan", "Motor Guard", "Travel Protect", "Commercial Property"];
-const MOCK_REF_CODES = ["REF-101", "REF-102", "REF-103", "ADHONI-20", "AYESHA-50"];
+const MOCK_REF_CODES = ["EMP001", "EMP002", "BROKER101", "REF-101", "REF-102"];
 
 function pick<T>(arr: T[], r: number) {
   return arr[Math.floor(r * arr.length)];
@@ -236,7 +236,15 @@ export function generateCustomers(count = 100): MockCustomer[] {
       insuranceType: insVal,
       referralCode: refCode,
       documents: docs,
-      assignedTo: rand() < 0.3 ? "Bibi Ayesha" : "R H Adhoni",
+      assignedTo: (() => {
+        if (refCode) {
+          if (refCode === "EMP002" || refCode === "BROKER101") {
+            return "Bibi Ayesha";
+          }
+          return "R H Adhoni";
+        }
+        return rand() < 0.3 ? "Bibi Ayesha" : "R H Adhoni";
+      })(),
     });
   }
   return out;
@@ -250,7 +258,7 @@ const SMS_TEMPLATES = [
   (n: string) =>
     `${n}, congratulations! Your Personal Loan application has been APPROVED. Disbursal will be initiated in 24 hrs.`,
   (n: string) =>
-    `Dear ${n}, special Gold Loan offer at 8.50% p.a. Get instant funds today. Call 1800-123-4567.`,
+    `Dear ${n}, special Business Loan offer at 8.50% p.a. Get instant funds today. Call 1800-123-4567.`,
   (n: string) =>
     `Reminder: ${n}, please submit pending KYC documents by Friday to avoid application delays.`,
   (n: string) =>
