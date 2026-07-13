@@ -14,6 +14,10 @@ export interface MockCustomer {
   appliedOn: string; // ISO
   amount: number;
   branch: string;
+  bank?: string;
+  insuranceType?: string;
+  referralCode?: string;
+  documents?: string[];
 }
 
 export interface MockSms {
@@ -172,6 +176,10 @@ const STATUSES: MockCustomer["status"][] = [
   "In Review",
 ];
 
+const MOCK_BANKS = ["SBI", "HDFC Bank", "ICICI Bank", "Axis Bank", "LIC Housing Finance"];
+const MOCK_INS_TYPES = ["Term Life", "Health Plan", "Motor Guard", "Travel Protect", "Commercial Property"];
+const MOCK_REF_CODES = ["REF-101", "REF-102", "REF-103", "ADHONI-20", "AYESHA-50"];
+
 function pick<T>(arr: T[], r: number) {
   return arr[Math.floor(r * arr.length)];
 }
@@ -194,6 +202,19 @@ export function generateCustomers(count = 100): MockCustomer[] {
     d.setDate(d.getDate() - daysAgo);
     const amount =
       kind === "loan" ? Math.floor(50000 + rand() * 9500000) : Math.floor(3000 + rand() * 197000);
+    
+    const bankVal = kind === "loan" ? pick(MOCK_BANKS, rand()) : undefined;
+    const insVal = kind === "insurance" ? pick(MOCK_INS_TYPES, rand()) : undefined;
+    
+    // Seed 30% of customers with a referral code
+    const hasReferral = rand() < 0.3;
+    const refCode = hasReferral ? pick(MOCK_REF_CODES, rand()) : undefined;
+
+    // Seed mock document files
+    const docs = ["Aadhaar_Card.pdf", "PAN_Card.pdf"];
+    if (rand() < 0.7) docs.push("Income_Proof.pdf");
+    if (rand() < 0.4) docs.push("Property_Title.pdf");
+
     out.push({
       id: `IFY${(10001 + i).toString()}`,
       fullName: `${first} ${last}`,
@@ -210,6 +231,10 @@ export function generateCustomers(count = 100): MockCustomer[] {
       appliedOn: d.toISOString(),
       amount,
       branch: pick(BRANCHES, rand()),
+      bank: bankVal,
+      insuranceType: insVal,
+      referralCode: refCode,
+      documents: docs,
     });
   }
   return out;

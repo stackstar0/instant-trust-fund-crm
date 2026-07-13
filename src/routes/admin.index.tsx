@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useAppStore } from "@/lib/app-store";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -83,7 +83,11 @@ function StatCard({
 }
 
 function AdminDashboard() {
-  const { customers, sms, notifications } = useAppStore();
+  const { customers, sms, notifications, currentUser } = useAppStore();
+
+  if (currentUser?.role === "assistant_admin") {
+    return <Navigate to="/admin/tasks" replace />;
+  }
   const totalLoans = customers.filter((c) => c.productKind === "loan").length;
   const totalIns = customers.filter((c) => c.productKind === "insurance").length;
   const pending = customers.filter((c) => c.status === "Pending").length;

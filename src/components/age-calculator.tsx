@@ -40,7 +40,7 @@ export function AgeCalculator() {
       eligibleInsuranceSlugs = ["child-plans", "travel-insurance"];
       reasonText = "Focus on education and child savings benefits.";
     } else if (age >= 18 && age <= 20) {
-      eligibleLoanSlugs = ["gold-loan", "education-loan"];
+      eligibleLoanSlugs = ["education-loan", "car-loan"];
       eligibleInsuranceSlugs = [
         "health-insurance",
         "motor-insurance",
@@ -48,14 +48,13 @@ export function AgeCalculator() {
         "travel-insurance",
         "business-insurance",
       ];
-      reasonText = "Eligible for education funding, asset protection, and quick gold loans.";
+      reasonText = "Eligible for education funding, vehicle financing, and asset protection.";
     } else if (age >= 21 && age <= 24) {
       eligibleLoanSlugs = [
         "personal-loan",
-        "home-loan",
-        "vehicle-loan",
+        "property-loan",
+        "car-loan",
         "business-loan",
-        "gold-loan",
         "education-loan",
       ];
       eligibleInsuranceSlugs = [
@@ -69,13 +68,17 @@ export function AgeCalculator() {
       reasonText = "Broad eligibility starting for young professionals and independent earners.";
     } else if (age >= 25 && age <= 55) {
       eligibleLoanSlugs = [
-        "home-loan",
-        "mortgage-loan",
+        "property-loan",
+        "loan-against-property",
         "business-loan",
-        "vehicle-loan",
+        "car-loan",
         "education-loan",
         "personal-loan",
-        "gold-loan",
+        "professional-loan",
+        "professional-equipment-loan",
+        "commercial-loan",
+        "hospital-funding",
+        "educational-institution-funding",
       ];
       eligibleInsuranceSlugs = [
         "health-insurance",
@@ -87,14 +90,15 @@ export function AgeCalculator() {
         "business-insurance",
         "travel-insurance",
       ];
-      reasonText = "Full eligibility for maximum life coverage, asset finance, and business growth.";
+      reasonText = "Full eligibility for maximum life coverage, asset finance, and business/professional growth.";
     } else if (age >= 56 && age <= 65) {
       eligibleLoanSlugs = [
-        "home-loan",
-        "mortgage-loan",
+        "property-loan",
+        "loan-against-property",
         "business-loan",
-        "vehicle-loan",
-        "gold-loan",
+        "car-loan",
+        "professional-loan",
+        "commercial-loan",
       ];
       eligibleInsuranceSlugs = [
         "health-insurance",
@@ -106,13 +110,13 @@ export function AgeCalculator() {
       ];
       reasonText = "Optimized for retirement planning, security, and senior wealth protection.";
     } else if (age >= 66 && age <= 75) {
-      eligibleLoanSlugs = ["mortgage-loan", "gold-loan"];
+      eligibleLoanSlugs = ["loan-against-property", "commercial-loan"];
       eligibleInsuranceSlugs = ["pension-plans", "travel-insurance", "property-insurance"];
       reasonText = "Asset-backed loans and active security features for senior citizens.";
     } else {
-      eligibleLoanSlugs = ["gold-loan"];
+      eligibleLoanSlugs = ["loan-against-property"];
       eligibleInsuranceSlugs = ["travel-insurance"];
-      reasonText = "Simplest gold-backed liquidity and international travel protections.";
+      reasonText = "Simple asset-backed liquidity and international travel protections.";
     }
 
     const eligibleLoans = loans.filter((l) => eligibleLoanSlugs.includes(l.slug));
@@ -123,20 +127,28 @@ export function AgeCalculator() {
 
   const getIcon = (slug: string) => {
     switch (slug) {
-      case "home-loan":
+      case "property-loan":
         return Home;
-      case "mortgage-loan":
+      case "loan-against-property":
         return TrendingUp;
       case "business-loan":
         return Briefcase;
-      case "vehicle-loan":
+      case "car-loan":
         return Car;
       case "education-loan":
         return GraduationCap;
       case "personal-loan":
         return FileCheck2;
-      case "gold-loan":
-        return Shield;
+      case "professional-loan":
+        return Briefcase;
+      case "professional-equipment-loan":
+        return TrendingUp;
+      case "commercial-loan":
+        return Home;
+      case "hospital-funding":
+        return Heart;
+      case "educational-institution-funding":
+        return GraduationCap;
       case "health-insurance":
         return Heart;
       case "family-insurance":

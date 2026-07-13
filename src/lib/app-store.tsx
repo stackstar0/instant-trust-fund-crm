@@ -14,10 +14,13 @@ interface Store {
   customers: MockCustomer[];
   sms: MockSms[];
   notifications: MockNotification[];
-  addApplication: (a: Omit<MockCustomer, "id" | "status" | "appliedOn">) => MockCustomer;
+  currentUser: { name: string; role: "super_admin" | "assistant_admin" | "customer" } | null;
+  setCurrentUser: (u: { name: string; role: "super_admin" | "assistant_admin" | "customer" } | null) => void;
+  addApplication: (a: Omit<MockCustomer, "id" | "status" | "appliedOn" | "bank" | "insuranceType" | "referralCode" | "documents"> & { bank?: string; insuranceType?: string; referralCode?: string; documents?: string[] }) => MockCustomer;
   updateStatus: (id: string, status: MockCustomer["status"]) => void;
   deleteCustomer: (id: string) => void;
   resendSms: (id: string) => void;
+  triggerScheduler: () => { sent: number; failed: number };
 }
 
 const StoreCtx = createContext<Store | null>(null);
@@ -32,11 +35,17 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   const [customers, setCustomers] = useState<MockCustomer[]>(seed.customers);
   const [sms, setSms] = useState<MockSms[]>(seed.sms);
   const [notifications] = useState<MockNotification[]>(seed.notifications);
+  const [currentUser, setCurrentUser] = useState<Store["currentUser"]>({
+    name: "R H Adhoni",
+    role: "super_admin",
+  });
 
   const value: Store = {
     customers,
     sms,
     notifications,
+    currentUser,
+    setCurrentUser,
     addApplication: (a) => {
       const newCust: MockCustomer = {
         ...a,
@@ -56,6 +65,39 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           s.id === id ? { ...s, status: "Sent", sentAt: new Date().toISOString() } : s,
         ),
       ),
+    triggerScheduler: () => {
+      let sentCount = 0;
+      let failedCount = 0;
+      // Pre-calculate to ensure accurate return numbers
+      sms.forEach((s) => {
+        if (s.status === "Scheduled") {
+          if (Math.random() > 0.08) {
+            sentCount++;
+          } else {
+            failedCount++;
+          }
+        }
+      });
+
+      setSms((prev) => {
+        let localSent = 0;
+        return prev.map((s) => {
+          if (s.status === "Scheduled") {
+            // Match the pre-calculated random counts or generate now
+            const success = localSent < sentCount;
+            localSent++;
+            return {
+              ...s,
+              status: success ? "Sent" : "Failed",
+              sentAt: new Date().toISOString(),
+            };
+          }
+          return s;
+        });
+      });
+
+      return { sent: sentCount, failed: failedCount };
+    },
   };
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;
 }

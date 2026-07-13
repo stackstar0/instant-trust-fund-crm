@@ -22,7 +22,7 @@ export const Route = createFileRoute("/admin/sms")({
 });
 
 function SmsPage() {
-  const { sms, resendSms } = useAppStore();
+  const { sms, resendSms, triggerScheduler } = useAppStore();
   const [q, setQ] = useState("");
   const filtered = useMemo(
     () =>
@@ -95,6 +95,22 @@ function SmsPage() {
               className="pl-9"
             />
           </div>
+          <Button
+            variant="outline"
+            onClick={() => {
+              const { sent, failed } = triggerScheduler();
+              if (sent === 0 && failed === 0) {
+                toast.info("No pending scheduled SMS messages found today.");
+              } else {
+                toast.success("SMS Scheduler completed!", {
+                  description: `Dispatched: ${sent} delivered, ${failed} failed.`,
+                });
+              }
+            }}
+            className="bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary flex items-center gap-1.5"
+          >
+            <RotateCcw className="h-4 w-4" /> Run Daily Scheduler
+          </Button>
           <Button variant="outline">
             <MessageSquare className="mr-2 h-4 w-4" /> New Campaign
           </Button>

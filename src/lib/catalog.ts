@@ -5,7 +5,6 @@ import businessImg from "@/assets/loan-business.jpg";
 import vehicleImg from "@/assets/loan-vehicle.jpg";
 import educationImg from "@/assets/loan-education.jpg";
 import personalImg from "@/assets/loan-personal.jpg";
-import goldImg from "@/assets/loan-gold.jpg";
 import healthImg from "@/assets/insurance-health.jpg";
 import familyImg from "@/assets/insurance-family.jpg";
 import lifeImg from "@/assets/insurance-life.jpg";
@@ -15,6 +14,7 @@ import propertyImg from "@/assets/insurance-property.jpg";
 import motorImg from "@/assets/insurance-motor.jpg";
 import travelImg from "@/assets/insurance-travel.jpg";
 import businessInsImg from "@/assets/insurance-business.jpg";
+
 
 export type CategoryKind = "loan" | "insurance" | "service";
 
@@ -49,393 +49,271 @@ const commonDocs = [
 
 export const loans: CatalogItem[] = [
   {
-    slug: "home-loan",
+    slug: "personal-loan",
     kind: "loan",
-    name: "Home Loan",
-    tagline: "Own your dream home with the lowest EMIs.",
-    image: homeImg,
+    name: "Personal Loan",
+    tagline: "Instant funds for life's every milestone.",
+    image: personalImg,
     description:
-      "Finance the purchase, construction, renovation or extension of residential properties with flexible repayment tenures up to 30 years and competitive floating & fixed interest rates.",
-    features: [
-      "Loans up to ₹5 Cr",
-      "Tenure up to 30 years",
-      "Zero prepayment charges",
-      "Doorstep documentation",
-    ],
-    benefits: [
-      "Attractive interest starting 8.35% p.a.",
-      "Tax benefits under Section 80C & 24(b)",
-      "Balance transfer at reduced rates",
-      "Top-up loan facility available",
-    ],
-    eligibility: [
-      "Indian resident, age 21–65 years",
-      "Minimum monthly income ₹25,000 (salaried) / ₹3 L p.a. (self-employed)",
-      "CIBIL score 700+ preferred",
-    ],
-    documents: [
-      ...commonDocs,
-      "Salary slips (last 3 months) / ITR (2 yrs)",
-      "Property documents / sale agreement",
-    ],
-    rate: "8.35% – 10.25% p.a.",
-    tenure: "Up to 30 years",
-    processingTime: "5–7 working days",
+      "Instant unsecured personal loans for medical expenses, marriages, travel, or other personal financial needs without requiring collateral.",
+    features: ["Up to ₹40 L", "Tenure up to 6 years", "100% online approval"],
+    benefits: ["No collateral required", "Flexible EMIs", "Disbursal within 24 hours"],
+    eligibility: ["Age 21–60 years", "Monthly income ₹25,000+", "CIBIL score 720+ preferred"],
+    documents: [...commonDocs, "Salary slips (last 3 months) / Form 16"],
+    rate: "10.50% – 22.00% p.a.",
+    tenure: "1 – 6 years",
+    processingTime: "24 hours",
     subtypes: [
-      {
-        name: "Home Purchase Loan",
-        description: "Finance the purchase of a ready-to-move or under-construction house / flat.",
-      },
-      {
-        name: "Home Construction Loan",
-        description:
-          "Fund the construction of a house on land you already own, disbursed in stages.",
-      },
-      {
-        name: "Home Extension Loan",
-        description: "Add an extra room, floor or balcony to your existing home.",
-      },
-      {
-        name: "Home Renovation Loan",
-        description: "Renovate, remodel and modernise your existing residence.",
-      },
-      {
-        name: "Plot Purchase Loan",
-        description: "Buy a residential plot for future construction or long-term investment.",
-      },
-      {
-        name: "Balance Transfer Home Loan",
-        description:
-          "Transfer your existing home loan to us and save on interest with a top-up option.",
-      },
+      { name: "Medical Loan", description: "Cover planned or emergency medical expenses with instant disbursal." },
+      { name: "Marriage Loan", description: "Finance wedding expenses from venue booking to jewelry." },
+      { name: "Travel Loan", description: "Fund international vacations or domestic holiday plans." },
     ],
     faqs: [
-      {
-        q: "What is the maximum loan-to-value ratio?",
-        a: "Up to 90% of the property value for loans below ₹30 L, 80% for loans up to ₹75 L, and 75% above that.",
-      },
-      {
-        q: "Are foreclosure charges applicable?",
-        a: "Nil foreclosure charges on floating-rate home loans for individual borrowers.",
-      },
-      {
-        q: "How is my EMI calculated?",
-        a: "EMI is based on loan amount, interest rate, and tenure. Use our EMI calculator to estimate.",
-      },
+      { q: "Is there any collateral?", a: "No. Personal loans are fully unsecured." },
+      { q: "Can I prepay my personal loan?", a: "Yes, with a nominal 2–4% foreclosure fee after 6 months." },
     ],
-    related: ["property-insurance", "life-insurance"],
-  },
-  {
-    slug: "mortgage-loan",
-    kind: "loan",
-    name: "Mortgage Loan",
-    tagline: "Unlock the value of your property.",
-    image: mortgageImg,
-    description:
-      "Get funds by mortgaging your residential, commercial or land property while continuing to own and use it. Ideal for large personal or business expenses.",
-    features: [
-      "Loans up to ₹10 Cr",
-      "Tenure up to 15 years",
-      "Loan against self-occupied or rented property",
-    ],
-    benefits: [
-      "Lower interest than unsecured loans",
-      "Overdraft facility",
-      "Retain ownership & usage",
-    ],
-    eligibility: ["Age 25–70 years", "Clear property title", "Stable income source"],
-    documents: [...commonDocs, "Property title & chain documents", "Income proof / ITR"],
-    rate: "9.25% – 11.50% p.a.",
-    tenure: "Up to 15 years",
-    processingTime: "7–10 working days",
-    subtypes: [
-      {
-        name: "Loan Against Property",
-        description:
-          "General-purpose loan secured by a mortgage on your residential or commercial property.",
-      },
-      {
-        name: "Residential Property Mortgage",
-        description: "Higher LTV loan against self-occupied or rented residential property.",
-      },
-      {
-        name: "Commercial Property Mortgage",
-        description:
-          "Mortgage your shop, office or commercial unit for working capital or expansion.",
-      },
-      {
-        name: "Land Mortgage Loan",
-        description: "Raise funds against non-agricultural land with clear title.",
-      },
-    ],
-    faqs: [
-      {
-        q: "Can I mortgage a rented property?",
-        a: "Yes, provided you are the sole owner and the property has a clear title.",
-      },
-      {
-        q: "What is the maximum LTV?",
-        a: "Up to 70% of the market value of the mortgaged property.",
-      },
-    ],
-    related: ["property-insurance", "business-loan"],
+    related: ["health-insurance", "life-insurance"],
   },
   {
     slug: "business-loan",
     kind: "loan",
     name: "Business Loan",
-    tagline: "Fuel your enterprise, at your pace.",
+    tagline: "Fuel your enterprise growth.",
     image: businessImg,
     description:
-      "Business loans designed to help entrepreneurs start, expand or manage working capital with flexible collateral-free options and quick disbursal.",
-    features: [
-      "Collateral-free up to ₹50 L",
-      "Tenure up to 7 years",
-      "Same-day sanction (in-principle)",
-    ],
-    benefits: [
-      "Minimal documentation",
-      "Flexible repayment structures",
-      "Overdraft & term loan mix",
-    ],
+      "Collateral-free and structured business loans to help entrepreneurs start, expand, or manage working capital.",
+    features: ["Collateral-free up to ₹50 L", "Tenure up to 7 years", "In-principle sanction in 48 hours"],
+    benefits: ["Minimal documentation", "Flexible repayment", "MSME priority schemes"],
     eligibility: ["Business vintage 2+ years", "Annual turnover ₹20 L+", "Positive credit history"],
-    documents: [
-      ...commonDocs,
-      "GST returns (last 12 months)",
-      "ITR of business (2 yrs)",
-      "Udyam / MSME registration",
-    ],
+    documents: [...commonDocs, "GST returns (last 12 months)", "Business ITR (2 years)", "MSME registration Certificate"],
     rate: "11.50% – 18.00% p.a.",
     tenure: "1 – 7 years",
     processingTime: "3–5 working days",
     subtypes: [
-      {
-        name: "MSME Loan",
-        description:
-          "Priority-sector loans for micro, small and medium enterprises under government-linked schemes.",
-      },
-      {
-        name: "Startup Loan",
-        description: "Seed funding for early-stage founders with strong business plans.",
-      },
-      {
-        name: "Working Capital Loan",
-        description:
-          "Meet day-to-day operational cashflow needs with an overdraft or cash-credit line.",
-      },
-      {
-        name: "Machinery Loan",
-        description: "Finance new plant, machinery or equipment purchase up to 100% of invoice.",
-      },
-      {
-        name: "Business Expansion Loan",
-        description: "Scale operations, open new branches or launch new product lines.",
-      },
-      {
-        name: "Cash Flow Loan",
-        description: "Short-term loan against future receivables to smoothen seasonal cashflow.",
-      },
+      { name: "Working Capital Loan", description: "Meet operational cashflow needs with overdraft facilities." },
+      { name: "Business Expansion Loan", description: "Scale operations, open branches, or acquire inventory." },
     ],
     faqs: [
-      {
-        q: "Do I need collateral?",
-        a: "Loans up to ₹50 L are typically collateral-free under CGTMSE-linked schemes.",
-      },
-      {
-        q: "How fast is disbursal?",
-        a: "In-principle sanction within 48 hours; disbursal in 3–5 working days after documentation.",
-      },
+      { q: "Do I need to submit collateral?", a: "Loans up to ₹50 L are typically collateral-free under CGTMSE-linked schemes." },
     ],
-    related: ["business-insurance", "mortgage-loan"],
-  },
-  {
-    slug: "vehicle-loan",
-    kind: "loan",
-    name: "Vehicle Loan",
-    tagline: "Drive home your dream vehicle today.",
-    image: vehicleImg,
-    description:
-      "Finance new or used vehicles for personal or commercial use with affordable EMIs and up to 100% on-road funding.",
-    features: ["Up to 100% on-road financing", "Tenure up to 8 years", "New & used vehicles"],
-    benefits: ["Instant approval", "Attractive festive offers", "Doorstep service"],
-    eligibility: ["Age 21–65", "Steady monthly income ₹20,000+", "Valid driving licence"],
-    documents: [...commonDocs, "Vehicle quotation / invoice", "Salary slips / ITR"],
-    rate: "8.75% – 12.50% p.a.",
-    tenure: "1 – 8 years",
-    processingTime: "24–48 hours",
-    subtypes: [
-      {
-        name: "Car Loan",
-        description: "Finance a new or pre-owned passenger car with up to 100% on-road funding.",
-      },
-      {
-        name: "Two Wheeler Loan",
-        description: "Own a bike or scooter with quick approval and low down payment.",
-      },
-      {
-        name: "Commercial Vehicle Loan",
-        description:
-          "Finance trucks, buses, tempos and light commercial vehicles for your business.",
-      },
-      {
-        name: "Tractor Loan",
-        description: "Special agri-tractor financing for farmers with flexible seasonal repayment.",
-      },
-      {
-        name: "Electric Vehicle Loan",
-        description:
-          "Green EV loans at concessional rates for eligible electric cars and two-wheelers.",
-      },
-    ],
-    faqs: [
-      {
-        q: "Can I get 100% funding?",
-        a: "Yes, up to 100% on-road for salaried customers with strong credit profile.",
-      },
-      {
-        q: "Is used-car financing available?",
-        a: "Yes, for cars up to 8 years old with proper valuation.",
-      },
-    ],
-    related: ["motor-insurance"],
+    related: ["business-insurance", "commercial-loan"],
   },
   {
     slug: "education-loan",
     kind: "loan",
     name: "Education Loan",
-    tagline: "Invest in a brighter tomorrow.",
+    tagline: "Invest in higher education goals.",
     image: educationImg,
     description:
-      "Support higher education expenses including tuition fees, accommodation, books and travel — in India or abroad.",
-    features: [
-      "Loans up to ₹1.5 Cr for abroad studies",
-      "Moratorium during course + 6 months",
-      "No margin up to ₹4 L",
-    ],
-    benefits: [
-      "Interest subsidy for eligible students",
-      "Tax benefit under Section 80E",
-      "Covers full cost of study",
-    ],
-    eligibility: [
-      "Indian resident",
-      "Confirmed admission to recognised institution",
-      "Co-applicant (parent / guardian)",
-    ],
-    documents: [
-      ...commonDocs,
-      "Admission letter",
-      "Fee structure",
-      "Academic records",
-      "Co-applicant income proof",
-    ],
+      "Support higher education expenses including tuition, hostel fees, books, and travel — in India or abroad.",
+    features: ["Loans up to ₹1.5 Cr for studies abroad", "Moratorium during course + 6 months", "No margin up to ₹4 L"],
+    benefits: ["Interest subsidy for eligible students", "Tax benefit under Section 80E", "Comprehensive coverage of study cost"],
+    eligibility: ["Indian resident", "Confirmed admission in recognized institution", "Parent/guardian as co-applicant"],
+    documents: [...commonDocs, "Admission letter", "Fee structure breakdown", "Academic records"],
     rate: "8.60% – 12.00% p.a.",
-    tenure: "Up to 15 years post-moratorium",
+    tenure: "Up to 15 years",
     processingTime: "5–10 working days",
     subtypes: [
-      {
-        name: "Domestic Education Loan",
-        description: "Fund courses at Indian universities and premier institutes.",
-      },
-      {
-        name: "Overseas Education Loan",
-        description: "Cover tuition, living and travel expenses for studies abroad.",
-      },
-      {
-        name: "Professional Course Loan",
-        description: "Loans for CA, CS, MBA, medical and other professional programmes.",
-      },
-      {
-        name: "Skill Development Loan",
-        description: "Short-term vocational and certification course financing.",
-      },
+      { name: "Domestic Education Loan", description: "Fund courses at recognized Indian universities." },
+      { name: "Overseas Education Loan", description: "Cover tuition, living expenses, and travel tickets abroad." },
     ],
     faqs: [
-      {
-        q: "Do I need collateral?",
-        a: "Not required for loans up to ₹7.5 L; above that, a suitable collateral is required.",
-      },
-      { q: "When do EMIs start?", a: "Post the moratorium — course duration plus 6 months." },
+      { q: "When does repayment start?", a: "Repayment begins after the moratorium period — course duration plus 6 months." },
     ],
-    related: ["child-plans", "life-insurance"],
+    related: ["travel-insurance", "life-insurance"],
   },
   {
-    slug: "personal-loan",
+    slug: "professional-loan",
     kind: "loan",
-    name: "Personal Loan",
-    tagline: "Instant funds for life's every moment.",
+    name: "Professional Loan",
+    tagline: "Specialized funding for qualified professionals.",
     image: personalImg,
     description:
-      "Instant unsecured personal loans for medical, marriage, travel, festivals and other personal financial needs — without collateral.",
-    features: ["Up to ₹40 L", "Tenure up to 6 years", "100% online approval"],
-    benefits: ["No collateral", "Flexible EMIs", "Disbursal within 24 hours"],
-    eligibility: ["Age 21–60", "Monthly income ₹25,000+", "CIBIL score 720+"],
-    documents: commonDocs,
-    rate: "10.50% – 22.00% p.a.",
-    tenure: "1 – 6 years",
-    processingTime: "24 hours",
+      "Customized unsecured funding solutions designed for Doctors, Chartered Accountants, Architects, and Consulting Professionals.",
+    features: ["Loans up to ₹75 L", "No collateral required", "Special interest rates"],
+    benefits: ["Flexible tenure options", "Doorstep service", "Speedy processing & disbursal"],
+    eligibility: ["Qualified Doctor, CA, CS, or Architect", "Minimum 3 years of active practice", "Age 25–65 years"],
+    documents: [...commonDocs, "Professional Degree Certificate", "Practice vintage proof", "ITR & Financial Statements (2 years)"],
+    rate: "9.99% – 14.50% p.a.",
+    tenure: "1 – 5 years",
+    processingTime: "48 hours",
     subtypes: [
-      {
-        name: "Medical Loan",
-        description: "Cover planned or emergency medical expenses with instant disbursal.",
-      },
-      {
-        name: "Marriage Loan",
-        description: "Finance every wedding expense from venue to jewellery.",
-      },
-      { name: "Travel Loan", description: "Fund your dream holiday, honeymoon or pilgrimage." },
-      { name: "Emergency Loan", description: "Same-day funds for urgent unforeseen expenses." },
-      {
-        name: "Festival Loan",
-        description: "Special short-tenure loans for Diwali, Eid and other festival needs.",
-      },
+      { name: "Doctor Loan", description: "Tailored for setting up clinics, upgrading chambers, or emergency funds." },
+      { name: "CA / Professional Loan", description: "Expand consulting firms, hire professionals, or modernize office spaces." },
     ],
     faqs: [
-      { q: "Is there any collateral?", a: "No. Personal loans are fully unsecured." },
-      { q: "Can I prepay?", a: "Yes, with a nominal 2–4% foreclosure fee after 6 months." },
+      { q: "Is collateral mandatory?", a: "No, professional loans are completely unsecured." },
     ],
-    related: ["health-insurance"],
+    related: ["business-insurance", "professional-equipment-loan"],
   },
   {
-    slug: "gold-loan",
+    slug: "professional-equipment-loan",
     kind: "loan",
-    name: "Gold Loan",
-    tagline: "Turn your gold into instant cash.",
-    image: goldImg,
+    name: "Professional Equipment Loan",
+    tagline: "Finance state-of-the-art tools and equipment.",
+    image: businessImg,
     description:
-      "Secure quick financing by pledging gold ornaments with minimal documentation and fast approval — funds in 30 minutes.",
-    features: ["Loans up to ₹50 L", "Up to 75% LTV of gold value", "Interest from 8.50%"],
-    benefits: ["Doorstep gold pickup available", "Safe locker storage", "No income proof needed"],
-    eligibility: ["Age 18+", "Any Indian citizen with valid ID"],
-    documents: ["Aadhaar card", "PAN card", "Recent photograph"],
-    rate: "8.50% – 15.00% p.a.",
-    tenure: "3 months – 3 years",
-    processingTime: "30 minutes",
+      "Finance the purchase of medical equipment, software, diagnostic tools, and office machinery for your professional practice.",
+    features: ["Up to 90% funding of invoice value", "Loans up to ₹5 Cr", "Tenure up to 7 years"],
+    benefits: ["Preserves working capital", "Flexible EMI options", "Tax depreciation benefits on equipment"],
+    eligibility: ["Doctors, healthcare units, diagnostics labs, CAs, and architects", "Active practice of 3+ years"],
+    documents: [...commonDocs, "Equipment proforma invoice / quotation", "Income tax returns (2 years)", "Business registration"],
+    rate: "9.25% – 12.00% p.a.",
+    tenure: "1 – 7 years",
+    processingTime: "5–7 working days",
     subtypes: [
-      {
-        name: "Personal Gold Loan",
-        description: "General-purpose loan against 18–24 carat gold ornaments.",
-      },
-      {
-        name: "Business Gold Loan",
-        description: "Working-capital gold loan for MSMEs and small traders.",
-      },
-      {
-        name: "Agricultural Gold Loan",
-        description: "Concessional gold loans for farmers under priority-sector schemes.",
-      },
+      { name: "Medical Equipment Financing", description: "Fund MRI machines, X-Ray equipment, dental chairs, and surgical tools." },
+      { name: "Office Infrastructure Financing", description: "Fund servers, commercial software, and specialized machinery." },
     ],
     faqs: [
-      {
-        q: "What purity of gold is accepted?",
-        a: "18 to 24 carat gold ornaments and specified coins.",
-      },
-      {
-        q: "Is the gold safe?",
-        a: "Yes — stored in bank-grade insured vaults with 24×7 security.",
-      },
+      { q: "Is the equipment itself considered collateral?", a: "Yes, the purchased equipment is hypothecated as primary security." },
     ],
-    related: ["personal-loan"],
+    related: ["professional-loan", "business-insurance"],
+  },
+  {
+    slug: "loan-against-property",
+    kind: "loan",
+    name: "Loan Against Property",
+    tagline: "Unlock the value locked in your property.",
+    image: mortgageImg,
+    description:
+      "Acquire high-value funds by mortgaging your residential, commercial, or industrial property while continuing to occupy it.",
+    features: ["Loans up to ₹10 Cr", "Tenure up to 15 years", "Self-occupied or rented properties accepted"],
+    benefits: ["Lower interest rates than unsecured loans", "High loan-to-value ratio (LTV)", "Flexible overdraft facilities"],
+    eligibility: ["Age 25–70 years", "Property must have clear and marketable title", "Regular income stream"],
+    documents: [...commonDocs, "Original property title deeds & chain documents", "Income proof / ITR (2 years)"],
+    rate: "9.00% – 11.50% p.a.",
+    tenure: "Up to 15 years",
+    processingTime: "7–10 working days",
+    subtypes: [
+      { name: "Residential Property LAP", description: "Mortgage your residential house or flat." },
+      { name: "Commercial Property LAP", description: "Mortgage offices, retail shops, or warehouses for capital." },
+    ],
+    faqs: [
+      { q: "Can I still use the property?", a: "Yes, you retain full ownership and usage of the property." },
+    ],
+    related: ["property-insurance", "commercial-loan"],
+  },
+  {
+    slug: "commercial-loan",
+    kind: "loan",
+    name: "Commercial Loan",
+    tagline: "Finance commercial spaces and operations.",
+    image: businessImg,
+    description:
+      "Finance the purchase of commercial properties, offices, warehouses, or fund large scale corporate activities.",
+    features: ["Loans up to ₹25 Cr", "Tenure up to 15 years", "Competitive corporate interest rates"],
+    benefits: ["High loan limit", "Customized corporate structures", "Build business assets"],
+    eligibility: ["Corporate entities, partnership firms, or proprietorships", "Min. annual revenue ₹1 Cr", "3+ years profitable records"],
+    documents: [...commonDocs, "Company registration / partnership deed", "Audited financial statements (3 years)", "Property blueprint & clearance certificate"],
+    rate: "8.75% – 11.00% p.a.",
+    tenure: "Up to 15 years",
+    processingTime: "10–14 working days",
+    subtypes: [
+      { name: "Commercial Space Purchase", description: "Buy office spaces, shops, showrooms, or godowns." },
+      { name: "Construction Finance", description: "Funding for developers to build commercial complexes." },
+    ],
+    faqs: [
+      { q: "What is the maximum LTV?", a: "Typically up to 60-70% of the property market value." },
+    ],
+    related: ["loan-against-property", "business-insurance"],
+  },
+  {
+    slug: "car-loan",
+    kind: "loan",
+    name: "Car Loan",
+    tagline: "Drive home your dream car.",
+    image: vehicleImg,
+    description:
+      "Affordable car loans for purchasing new or used passenger cars, with quick online approval and flexible EMIs.",
+    features: ["Up to 100% on-road financing", "Tenure up to 8 years", "Options for new & used cars"],
+    benefits: ["Instant digital approval", "Attractive seasonal deals", "No hidden processing costs"],
+    eligibility: ["Age 21–65 years", "Net monthly income ₹20,000+", "Valid driving license & proof of employment"],
+    documents: [...commonDocs, "Car proforma invoice / quotation", "Income proof / salary slips (3 months)"],
+    rate: "8.50% – 12.00% p.a.",
+    tenure: "1 – 8 years",
+    processingTime: "24–48 hours",
+    subtypes: [
+      { name: "New Car Loan", description: "Get up to 100% funding on the showroom price of a brand new car." },
+      { name: "Used Car Loan", description: "Finance the purchase of certified pre-owned cars up to 8 years old." },
+    ],
+    faqs: [
+      { q: "Is a down payment required?", a: "In most cases, we offer 90% to 100% on-road funding based on your credit profile." },
+    ],
+    related: ["motor-insurance"],
+  },
+  {
+    slug: "hospital-funding",
+    kind: "loan",
+    name: "Hospital Funding",
+    tagline: "Finance healthcare infrastructure and modernization.",
+    image: businessImg,
+    description:
+      "Specialized financial assistance for doctors, trusts, and corporations to set up hospitals, nursing homes, diagnostics labs, or upgrade healthcare centers.",
+    features: ["Loans up to ₹50 Cr", "Tenure up to 15 years", "Structured repayment linked to hospital revenues"],
+    benefits: ["Customized grace periods", "Funding for greenfield and brownfield projects", "Equipment bundling options"],
+    eligibility: ["Registered medical trusts, firms, or private limited hospital entities", "Promoters with medical background"],
+    documents: [...commonDocs, "Hospital registration & clearances", "Project feasibility report", "Audited balance sheet (3 years)"],
+    rate: "8.50% – 10.75% p.a.",
+    tenure: "Up to 15 years",
+    processingTime: "15–20 working days",
+    subtypes: [
+      { name: "Infrastructure Expansion", description: "Fund construction of new wards, ICU rooms, or consulting units." },
+      { name: "Specialized Lab Setup", description: "Setup advanced diagnostic clinics, CT scan labs, and pharmacies." },
+    ],
+    faqs: [
+      { q: "Can trusts apply for hospital funding?", a: "Yes, registered healthcare trusts and societies are fully eligible." },
+    ],
+    related: ["professional-equipment-loan", "business-insurance"],
+  },
+  {
+    slug: "educational-institution-funding",
+    kind: "loan",
+    name: "Educational Institution Funding",
+    tagline: "Empower academic growth & infrastructure.",
+    image: educationImg,
+    description:
+      "Comprehensive funding for schools, colleges, universities, and coaching institutes to construct campuses, labs, hostels, or upgrade tech equipment.",
+    features: ["Funding up to ₹30 Cr", "Tenure up to 12 years", "Low interest rates for registered trusts"],
+    benefits: ["Capital for modernizing classrooms", "Flexible disbursement schedules", "Support for smart-class setup"],
+    eligibility: ["Registered educational societies, trusts, or private institutes", "Valid recognition certificate (UGC/AICTE/State Board)"],
+    documents: [...commonDocs, "Trust deed / Society registration", "FCRA & tax exemption certificates if applicable", "Audited financials (3 years)"],
+    rate: "8.75% – 11.50% p.a.",
+    tenure: "3 – 12 years",
+    processingTime: "15–20 working days",
+    subtypes: [
+      { name: "Campus Construction", description: "Build libraries, chemistry labs, residential halls, or athletic centers." },
+      { name: "Tech & Equipment Upgrade", description: "Procure computers, interactive displays, and campus-wide high speed Wi-Fi." },
+    ],
+    faqs: [
+      { q: "Can we get funding for school buses?", a: "Yes, vehicle purchase funding can be bundled under this scheme." },
+    ],
+    related: ["education-loan", "property-insurance"],
+  },
+  {
+    slug: "property-loan",
+    kind: "loan",
+    name: "Property Loan",
+    tagline: "Own your residential or commercial property.",
+    image: homeImg,
+    description:
+      "Finance the purchase, building, extension, or renovation of residential and commercial properties with flexible terms.",
+    features: ["Loans up to ₹10 Cr", "Tenure up to 30 years", "Doorstep documentation"],
+    benefits: ["Competitive interest rates", "Tax deductions under Section 80C & 24(b)", "Easy balance transfers"],
+    eligibility: ["Resident Indian, age 21–65 years", "Steady monthly income or business record", "CIBIL score 700+"],
+    documents: [...commonDocs, "Property sale agreement & registration deeds", "Salary slips (3 months) / Business ITR (2 years)"],
+    rate: "8.35% – 10.50% p.a.",
+    tenure: "Up to 30 years",
+    processingTime: "5–7 working days",
+    subtypes: [
+      { name: "Home Purchase", description: "Buy a ready or under-construction flat, villa, or independent house." },
+      { name: "Plot Purchase & Construction", description: "Acquire residential land and build a custom home." },
+      { name: "Commercial Office Purchase", description: "Finance corporate workspace or retail outlet units." },
+    ],
+    faqs: [
+      { q: "Can I transfer my existing property loan?", a: "Yes, balance transfers are supported at reduced interest rates." },
+    ],
+    related: ["property-insurance", "loan-against-property"],
   },
 ];
 

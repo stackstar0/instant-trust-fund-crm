@@ -87,7 +87,7 @@ export function toCSV(rows: MockCustomer[]) {
 }
 
 function CustomersPage() {
-  const { customers, deleteCustomer, updateStatus } = useAppStore();
+  const { customers, deleteCustomer, updateStatus, currentUser } = useAppStore();
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
   const [kind, setKind] = useState("all");
@@ -221,12 +221,18 @@ function CustomersPage() {
                       <Button
                         size="icon"
                         variant="ghost"
+                        disabled={currentUser?.role === "assistant_admin"}
+                        title={currentUser?.role === "assistant_admin" ? "Super Admin access required" : "Delete customer"}
                         onClick={() => {
+                          if (currentUser?.role === "assistant_admin") {
+                            toast.error("Permission Denied: Super Admin access required");
+                            return;
+                          }
                           deleteCustomer(c.id);
                           toast.success("Deleted");
                         }}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4 text-rose-600" />
                       </Button>
                     </div>
                   </TableCell>

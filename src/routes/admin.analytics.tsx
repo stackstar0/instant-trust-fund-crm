@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useAppStore } from "@/lib/app-store";
 import { Card } from "@/components/ui/card";
+import { AlertCircle } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -34,7 +35,22 @@ const COLORS = [
 ];
 
 function AnalyticsPage() {
-  const { customers, sms } = useAppStore();
+  const { customers, sms, currentUser } = useAppStore();
+
+  if (currentUser?.role === "assistant_admin") {
+    return (
+      <div className="mx-auto max-w-7xl px-6 py-12 text-center flex flex-col items-center justify-center min-h-[50vh]">
+        <div className="h-12 w-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mb-4">
+          <AlertCircle className="h-6 w-6" />
+        </div>
+        <h3 className="text-xl font-bold text-brand-navy">Restricted Access</h3>
+        <p className="mt-2 text-sm text-muted-foreground max-w-sm">
+          Analytics dashboard is reserved for Super Admin users only. Assistant role is blocked.
+        </p>
+      </div>
+    );
+  }
+
   const monthly = monthlyApplications(customers);
   const revenue = monthly.map((m) => ({ ...m, revenue: m.applications * 42000 + 800000 }));
   const growth = monthly.map((m, i) => ({ ...m, customers: 100 + i * 45 + m.applications * 3 }));

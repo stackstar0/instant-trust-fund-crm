@@ -145,6 +145,22 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* Partner Banks */}
+      <section className="bg-card border-b py-8">
+        <div className="mx-auto max-w-7xl px-6">
+          <p className="text-center text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            Our Lending & Insurance Partners
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-75 grayscale hover:grayscale-0 transition">
+            <span className="text-sm font-black text-brand-navy flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-primary" /> SBI</span>
+            <span className="text-sm font-black text-brand-navy flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-primary" /> HDFC BANK</span>
+            <span className="text-sm font-black text-brand-navy flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-primary" /> ICICI BANK</span>
+            <span className="text-sm font-black text-brand-navy flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-primary" /> AXIS BANK</span>
+            <span className="text-sm font-black text-brand-navy flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-primary" /> LIC HOUSING</span>
+          </div>
+        </div>
+      </section>
+
       {/* Instant Loans */}
       <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="flex items-end justify-between">
@@ -293,6 +309,53 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* Company Mission */}
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="grid gap-12 md:grid-cols-2 items-center">
+          <div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary font-bold">Our Mission & Values</span>
+            <h2 className="text-3xl font-extrabold text-brand-navy mt-2 md:text-4xl">
+              Empowering financial security and aspirations since 2012
+            </h2>
+            <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+              At Instant Trust Fund CRM, our mission is to simplify complex loan processing and insurance procurement. We believe financial access should be transparent, secure, and hassle-free. By partnering with leading banking institutions, we offer optimized interest rates and custom tenure solutions tailored to your unique journey.
+            </p>
+            <div className="mt-6 space-y-4">
+              <div className="flex gap-4">
+                <div className="h-10 w-10 shrink-0 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">1</div>
+                <div>
+                  <h4 className="text-sm font-bold text-brand-navy">Customer First Policy</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">We advocate on your behalf to secure the best rates and easiest approvals.</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="h-10 w-10 shrink-0 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">2</div>
+                <div>
+                  <h4 className="text-sm font-bold text-brand-navy">Uncompromising Integrity</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">Strict confidentiality, zero hidden fees, and transparent eligibility scoring.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="relative rounded-2xl overflow-hidden bg-brand-gradient p-8 text-white shadow-elevated">
+            <h3 className="text-xl font-bold text-accent">Our Vision</h3>
+            <p className="mt-3 text-sm text-white/80 leading-relaxed">
+              To be India's most trusted digital financial consultant platform, bridging the gap between nationalized banks and rural/urban credit seekers with high-speed advisory services.
+            </p>
+            <div className="mt-8 grid grid-cols-2 gap-4 border-t border-white/20 pt-6">
+              <div>
+                <div className="text-3xl font-black text-accent">99.8%</div>
+                <div className="text-[10px] text-white/60 uppercase font-bold mt-1">CSAT Rating</div>
+              </div>
+              <div>
+                <div className="text-3xl font-black text-accent">24hr</div>
+                <div className="text-[10px] text-white/60 uppercase font-bold mt-1">Average Response</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Age Calculator Tool Section */}
       <section className="mx-auto max-w-7xl px-6 py-16 border-b border-t border-dashed border-primary/20">
         <div className="text-center mb-10">
@@ -300,6 +363,61 @@ function LandingPage() {
           <p className="mt-2 text-muted-foreground">Adjust the slider to discover personalized financial matches in seconds.</p>
         </div>
         <AgeCalculator />
+      </section>
+
+      {/* Testimonials */}
+      <section className="bg-secondary/40 py-16 border-b">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center max-w-2xl mx-auto">
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary font-bold">Testimonials</span>
+            <h2 className="text-3xl font-bold md:text-4xl text-brand-navy mt-2">What our clients say</h2>
+            <p className="mt-2 text-muted-foreground">Real stories from businesses and families we have helped grow.</p>
+          </div>
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                quote: "Instant Trust Fund made our home purchase extremely smooth. Their doorstep document pickup saved us days of bank visits.",
+                name: "Vikram K. Rao",
+                role: "IT Manager, Bengaluru",
+                rating: 5
+              },
+              {
+                quote: "We secured machinery funding of ₹45 Lakhs in less than 4 days. Exceptional service and very professional customer support.",
+                name: "Priyanka Sharma",
+                role: "Founder, GreenAgro Industries",
+                rating: 5
+              },
+              {
+                quote: "Their insurance advisory helped us choose the best family health plan with optimal critical illness coverage at 20% lower premium.",
+                name: "Anand & Divya Sen",
+                role: "Senior Citizens, Pune",
+                rating: 5
+              }
+            ].map((t, idx) => (
+              <Card key={idx} className="p-6 flex flex-col justify-between shadow-card hover:shadow-elevated transition">
+                <div>
+                  <div className="flex gap-0.5 text-accent">
+                    {Array.from({ length: t.rating }).map((_, i) => (
+                      <span key={i} className="text-sm">★</span>
+                    ))}
+                  </div>
+                  <p className="mt-4 text-sm text-foreground italic leading-relaxed">
+                    "{t.quote}"
+                  </p>
+                </div>
+                <div className="mt-6 flex items-center gap-3 border-t pt-4">
+                  <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+                    {t.name[0]}
+                  </div>
+                  <div>
+                    <h5 className="text-xs font-bold text-brand-navy">{t.name}</h5>
+                    <p className="text-[10px] text-muted-foreground">{t.role}</p>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
       </section>
 
 

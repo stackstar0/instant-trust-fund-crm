@@ -39,6 +39,9 @@ const schema = z.object({
   income: z.string().trim().max(20).optional().or(z.literal("")),
   amount: z.string().trim().max(20).optional().or(z.literal("")),
   branch: z.string().trim().max(80).optional().or(z.literal("")),
+  bank: z.string().trim().optional().or(z.literal("")),
+  insuranceType: z.string().trim().optional().or(z.literal("")),
+  referralCode: z.string().trim().optional().or(z.literal("")),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -54,6 +57,7 @@ export function ApplyDialog({
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState<{ id: string } | null>(null);
+  const [uploadedDocs, setUploadedDocs] = useState<string[]>([]);
   const { addApplication } = useAppStore();
 
   const {
@@ -62,6 +66,16 @@ export function ApplyDialog({
     reset,
     formState: { errors },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
+
+  const simulateUpload = (doc: string) => {
+    if (!uploadedDocs.includes(doc)) {
+      setUploadedDocs((prev) => [...prev, doc]);
+      toast.success(`${doc.replace(/_/g, " ")} simulated successfully!`);
+    } else {
+      setUploadedDocs((prev) => prev.filter((d) => d !== doc));
+      toast.info(`Removed ${doc.replace(/_/g, " ")}`);
+    }
+  };
 
   const onSubmit = async (data: FormValues) => {
     setSubmitting(true);
@@ -76,6 +90,10 @@ export function ApplyDialog({
       productKind: productKind === "service" ? "loan" : productKind,
       amount: parseInt((data.amount || "0").replace(/\D/g, "")) || 0,
       branch: data.branch || "—",
+      bank: productKind === "loan" ? (data.bank || "SBI") : undefined,
+      insuranceType: productKind === "insurance" ? (data.insuranceType || "Health Plan") : undefined,
+      referralCode: data.referralCode || undefined,
+      documents: uploadedDocs.length > 0 ? uploadedDocs : ["Aadhaar_Card.pdf", "PAN_Card.pdf"],
     });
     setSubmitting(false);
     setSuccess({ id: created.id });
@@ -86,6 +104,7 @@ export function ApplyDialog({
     setOpen(isOpen);
     if (!isOpen) {
       setSuccess(null);
+      setUploadedDocs([]);
       reset();
     }
   };
@@ -115,7 +134,7 @@ export function ApplyDialog({
             <p className="mt-2 text-sm text-muted-foreground">
               Your reference number is{" "}
               <span className="font-mono font-semibold text-foreground">{success.id}</span>. Track
-              its status in the Admin Dashboard.
+              its status in the Customer Dashboard or Admin CRM.
             </p>
             <div className="mt-6 flex gap-2">
               <Button variant="outline" onClick={() => handleClose(false)}>
@@ -124,6 +143,7 @@ export function ApplyDialog({
               <Button
                 onClick={() => {
                   setSuccess(null);
+                  setUploadedDocs([]);
                   reset();
                 }}
               >
@@ -193,10 +213,89 @@ export function ApplyDialog({
               <Input id="branch" placeholder="e.g. Mumbai Fort" {...register("branch")} />
             </div>
 
-            <div className="sm:col-span-2 mt-2 rounded-md bg-muted/60 p-3 text-xs text-muted-foreground">
-              Uploads (Aadhaar / PAN / Income Proof) are simulated in this demo. In production,
-              secure file uploads would appear here.
+            {/* Conditional dropdown: Bank (For loans only) */}
+            {productKind === "loan" && (
+              <div>
+                <Label htmlFor="bank">Preferred Lender Bank *</Label>
+                <select
+                  id="bank"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  {...register("bank")}
+                >
+                  <option value="SBI">State Bank of India (SBI)</option>
+                  <option value="HDFC Bank">HDFC Bank</option>
+                  <option value="ICICI Bank">ICICI Bank</option>
+                  <option value="Axis Bank">Axis Bank</option>
+                  <option value="LIC Housing Finance">LIC Housing Finance</option>
+                </select>
+              </div>
+            )}
+
+            {/* Conditional dropdown: Insurance Type (For insurance only) */}
+            {productKind === "insurance" && (
+              <div>
+                <Label htmlFor="insuranceType">Coverage Term / Plan Type *</Label>
+                <select
+                  id="insuranceType"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  {...register("insuranceType")}
+                >
+                  <option value="Term Life">Term Life Plan</option>
+                  <option value="Health Plan">Health Plan Cover</option>
+                  <option value="Motor Guard">Motor Guard Policy</option>
+                  <option value="Travel Protect">Travel Protect Plan</option>
+                  <option value="Commercial Property">Commercial Property Protect</option>
+                </select>
+              </div>
+            )}
+
+            {/* Referral Code */}
+            <div>
+              <Label htmlFor="referralCode">Referral Code (Optional)</Label>
+              <Input id="referralCode" placeholder="e.g. REF-101" {...register("referralCode")} className="uppercase" />
             </div>
+
+            {/* Interactive Document Simulator */}
+            <div className="sm:col-span-2 mt-2 rounded-xl bg-muted/60 p-4 border">
+              <span className="text-xs font-bold text-brand-navy block mb-2">Simulate Document Uploads</span>
+              <p className="text-[11px] text-muted-foreground mb-3">Click each checklist document to simulate uploading it. Green indicates attached.</p>
+              
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { name: "Aadhaar_Card.pdf", label: "Aadhaar Card" },
+                  { name: "PAN_Card.pdf", label: "PAN Card" },
+                  { name: "Income_Proof.pdf", label: "Income Statement / Salary slip" },
+                  { name: "Property_Title.pdf", label: "Property Deeds (optional)" },
+                ].map((doc) => {
+                  const isUploaded = uploadedDocs.includes(doc.name);
+                  return (
+                    <Button
+                      key={doc.name}
+                      type="button"
+                      variant={isUploaded ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => simulateUpload(doc.name)}
+                      className="text-xs flex items-center gap-1.5 h-8"
+                    >
+                      {isUploaded && <CheckCircle2 className="h-3.5 w-3.5" />}
+                      {doc.label}
+                    </Button>
+                  );
+                })}
+              </div>
+
+              {uploadedDocs.length > 0 && (
+                <div className="mt-3 pt-3 border-t text-[11px]">
+                  <span className="font-semibold text-brand-navy">Uploaded files ({uploadedDocs.length}):</span>
+                  <ul className="list-disc list-inside mt-1 font-mono text-muted-foreground">
+                    {uploadedDocs.map((doc) => (
+                      <li key={doc}>{doc}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
             <div className="sm:col-span-2 flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => handleClose(false)}>
                 Cancel

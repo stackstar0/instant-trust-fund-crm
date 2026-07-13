@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/accordion";
 import { ApplyDialog } from "@/components/apply-dialog";
 import { EmiCalculator } from "@/components/emi-calculator";
+import { AgeCalculator } from "@/components/age-calculator";
 
 const SbiLogo = () => (
   <svg viewBox="0 0 100 100" className="h-8 w-8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,25 +89,30 @@ const IiflLogo = () => (
 function BankPartners({ slug }: { slug: string }) {
   const getPartners = (slug: string) => {
     switch (slug) {
-      case "home-loan":
+      case "property-loan":
         return [
           { name: "LIC Housing Finance", logo: LicLogo },
           { name: "HDFC Bank", logo: HdfcLogo },
           { name: "SBI", logo: SbiLogo },
         ];
-      case "mortgage-loan":
+      case "loan-against-property":
+      case "commercial-loan":
         return [
           { name: "HDFC Bank", logo: HdfcLogo },
           { name: "ICICI Bank", logo: IciciLogo },
           { name: "Axis Bank", logo: AxisLogo },
         ];
       case "business-loan":
+      case "professional-loan":
+      case "professional-equipment-loan":
+      case "hospital-funding":
+      case "educational-institution-funding":
         return [
           { name: "SBI", logo: SbiLogo },
           { name: "ICICI Bank", logo: IciciLogo },
           { name: "Axis Bank", logo: AxisLogo },
         ];
-      case "vehicle-loan":
+      case "car-loan":
         return [
           { name: "HDFC Bank", logo: HdfcLogo },
           { name: "SBI", logo: SbiLogo },
@@ -123,12 +129,6 @@ function BankPartners({ slug }: { slug: string }) {
           { name: "HDFC Bank", logo: HdfcLogo },
           { name: "ICICI Bank", logo: IciciLogo },
           { name: "Axis Bank", logo: AxisLogo },
-        ];
-      case "gold-loan":
-        return [
-          { name: "SBI", logo: SbiLogo },
-          { name: "Muthoot Finance", logo: MuthootLogo },
-          { name: "IIFL Finance", logo: IiflLogo },
         ];
       default:
         return [
@@ -326,17 +326,26 @@ export function CategoryPage({ item }: { item: CatalogItem }) {
               <EmiCalculator
                 defaultRate={parseFloat((item.rate || "9").replace(/[^0-9.]/g, "")) || 9}
                 defaultAmount={
-                  item.slug === "gold-loan"
-                    ? 300000
-                    : item.slug === "personal-loan"
-                      ? 500000
+                  item.slug === "personal-loan"
+                    ? 500000
+                    : item.slug === "car-loan"
+                      ? 1000000
                       : 2500000
                 }
                 defaultYears={
-                  item.slug === "vehicle-loan" ? 5 : item.slug === "personal-loan" ? 4 : 20
+                  item.slug === "car-loan" ? 5 : item.slug === "personal-loan" ? 4 : 20
                 }
               />
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* Age Eligibility Check (loans only) */}
+      {item.kind === "loan" && (
+        <section className="py-14 border-t border-b">
+          <div className="mx-auto max-w-7xl px-6">
+            <AgeCalculator />
           </div>
         </section>
       )}

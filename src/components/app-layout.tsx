@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useState, useMemo } from "react";
+import { useAppStore } from "@/lib/app-store";
 import {
   Home,
   Landmark,
@@ -16,6 +17,7 @@ import {
   X,
   FileSignature,
   ScrollText,
+  CheckSquare,
 } from "lucide-react";
 import logo from "@/assets/logo_new.png";
 import founderPhoto from "@/assets/founder.png";
@@ -38,12 +40,18 @@ const primaryNav = [
     to: "/insurance",
     children: insurance.map((i) => ({ label: i.name, to: `/insurance/${i.slug}` })),
   },
+  { label: "Property Verify", icon: Wrench, to: "/properties" },
+  { label: "CIBIL Score", icon: ScrollText, to: "/cibil" },
+  { label: "Track Application", icon: Users, to: "/dashboard" },
 ];
 
 const adminNav = [
   { label: "Dashboard", icon: LayoutDashboard, to: "/admin" },
   { label: "Customers", icon: Users, to: "/admin/customers" },
   { label: "Applications", icon: FileSignature, to: "/admin/applications" },
+  { label: "Tasks", icon: CheckSquare, to: "/admin/tasks" },
+  { label: "Referrals", icon: ScrollText, to: "/admin/referrals" },
+  { label: "Property Search", icon: Home, to: "/admin/properties" },
   { label: "SMS Center", icon: MessageSquare, to: "/admin/sms" },
   { label: "Notifications", icon: Bell, to: "/admin/notifications" },
   { label: "Analytics", icon: BarChart3, to: "/admin/analytics" },
@@ -116,6 +124,17 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { currentUser } = useAppStore();
+
+  const visibleAdminNav = useMemo(() => {
+    if (!currentUser) return [];
+    if (currentUser.role === "assistant_admin") {
+      return adminNav.filter(
+        (item) => item.label === "Tasks" || item.label === "Property Search"
+      );
+    }
+    return adminNav;
+  }, [currentUser]);
 
   const isActive = (path: string) =>
     path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(path + "/");
@@ -169,16 +188,29 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
           {/* Right: admin */}
           <div className="flex items-center justify-end gap-3">
-            <div className="hidden text-right sm:block">
-              <div className="text-sm font-semibold text-foreground">Admin Panel</div>
-              <div className="text-xs text-muted-foreground">Bibi Ayesha · Admin</div>
-            </div>
-            <Link
-              to="/admin"
-              className="hidden rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition hover:bg-brand-navy sm:inline-flex"
-            >
-              Admin Dashboard
-            </Link>
+            {currentUser ? (
+              <>
+                <div className="hidden text-right sm:block">
+                  <div className="text-sm font-semibold text-foreground">{currentUser.name}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {currentUser.role === "super_admin" ? "Super Admin" : "Assistant"}
+                  </div>
+                </div>
+                <Link
+                  to="/admin"
+                  className="hidden rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition hover:bg-brand-navy sm:inline-flex"
+                >
+                  Console
+                </Link>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="hidden rounded-md bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition hover:bg-brand-navy sm:inline-flex"
+              >
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       </header>
@@ -218,23 +250,27 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 onNavigate={() => { }}
               />
             ))}
-            <div className="my-3 border-t border-sidebar-border/60" />
-            {!collapsed && (
-              <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60">
-                Admin
-              </div>
+            {currentUser && (currentUser.role === "super_admin" || currentUser.role === "assistant_admin") && (
+              <>
+                <div className="my-3 border-t border-sidebar-border/60" />
+                {!collapsed && (
+                  <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60">
+                    Admin
+                  </div>
+                )}
+                {visibleAdminNav.map((n) => (
+                  <SidebarItem
+                    key={n.to}
+                    to={n.to}
+                    label={n.label}
+                    Icon={n.icon}
+                    active={isActive(n.to)}
+                    collapsed={collapsed}
+                    onNavigate={() => { }}
+                  />
+                ))}
+              </>
             )}
-            {adminNav.map((n) => (
-              <SidebarItem
-                key={n.to}
-                to={n.to}
-                label={n.label}
-                Icon={n.icon}
-                active={isActive(n.to)}
-                collapsed={collapsed}
-                onNavigate={() => { }}
-              />
-            ))}
             <div className="my-3 border-t border-sidebar-border/60" />
             {!collapsed && (
               <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60">
@@ -287,21 +323,25 @@ export function AppLayout({ children }: { children: ReactNode }) {
                     onNavigate={() => setMobileOpen(false)}
                   />
                 ))}
-                <div className="my-3 border-t border-sidebar-border/60" />
-                <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60">
-                  Admin
-                </div>
-                {adminNav.map((n) => (
-                  <SidebarItem
-                    key={n.to}
-                    to={n.to}
-                    label={n.label}
-                    Icon={n.icon}
-                    active={isActive(n.to)}
-                    collapsed={false}
-                    onNavigate={() => setMobileOpen(false)}
-                  />
-                ))}
+                {currentUser && (currentUser.role === "super_admin" || currentUser.role === "assistant_admin") && (
+                  <>
+                    <div className="my-3 border-t border-sidebar-border/60" />
+                    <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60">
+                      Admin
+                    </div>
+                    {visibleAdminNav.map((n) => (
+                      <SidebarItem
+                        key={n.to}
+                        to={n.to}
+                        label={n.label}
+                        Icon={n.icon}
+                        active={isActive(n.to)}
+                        collapsed={false}
+                        onNavigate={() => setMobileOpen(false)}
+                      />
+                    ))}
+                  </>
+                )}
               </nav>
             </aside>
           </div>

@@ -11,9 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as PropertiesRouteImport } from './routes/properties'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as LoansRouteImport } from './routes/loans'
 import { Route as InsuranceRouteImport } from './routes/insurance'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CibilRouteImport } from './routes/cibil'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoansIndexRouteImport } from './routes/loans.index'
@@ -21,8 +25,11 @@ import { Route as InsuranceIndexRouteImport } from './routes/insurance.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as LoansSlugRouteImport } from './routes/loans.$slug'
 import { Route as InsuranceSlugRouteImport } from './routes/insurance.$slug'
+import { Route as AdminTasksRouteImport } from './routes/admin.tasks'
 import { Route as AdminSmsRouteImport } from './routes/admin.sms'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
+import { Route as AdminReferralsRouteImport } from './routes/admin.referrals'
+import { Route as AdminPropertiesRouteImport } from './routes/admin.properties'
 import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
 import { Route as AdminCustomersRouteImport } from './routes/admin.customers'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
@@ -38,9 +45,19 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PropertiesRoute = PropertiesRouteImport.update({
+  id: '/properties',
+  path: '/properties',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoansRoute = LoansRouteImport.update({
@@ -51,6 +68,16 @@ const LoansRoute = LoansRouteImport.update({
 const InsuranceRoute = InsuranceRouteImport.update({
   id: '/insurance',
   path: '/insurance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CibilRoute = CibilRouteImport.update({
+  id: '/cibil',
+  path: '/cibil',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -88,6 +115,11 @@ const InsuranceSlugRoute = InsuranceSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => InsuranceRoute,
 } as any)
+const AdminTasksRoute = AdminTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSmsRoute = AdminSmsRouteImport.update({
   id: '/sms',
   path: '/sms',
@@ -96,6 +128,16 @@ const AdminSmsRoute = AdminSmsRouteImport.update({
 const AdminReportsRoute = AdminReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReferralsRoute = AdminReferralsRouteImport.update({
+  id: '/referrals',
+  path: '/referrals',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertiesRoute = AdminPropertiesRouteImport.update({
+  id: '/properties',
+  path: '/properties',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
@@ -122,17 +164,24 @@ const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/cibil': typeof CibilRoute
+  '/dashboard': typeof DashboardRoute
   '/insurance': typeof InsuranceRouteWithChildren
   '/loans': typeof LoansRouteWithChildren
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/properties': typeof PropertiesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/customers': typeof AdminCustomersRoute
   '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/properties': typeof AdminPropertiesRoute
+  '/admin/referrals': typeof AdminReferralsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/sms': typeof AdminSmsRoute
+  '/admin/tasks': typeof AdminTasksRoute
   '/insurance/$slug': typeof InsuranceSlugRoute
   '/loans/$slug': typeof LoansSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -141,15 +190,22 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cibil': typeof CibilRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/properties': typeof PropertiesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/customers': typeof AdminCustomersRoute
   '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/properties': typeof AdminPropertiesRoute
+  '/admin/referrals': typeof AdminReferralsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/sms': typeof AdminSmsRoute
+  '/admin/tasks': typeof AdminTasksRoute
   '/insurance/$slug': typeof InsuranceSlugRoute
   '/loans/$slug': typeof LoansSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -160,17 +216,24 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/cibil': typeof CibilRoute
+  '/dashboard': typeof DashboardRoute
   '/insurance': typeof InsuranceRouteWithChildren
   '/loans': typeof LoansRouteWithChildren
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/properties': typeof PropertiesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/customers': typeof AdminCustomersRoute
   '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/properties': typeof AdminPropertiesRoute
+  '/admin/referrals': typeof AdminReferralsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/sms': typeof AdminSmsRoute
+  '/admin/tasks': typeof AdminTasksRoute
   '/insurance/$slug': typeof InsuranceSlugRoute
   '/loans/$slug': typeof LoansSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -182,17 +245,24 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/cibil'
+    | '/dashboard'
     | '/insurance'
     | '/loans'
+    | '/login'
     | '/privacy'
+    | '/properties'
     | '/sitemap.xml'
     | '/terms'
     | '/admin/analytics'
     | '/admin/applications'
     | '/admin/customers'
     | '/admin/notifications'
+    | '/admin/properties'
+    | '/admin/referrals'
     | '/admin/reports'
     | '/admin/sms'
+    | '/admin/tasks'
     | '/insurance/$slug'
     | '/loans/$slug'
     | '/admin/'
@@ -201,15 +271,22 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cibil'
+    | '/dashboard'
+    | '/login'
     | '/privacy'
+    | '/properties'
     | '/sitemap.xml'
     | '/terms'
     | '/admin/analytics'
     | '/admin/applications'
     | '/admin/customers'
     | '/admin/notifications'
+    | '/admin/properties'
+    | '/admin/referrals'
     | '/admin/reports'
     | '/admin/sms'
+    | '/admin/tasks'
     | '/insurance/$slug'
     | '/loans/$slug'
     | '/admin'
@@ -219,17 +296,24 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/cibil'
+    | '/dashboard'
     | '/insurance'
     | '/loans'
+    | '/login'
     | '/privacy'
+    | '/properties'
     | '/sitemap.xml'
     | '/terms'
     | '/admin/analytics'
     | '/admin/applications'
     | '/admin/customers'
     | '/admin/notifications'
+    | '/admin/properties'
+    | '/admin/referrals'
     | '/admin/reports'
     | '/admin/sms'
+    | '/admin/tasks'
     | '/insurance/$slug'
     | '/loans/$slug'
     | '/admin/'
@@ -240,9 +324,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  CibilRoute: typeof CibilRoute
+  DashboardRoute: typeof DashboardRoute
   InsuranceRoute: typeof InsuranceRouteWithChildren
   LoansRoute: typeof LoansRouteWithChildren
+  LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
+  PropertiesRoute: typeof PropertiesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
 }
@@ -263,11 +351,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/properties': {
+      id: '/properties'
+      path: '/properties'
+      fullPath: '/properties'
+      preLoaderRoute: typeof PropertiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/loans': {
@@ -282,6 +384,20 @@ declare module '@tanstack/react-router' {
       path: '/insurance'
       fullPath: '/insurance'
       preLoaderRoute: typeof InsuranceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cibil': {
+      id: '/cibil'
+      path: '/cibil'
+      fullPath: '/cibil'
+      preLoaderRoute: typeof CibilRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -333,6 +449,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InsuranceSlugRouteImport
       parentRoute: typeof InsuranceRoute
     }
+    '/admin/tasks': {
+      id: '/admin/tasks'
+      path: '/tasks'
+      fullPath: '/admin/tasks'
+      preLoaderRoute: typeof AdminTasksRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/sms': {
       id: '/admin/sms'
       path: '/sms'
@@ -345,6 +468,20 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/admin/reports'
       preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/referrals': {
+      id: '/admin/referrals'
+      path: '/referrals'
+      fullPath: '/admin/referrals'
+      preLoaderRoute: typeof AdminReferralsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/properties': {
+      id: '/admin/properties'
+      path: '/properties'
+      fullPath: '/admin/properties'
+      preLoaderRoute: typeof AdminPropertiesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/notifications': {
@@ -383,8 +520,11 @@ interface AdminRouteChildren {
   AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminCustomersRoute: typeof AdminCustomersRoute
   AdminNotificationsRoute: typeof AdminNotificationsRoute
+  AdminPropertiesRoute: typeof AdminPropertiesRoute
+  AdminReferralsRoute: typeof AdminReferralsRoute
   AdminReportsRoute: typeof AdminReportsRoute
   AdminSmsRoute: typeof AdminSmsRoute
+  AdminTasksRoute: typeof AdminTasksRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -393,8 +533,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminApplicationsRoute: AdminApplicationsRoute,
   AdminCustomersRoute: AdminCustomersRoute,
   AdminNotificationsRoute: AdminNotificationsRoute,
+  AdminPropertiesRoute: AdminPropertiesRoute,
+  AdminReferralsRoute: AdminReferralsRoute,
   AdminReportsRoute: AdminReportsRoute,
   AdminSmsRoute: AdminSmsRoute,
+  AdminTasksRoute: AdminTasksRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -429,9 +572,13 @@ const LoansRouteWithChildren = LoansRoute._addFileChildren(LoansRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  CibilRoute: CibilRoute,
+  DashboardRoute: DashboardRoute,
   InsuranceRoute: InsuranceRouteWithChildren,
   LoansRoute: LoansRouteWithChildren,
+  LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
+  PropertiesRoute: PropertiesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
 }
