@@ -35,17 +35,40 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   const [customers, setCustomers] = useState<MockCustomer[]>(seed.customers);
   const [sms, setSms] = useState<MockSms[]>(seed.sms);
   const [notifications] = useState<MockNotification[]>(seed.notifications);
-  const [currentUser, setCurrentUser] = useState<Store["currentUser"]>({
-    name: "R H Adhoni",
-    role: "super_admin",
+  const [currentUser, setCurrentUser] = useState<Store["currentUser"]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("ify_current_user");
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          // ignore
+        }
+      }
+    }
+    return {
+      name: "R H Adhoni",
+      role: "super_admin",
+    };
   });
+
+  const handleSetCurrentUser = (u: Store["currentUser"]) => {
+    setCurrentUser(u);
+    if (typeof window !== "undefined") {
+      if (u) {
+        localStorage.setItem("ify_current_user", JSON.stringify(u));
+      } else {
+        localStorage.removeItem("ify_current_user");
+      }
+    }
+  };
 
   const value: Store = {
     customers,
     sms,
     notifications,
     currentUser,
-    setCurrentUser,
+    setCurrentUser: handleSetCurrentUser,
     addApplication: (a) => {
       const newCust: MockCustomer = {
         ...a,

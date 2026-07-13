@@ -18,6 +18,7 @@ export interface MockCustomer {
   insuranceType?: string;
   referralCode?: string;
   documents?: string[];
+  assignedTo?: string;
 }
 
 export interface MockSms {
@@ -235,6 +236,7 @@ export function generateCustomers(count = 100): MockCustomer[] {
       insuranceType: insVal,
       referralCode: refCode,
       documents: docs,
+      assignedTo: rand() < 0.3 ? "Bibi Ayesha" : "R H Adhoni",
     });
   }
   return out;

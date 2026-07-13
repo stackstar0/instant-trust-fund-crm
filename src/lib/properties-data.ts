@@ -9,11 +9,16 @@ export interface MockProperty {
   ownerPhone: string;
   areaAcres: number;
   areaGuntas: number;
-  propertyType: "Agricultural" | "Non-Agricultural" | "Residential" | "Commercial";
+  propertyType: "Agricultural" | "Non-Agricultural" | "Residential" | "Commercial" | "Industrial";
   valuation: number; // in INR
   lat: number;
   lng: number;
   status: "Verified" | "Disputed" | "Pending";
+  assignedTo?: string; // e.g. "Bibi Ayesha", "R H Adhoni", "Unassigned"
+  ownerAddress?: string;
+  internalNotes?: string;
+  documents?: string[];
+  available?: boolean;
 }
 
 export const mockProperties: MockProperty[] = [
@@ -33,6 +38,11 @@ export const mockProperties: MockProperty[] = [
     lat: 13.1025,
     lng: 77.5832,
     status: "Verified",
+    assignedTo: "R H Adhoni",
+    ownerAddress: "12, Harohalli Main Road, Yelahanka, Bengaluru, Karnataka",
+    internalNotes: "Property verification in progress. Title deed clean.",
+    documents: ["RTC_Deed_PROP001.pdf", "Survey_Sketch_PROP001.pdf"],
+    available: true,
   },
   {
     id: "PROP-002",
@@ -50,6 +60,11 @@ export const mockProperties: MockProperty[] = [
     lat: 12.9234,
     lng: 77.4612,
     status: "Verified",
+    assignedTo: "Bibi Ayesha",
+    ownerAddress: "45, Kengeri Hobli, Near Lake Road, Bengaluru, Karnataka",
+    internalNotes: "Owner requested loan estimation update. Document scans uploaded.",
+    documents: ["RTC_Deed_PROP002.pdf", "Tax_Paid_Receipt_2025.pdf"],
+    available: true,
   },
   {
     id: "PROP-003",
@@ -67,6 +82,11 @@ export const mockProperties: MockProperty[] = [
     lat: 12.2742,
     lng: 76.6714,
     status: "Verified",
+    assignedTo: "R H Adhoni",
+    ownerAddress: "78, Foothills, Chamundi Hill Road, Mysuru, Karnataka",
+    internalNotes: "Collateral estimation completed. High residential demand.",
+    documents: ["RTC_Deed_PROP003.pdf"],
+    available: false,
   },
   {
     id: "PROP-004",
@@ -84,6 +104,11 @@ export const mockProperties: MockProperty[] = [
     lat: 12.1245,
     lng: 76.6812,
     status: "Verified",
+    assignedTo: "Bibi Ayesha",
+    ownerAddress: "Sector 3, Devarasanahalli, Nanjangud, Mysuru District, Karnataka",
+    internalNotes: "Pending legal clearance check. Survey sketch matches.",
+    documents: ["RTC_Deed_PROP004.pdf", "Encumbrance_Cert.pdf"],
+    available: true,
   },
   {
     id: "PROP-005",
@@ -101,6 +126,11 @@ export const mockProperties: MockProperty[] = [
     lat: 16.5512,
     lng: 74.4532,
     status: "Verified",
+    assignedTo: "R H Adhoni",
+    ownerAddress: "120, Sadalga Road, Kognoli, Chikodi Taluk, Belagavi, Karnataka",
+    internalNotes: "Approved for refinance. Customer wants to apply for gold top-up.",
+    documents: ["RTC_Deed_PROP005.pdf"],
+    available: true,
   },
   {
     id: "PROP-006",
@@ -113,11 +143,16 @@ export const mockProperties: MockProperty[] = [
     ownerPhone: "+91 98860 77123",
     areaAcres: 0,
     areaGuntas: 18,
-    propertyType: "Commercial",
+    propertyType: "Industrial",
     valuation: 32000000,
     lat: 12.9341,
     lng: 74.8315,
     status: "Verified",
+    assignedTo: "Bibi Ayesha",
+    ownerAddress: "8-A, Baikampady Industrial Area, Mangaluru, Karnataka",
+    internalNotes: "Industrial site. High valuation, verified under corporate loan schema.",
+    documents: ["RTC_Deed_PROP006.pdf", "Industrial_Permit.pdf"],
+    available: true,
   },
   {
     id: "PROP-007",
@@ -135,6 +170,11 @@ export const mockProperties: MockProperty[] = [
     lat: 12.7523,
     lng: 75.1234,
     status: "Disputed",
+    assignedTo: "Unassigned",
+    ownerAddress: "99, Vittal Hobli, Bantwal, Dakshina Kannada, Karnataka",
+    internalNotes: "Disputed boundary with neighboring plot 77/10. Legal hold active.",
+    documents: ["Dispute_Notice.pdf"],
+    available: false,
   },
   {
     id: "PROP-008",
@@ -152,6 +192,11 @@ export const mockProperties: MockProperty[] = [
     lat: 15.3725,
     lng: 75.1614,
     status: "Verified",
+    assignedTo: "Bibi Ayesha",
+    ownerAddress: "Flat 202, Gopankoppa Rural, Hubli, Dharwad, Karnataka",
+    internalNotes: "Residential building under construction. Progress checked by executive.",
+    documents: ["RTC_Deed_PROP008.pdf", "Building_Plan_Approval.pdf"],
+    available: true,
   },
   {
     id: "PROP-009",
@@ -169,6 +214,11 @@ export const mockProperties: MockProperty[] = [
     lat: 15.4832,
     lng: 75.0312,
     status: "Verified",
+    assignedTo: "R H Adhoni",
+    ownerAddress: "4, Dharwad Hobli, Hebballi, Dharwad, Karnataka",
+    internalNotes: "Agricultural land verification done. Soil testing certificate uploaded.",
+    documents: ["RTC_Deed_PROP009.pdf"],
+    available: true,
   },
   {
     id: "PROP-010",
@@ -186,5 +236,10 @@ export const mockProperties: MockProperty[] = [
     lat: 12.9152,
     lng: 77.7425,
     status: "Pending",
+    assignedTo: "Bibi Ayesha",
+    ownerAddress: "Gunjur, Varthur Hobli, Bengaluru East, Karnataka",
+    internalNotes: "Commercial plot near IT hub. Highly valued. Ready for joint venture audit.",
+    documents: ["RTC_Deed_PROP010.pdf"],
+    available: true,
   },
 ];

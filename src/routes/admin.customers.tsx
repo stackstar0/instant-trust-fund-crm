@@ -95,6 +95,7 @@ function CustomersPage() {
 
   const filtered = useMemo(() => {
     return customers.filter((c) => {
+      if (currentUser?.role === "assistant_admin" && c.assignedTo !== "Bibi Ayesha") return false;
       if (status !== "all" && c.status !== status) return false;
       if (kind !== "all" && c.productKind !== kind) return false;
       if (q) {
@@ -109,7 +110,7 @@ function CustomersPage() {
       }
       return true;
     });
-  }, [customers, q, status, kind]);
+  }, [customers, q, status, kind, currentUser]);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
@@ -120,26 +121,28 @@ function CustomersPage() {
             {filtered.length} of {customers.length} records
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant="outline"
-            onClick={() => {
-              downloadFile("customers.csv", toCSV(filtered), "text/csv");
-              toast.success("Excel/CSV downloaded");
-            }}
-          >
-            <FileSpreadsheet className="mr-2 h-4 w-4" /> Excel
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              downloadFile("customers.txt", toCSV(filtered), "text/plain");
-              toast.success("PDF-ready report generated");
-            }}
-          >
-            <FileText className="mr-2 h-4 w-4" /> PDF
-          </Button>
-        </div>
+        {currentUser?.role !== "assistant_admin" && (
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                downloadFile("customers.csv", toCSV(filtered), "text/csv");
+                toast.success("Excel/CSV downloaded");
+              }}
+            >
+              <FileSpreadsheet className="mr-2 h-4 w-4" /> Excel
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                downloadFile("customers.txt", toCSV(filtered), "text/plain");
+                toast.success("PDF-ready report generated");
+              }}
+            >
+              <FileText className="mr-2 h-4 w-4" /> PDF
+            </Button>
+          </div>
+        )}
       </div>
 
       <Card className="mt-6 p-4">
@@ -305,20 +308,22 @@ function CustomersPage() {
                 >
                   Reject
                 </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="ml-auto"
-                  onClick={() =>
-                    downloadFile(
-                      `${selected.id}.txt`,
-                      JSON.stringify(selected, null, 2),
-                      "text/plain",
-                    )
-                  }
-                >
-                  <Download className="mr-1 h-4 w-4" /> Download
-                </Button>
+                {currentUser?.role !== "assistant_admin" && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="ml-auto"
+                    onClick={() =>
+                      downloadFile(
+                        `${selected.id}.txt`,
+                        JSON.stringify(selected, null, 2),
+                        "text/plain",
+                      )
+                    }
+                  >
+                    <Download className="mr-1 h-4 w-4" /> Download
+                  </Button>
+                )}
               </div>
             </div>
           )}
