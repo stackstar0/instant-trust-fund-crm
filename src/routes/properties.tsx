@@ -489,7 +489,7 @@ function PropertySearchPage() {
                       </div>
                       <div>
                         <span className="text-slate-400 block">Aadhaar ID</span>
-                        <span className="font-bold text-brand-navy">{selectedProperty.ownerAadhaar || "4290-8812-9023"}</span>
+                        <span className="font-bold text-brand-navy">{(selectedProperty as any).ownerAadhaar || "4290-8812-9023"}</span>
                       </div>
                       <div>
                         <span className="text-slate-400 block">Deed Document No</span>
