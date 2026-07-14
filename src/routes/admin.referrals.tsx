@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useAppStore } from "@/lib/app-store";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,12 @@ function formatINR(val: number) {
 }
 
 function ReferralsPage() {
-  const { customers } = useAppStore();
+  const { customers, currentUser } = useAppStore();
+
+  if (currentUser?.role === "assistant_admin") {
+    return <Navigate to="/admin/tasks" replace />;
+  }
+
   const [search, setSearch] = useState("");
 
   // Filter out customers that have a referral code

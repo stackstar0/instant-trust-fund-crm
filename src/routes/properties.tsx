@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { mockProperties, type MockProperty } from "@/lib/properties-data";
+import satelliteMap from "@/assets/satellite_map.png";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -196,11 +197,16 @@ function KarnatakaMap({
 
 function PropertySearchPage() {
   const navigate = useNavigate();
-  const { addApplication } = useAppStore();
+  const { addApplication, currentUser } = useAppStore();
   const [district, setDistrict] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProperty, setSelectedProperty] = useState<MockProperty | null>(null);
+  const [mapMode, setMapMode] = useState<"dishank" | "satellite">("dishank");
   
+  // Custom Filters
+  const [priceRange, setPriceRange] = useState<number>(30000000); // 3 Crores default max
+  const [landClass, setLandClass] = useState<string>("All");
+
   // Lead submission modal state
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
   const [leadName, setLeadName] = useState("");
@@ -213,7 +219,7 @@ function PropertySearchPage() {
     setSelectedProperty(null);
   };
 
-  // Filter properties based on map district and text search
+  // Filter properties based on map district, price, land type and text search
   const filteredProperties = useMemo(() => {
     return mockProperties.filter((p) => {
       // District filter
@@ -221,6 +227,16 @@ function PropertySearchPage() {
         return false;
       }
       
+      // Price filter
+      if (p.valuation > priceRange) {
+        return false;
+      }
+
+      // Land type class filter
+      if (landClass !== "All" && p.propertyType !== landClass) {
+        return false;
+      }
+
       // Text search (Village, Survey, Property ID)
       if (searchQuery) {
         const q = searchQuery.toLowerCase().trim();
@@ -233,7 +249,7 @@ function PropertySearchPage() {
       }
       return true;
     });
-  }, [district, searchQuery]);
+  }, [district, searchQuery, priceRange, landClass]);
 
   const handleLeadSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -286,11 +302,23 @@ function PropertySearchPage() {
       <div className="grid gap-8 lg:grid-cols-12">
         {/* Left Interactive Map & Directory */}
         <div className="lg:col-span-4 space-y-6">
-          <KarnatakaMap 
-            activeDistrict={district} 
-            onSelectDistrict={handleDistrictSelect} 
-            properties={mockProperties}
-          />
+          {currentUser?.role === "assistant_admin" ? (
+            <Card className="p-6 border bg-slate-950 text-white rounded-2xl flex flex-col items-center justify-center min-h-[250px] text-center relative overflow-hidden">
+              <div className="absolute inset-0 opacity-5 pointer-events-none" style={{
+                backgroundImage: "linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)",
+                backgroundSize: "20px 20px"
+              }} />
+              <AlertTriangle className="h-10 w-10 text-amber-500 mb-3" />
+              <h4 className="text-sm font-bold">Map View Restricted</h4>
+              <p className="text-xs text-slate-400 max-w-[200px] mt-1">Map visualizations are disabled for Assistant Administrator roles.</p>
+            </Card>
+          ) : (
+            <KarnatakaMap 
+              activeDistrict={district} 
+              onSelectDistrict={handleDistrictSelect} 
+              properties={mockProperties}
+            />
+          )}
 
           {/* District & Search Box */}
           <Card className="p-6 border bg-card shadow-card">
@@ -323,6 +351,37 @@ function PropertySearchPage() {
                   <option value="Mangaluru (Dakshina Kannada)">Mangaluru</option>
                   <option value="Hubli-Dharwad (Dharwad)">Hubli-Dharwad</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-brand-navy block mb-1.5">Land Class</label>
+                <select
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none"
+                  value={landClass}
+                  onChange={(e) => setLandClass(e.target.value)}
+                >
+                  <option value="All">All Types</option>
+                  <option value="Agricultural">Agricultural</option>
+                  <option value="Residential">Residential</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Industrial">Industrial</option>
+                </select>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs font-bold text-brand-navy mb-1">
+                  <span>Max Valuation</span>
+                  <span className="text-primary">{formatINR(priceRange)}</span>
+                </div>
+                <input
+                  type="range"
+                  min={1000000}
+                  max={100000000}
+                  step={1000000}
+                  value={priceRange}
+                  onChange={(e) => setPriceRange(Number(e.target.value))}
+                  className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
+                />
               </div>
             </div>
           </Card>
@@ -413,16 +472,43 @@ function PropertySearchPage() {
                   </div>
                 </div>
 
-                {/* Privacy shield notice */}
-                <div className="rounded-xl bg-amber-500/5 border border-amber-500/20 p-4 flex gap-3 mb-6">
-                  <Lock className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="text-xs font-bold text-brand-navy">Owner Identity Shield Active</h4>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      To comply with privacy laws, owner details, phone numbers, and physical home addresses are hidden in the public lookup. Authorized CRM representatives can retrieve deed documents internally.
-                    </p>
+                {/* Owner details restricted strictly to Super Admin (R H Adhoni) */}
+                {currentUser?.role === "super_admin" ? (
+                  <div className="rounded-xl bg-primary/5 border border-primary/20 p-4 mb-6 space-y-3">
+                    <h4 className="text-xs font-bold text-brand-navy flex items-center gap-1.5">
+                      <Lock className="h-4 w-4 text-primary" /> Deed Owner Credentials (Super Admin Access)
+                    </h4>
+                    <div className="grid gap-3 sm:grid-cols-2 text-xs">
+                      <div>
+                        <span className="text-slate-400 block">Owner Name</span>
+                        <span className="font-bold text-brand-navy">{selectedProperty.ownerName}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block">Phone Number</span>
+                        <span className="font-bold text-brand-navy">{selectedProperty.ownerPhone}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block">Aadhaar ID</span>
+                        <span className="font-bold text-brand-navy">{selectedProperty.ownerAadhaar || "4290-8812-9023"}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block">Deed Document No</span>
+                        <span className="font-bold text-brand-navy">DOC-RTC-{selectedProperty.id}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  /* Privacy shield notice for public and Bibi Ayesha */
+                  <div className="rounded-xl bg-amber-500/5 border border-amber-500/20 p-4 flex gap-3 mb-6">
+                    <Lock className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-xs font-bold text-brand-navy">Owner Identity Shield Active</h4>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        To comply with privacy laws, owner details, phone numbers, and physical home addresses are hidden in the public lookup. Authorized CRM representatives can retrieve deed documents internally.
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Call-to-action banner & Buttons */}
                 <div className="bg-secondary/40 border rounded-2xl p-6 text-center space-y-4">
@@ -464,43 +550,71 @@ function PropertySearchPage() {
                   </span>
                 </div>
 
-                <div className="relative h-[250px] w-full rounded-lg bg-slate-900 border overflow-hidden flex items-center justify-center">
-                  <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
-                    backgroundImage: "linear-gradient(to right, #475569 1px, transparent 1px), linear-gradient(to bottom, #475569 1px, transparent 1px)",
-                    backgroundSize: "20px 20px"
-                  }} />
+                {currentUser?.role === "assistant_admin" ? (
+                  <div className="h-[250px] w-full rounded-lg bg-slate-900 border flex flex-col items-center justify-center text-center p-6 text-white">
+                    <AlertTriangle className="h-8 w-8 text-amber-500 mb-2" />
+                    <h4 className="text-xs font-bold">Satellite & Parcel Grid Disabled</h4>
+                    <p className="text-[10px] text-slate-400 max-w-xs mt-1">Official Dishank mapping is restricted for your admin privilege level.</p>
+                  </div>
+                ) : (
+                  <div className="relative h-[250px] w-full rounded-lg bg-slate-900 border overflow-hidden flex items-center justify-center">
+                    {mapMode === "satellite" ? (
+                      <img
+                        src={satelliteMap}
+                        alt="Satellite View"
+                        className="absolute inset-0 h-full w-full object-cover opacity-80"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
+                        backgroundImage: "linear-gradient(to right, #475569 1px, transparent 1px), linear-gradient(to bottom, #475569 1px, transparent 1px)",
+                        backgroundSize: "20px 20px"
+                      }} />
+                    )}
 
-                  <svg className="absolute inset-0 h-full w-full opacity-60" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d="M 0,0 L 40,0 L 35,35 L 0,40 Z" fill="#334155" stroke="#475569" strokeWidth="0.5" />
-                    <path d="M 40,0 L 100,0 L 100,30 L 70,35 L 35,35 Z" fill="#334155" stroke="#475569" strokeWidth="0.5" />
-                    <path d="M 0,40 L 35,35 L 45,70 L 0,80 Z" fill="#334155" stroke="#475569" strokeWidth="0.5" />
-                    <path d="M 70,35 L 100,30 L 100,80 L 80,85 Z" fill="#334155" stroke="#475569" strokeWidth="0.5" />
-                    <path
-                      d="M 35,35 L 70,35 L 80,85 L 45,70 Z"
-                      fill={selectedProperty.status === "Disputed" ? "rgba(239, 68, 68, 0.25)" : "rgba(217, 119, 6, 0.25)"}
-                      stroke={selectedProperty.status === "Disputed" ? "#ef4444" : "#d97706"}
-                      strokeWidth="1.5"
-                    />
-                  </svg>
+                    <svg className="absolute inset-0 h-full w-full opacity-70" viewBox="0 0 100 100" preserveAspectRatio="none">
+                      <path d="M 0,0 L 40,0 L 35,35 L 0,40 Z" fill={mapMode === "satellite" ? "transparent" : "#334155"} stroke={mapMode === "satellite" ? "rgba(255,255,255,0.4)" : "#475569"} strokeWidth="0.5" />
+                      <path d="M 40,0 L 100,0 L 100,30 L 70,35 L 35,35 Z" fill={mapMode === "satellite" ? "transparent" : "#334155"} stroke={mapMode === "satellite" ? "rgba(255,255,255,0.4)" : "#475569"} strokeWidth="0.5" />
+                      <path d="M 0,40 L 35,35 L 45,70 L 0,80 Z" fill={mapMode === "satellite" ? "transparent" : "#334155"} stroke={mapMode === "satellite" ? "rgba(255,255,255,0.4)" : "#475569"} strokeWidth="0.5" />
+                      <path d="M 70,35 L 100,30 L 100,80 L 80,85 Z" fill={mapMode === "satellite" ? "transparent" : "#334155"} stroke={mapMode === "satellite" ? "rgba(255,255,255,0.4)" : "#475569"} strokeWidth="0.5" />
+                      <path
+                        d="M 35,35 L 70,35 L 80,85 L 45,70 Z"
+                        fill={selectedProperty.status === "Disputed" ? "rgba(239, 68, 68, 0.25)" : "rgba(217, 119, 6, 0.2)"}
+                        stroke={selectedProperty.status === "Disputed" ? "#ef4444" : "#ffd700"}
+                        strokeWidth="2"
+                      />
+                    </svg>
 
-                  <div className="absolute top-[48%] left-[55%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-                    <div className="rounded-full bg-accent h-6 w-6 flex items-center justify-center shadow-lg border border-white text-[9px] font-black text-accent-foreground">
-                      ★
+                    <div className="absolute top-[48%] left-[55%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                      <div className="rounded-full bg-accent h-6 w-6 flex items-center justify-center shadow-lg border border-white text-[9px] font-black text-accent-foreground">
+                        ★
+                      </div>
+                      <span className="mt-1 font-mono text-[10px] font-bold text-white bg-slate-950/80 px-1.5 py-0.5 rounded border border-white/20">
+                        Plot {selectedProperty.surveyNumber}
+                      </span>
                     </div>
-                    <span className="mt-1 font-mono text-[10px] font-bold text-white bg-slate-950/80 px-1.5 py-0.5 rounded border border-white/20">
-                      Plot {selectedProperty.surveyNumber}
-                    </span>
-                  </div>
 
-                  <div className="absolute bottom-3 left-3 flex gap-1 text-[10px] bg-slate-950/80 text-white rounded border border-white/10 p-1">
-                    <button className="flex items-center gap-1 px-1.5 py-0.5 bg-primary rounded font-semibold"><Layers className="h-3 w-3" /> Dishank Map</button>
-                    <button className="flex items-center gap-1 px-1.5 py-0.5 hover:bg-white/10 rounded"><Compass className="h-3 w-3" /> Satellite</button>
-                  </div>
+                    <div className="absolute bottom-3 left-3 flex gap-1 text-[10px] bg-slate-950/80 text-white rounded border border-white/10 p-1">
+                      <button
+                        type="button"
+                        className={`flex items-center gap-1 px-1.5 py-0.5 rounded font-semibold transition-colors ${mapMode === "dishank" ? "bg-primary text-white" : "hover:bg-white/10 text-white/80"}`}
+                        onClick={() => setMapMode("dishank")}
+                      >
+                        <Layers className="h-3 w-3" /> Dishank Map
+                      </button>
+                      <button
+                        type="button"
+                        className={`flex items-center gap-1 px-1.5 py-0.5 rounded font-semibold transition-colors ${mapMode === "satellite" ? "bg-primary text-white" : "hover:bg-white/10 text-white/80"}`}
+                        onClick={() => setMapMode("satellite")}
+                      >
+                        <Compass className="h-3 w-3" /> Satellite
+                      </button>
+                    </div>
 
-                  <div className="absolute top-3 right-3 text-[10px] bg-slate-950/80 text-white/90 rounded border border-white/10 px-2 py-1 font-semibold">
-                    Scale: 1 : 2,500
+                    <div className="absolute top-3 right-3 text-[10px] bg-slate-950/80 text-white/90 rounded border border-white/10 px-2 py-1 font-semibold">
+                      Scale: 1 : 2,500
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="mt-3 flex justify-between text-xs text-muted-foreground">
                   <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-amber-500 inline-block" /> High-accuracy GPS verified</span>

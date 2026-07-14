@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { mockProperties, type MockProperty } from "@/lib/properties-data";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -51,6 +51,11 @@ function maskPhone(phone: string) {
 
 function AdminPropertiesPage() {
   const { currentUser } = useAppStore();
+
+  if (currentUser?.role === "assistant_admin") {
+    return <Navigate to="/admin/tasks" replace />;
+  }
+
   const isSuperAdmin = currentUser?.role === "super_admin";
 
   const [search, setSearch] = useState("");

@@ -13,6 +13,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PropertiesRouteImport } from './routes/properties'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PolicybazaarRouteImport } from './routes/policybazaar'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LoansRouteImport } from './routes/loans'
 import { Route as InsuranceRouteImport } from './routes/insurance'
@@ -53,6 +54,11 @@ const PropertiesRoute = PropertiesRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PolicybazaarRoute = PolicybazaarRouteImport.update({
+  id: '/policybazaar',
+  path: '/policybazaar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/insurance': typeof InsuranceRouteWithChildren
   '/loans': typeof LoansRouteWithChildren
   '/login': typeof LoginRoute
+  '/policybazaar': typeof PolicybazaarRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/cibil': typeof CibilRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/policybazaar': typeof PolicybazaarRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -221,6 +229,7 @@ export interface FileRoutesById {
   '/insurance': typeof InsuranceRouteWithChildren
   '/loans': typeof LoansRouteWithChildren
   '/login': typeof LoginRoute
+  '/policybazaar': typeof PolicybazaarRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -250,6 +259,7 @@ export interface FileRouteTypes {
     | '/insurance'
     | '/loans'
     | '/login'
+    | '/policybazaar'
     | '/privacy'
     | '/properties'
     | '/sitemap.xml'
@@ -274,6 +284,7 @@ export interface FileRouteTypes {
     | '/cibil'
     | '/dashboard'
     | '/login'
+    | '/policybazaar'
     | '/privacy'
     | '/properties'
     | '/sitemap.xml'
@@ -301,6 +312,7 @@ export interface FileRouteTypes {
     | '/insurance'
     | '/loans'
     | '/login'
+    | '/policybazaar'
     | '/privacy'
     | '/properties'
     | '/sitemap.xml'
@@ -329,6 +341,7 @@ export interface RootRouteChildren {
   InsuranceRoute: typeof InsuranceRouteWithChildren
   LoansRoute: typeof LoansRouteWithChildren
   LoginRoute: typeof LoginRoute
+  PolicybazaarRoute: typeof PolicybazaarRoute
   PrivacyRoute: typeof PrivacyRoute
   PropertiesRoute: typeof PropertiesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -363,6 +376,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/policybazaar': {
+      id: '/policybazaar'
+      path: '/policybazaar'
+      fullPath: '/policybazaar'
+      preLoaderRoute: typeof PolicybazaarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -577,6 +597,7 @@ const rootRouteChildren: RootRouteChildren = {
   InsuranceRoute: InsuranceRouteWithChildren,
   LoansRoute: LoansRouteWithChildren,
   LoginRoute: LoginRoute,
+  PolicybazaarRoute: PolicybazaarRoute,
   PrivacyRoute: PrivacyRoute,
   PropertiesRoute: PropertiesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useAppStore } from "@/lib/app-store";
 import { maskAadhaar, maskPan, inr, type MockCustomer } from "@/lib/mock-data";
@@ -88,6 +88,11 @@ export function toCSV(rows: MockCustomer[]) {
 
 function CustomersPage() {
   const { customers, deleteCustomer, updateStatus, currentUser } = useAppStore();
+
+  if (currentUser?.role === "assistant_admin") {
+    return <Navigate to="/admin/tasks" replace />;
+  }
+
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
   const [kind, setKind] = useState("all");
@@ -121,7 +126,7 @@ function CustomersPage() {
             {filtered.length} of {customers.length} records
           </p>
         </div>
-        {currentUser?.role !== "assistant_admin" && (
+        {currentUser?.role === "super_admin" && (
           <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
@@ -308,7 +313,7 @@ function CustomersPage() {
                 >
                   Reject
                 </Button>
-                {currentUser?.role !== "assistant_admin" && (
+                {currentUser?.role === "super_admin" && (
                   <Button
                     size="sm"
                     variant="ghost"

@@ -42,6 +42,15 @@
   --color-brand-ink: var(--brand-ink);
   --color-brand-surface: var(--brand-surface);
 
+  --color-royal-purple: var(--royal-purple);
+  --color-lic-blue: var(--lic-blue);
+  --color-sbi-blue: var(--sbi-blue);
+  --color-turquoise: var(--turquoise);
+  --color-soft-pink: var(--soft-pink);
+  --color-gold: var(--gold);
+  --color-light-grey: var(--light-grey);
+  --color-dark-navy: var(--dark-navy);
+
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -57,77 +66,110 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --shadow-card: 0 1px 2px oklch(0.2 0.05 260 / 0.06), 0 8px 24px -12px oklch(0.2 0.05 260 / 0.12);
-  --shadow-elevated:
-    0 4px 16px -4px oklch(0.2 0.08 260 / 0.18), 0 24px 48px -24px oklch(0.2 0.08 260 / 0.25);
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.05), 0 8px 16px -4px rgba(0,0,0,0.08);
+  --shadow-elevated: 0 4px 12px -2px rgba(0,0,0,0.08), 0 16px 32px -8px rgba(0,0,0,0.12);
+
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-marquee2: marquee2 30s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-delayed: float 8s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 3s infinite;
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
+  @keyframes marquee2 {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(0%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(2.5deg); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(91, 46, 145, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(91, 46, 145, 0.6); }
+  }
 }
 
 :root {
   --radius: 0.75rem;
 
-  /* Brand */
-  --sbi: oklch(0.40 0.24 260); /* Vibrant Royal Blue */
-  --lic: oklch(0.50 0.20 220); /* Rich Peacock Blue */
-  --lic-yellow: oklch(0.82 0.22 85); /* Saturated Gold/Yellow */
-  --brand-navy: oklch(0.24 0.16 280); /* Deep Royal Purple-Navy */
-  --brand-ink: oklch(0.14 0.08 280); /* Very Deep Purple-Ink */
-  --brand-surface: oklch(0.95 0.025 250); /* Tinted Lilac-Grey */
+  /* Brand Colors */
+  --royal-purple: #5B2E91;
+  --lic-blue: #005BAC;
+  --sbi-blue: #00ADEF;
+  --turquoise: #18C5C7;
+  --soft-pink: #F36BAA;
+  --gold: #F5B400;
+  --light-grey: #F6F8FC;
+  --dark-navy: #1E293B;
 
-  --background: oklch(0.95 0.025 250); /* Lavender-Tinted Soft Background */
-  --foreground: oklch(0.14 0.08 280);
-  --card: oklch(0.98 0.015 250); /* Non-white Lilac Tinted Card */
-  --card-foreground: oklch(0.14 0.08 280);
-  --popover: oklch(0.98 0.015 250);
-  --popover-foreground: oklch(0.14 0.08 280);
+  /* Standard Theme */
+  --sbi: #00ADEF;
+  --lic: #005BAC;
+  --lic-yellow: #F5B400;
+  --brand-navy: #1E293B;
+  --brand-ink: #0F172A;
+  --brand-surface: #F6F8FC;
 
-  --primary: oklch(0.50 0.20 220); /* Rich Peacock Blue */
-  --primary-foreground: oklch(0.98 0.015 250);
-  --secondary: oklch(0.91 0.04 250); /* Saturated Lilac Secondary */
-  --secondary-foreground: oklch(0.24 0.16 280);
-  --muted: oklch(0.93 0.02 250);
-  --muted-foreground: oklch(0.42 0.08 280);
-  --accent: oklch(0.82 0.22 85); /* Saturated Gold/Yellow */
-  --accent-foreground: oklch(0.14 0.08 280);
-  --destructive: oklch(0.55 0.2 27);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.88 0.03 250);
-  --input: oklch(0.88 0.03 250);
-  --ring: oklch(0.50 0.20 220);
+  --background: #F6F8FC;
+  --foreground: #1E293B;
+  --card: #ffffff;
+  --card-foreground: #1E293B;
+  --popover: #ffffff;
+  --popover-foreground: #1E293B;
 
-  --chart-1: oklch(0.50 0.20 220); /* Peacock */
-  --chart-2: oklch(0.82 0.22 85);  /* Yellow */
-  --chart-3: oklch(0.40 0.24 260); /* Royal Blue */
-  --chart-4: oklch(0.35 0.18 290); /* Deep Purple */
-  --chart-5: oklch(0.75 0.08 220); 
+  --primary: #5B2E91; /* Royal Purple */
+  --primary-foreground: #ffffff;
+  --secondary: #005BAC; /* LIC Blue */
+  --secondary-foreground: #ffffff;
+  --muted: #E2E8F0;
+  --muted-foreground: #64748B;
+  --accent: #F5B400; /* Gold */
+  --accent-foreground: #1E293B;
+  --destructive: #EF4444;
+  --destructive-foreground: #ffffff;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #5B2E91;
 
-  --sidebar: oklch(0.18 0.10 280); /* Deep Purple-Navy sidebar */
-  --sidebar-foreground: oklch(0.96 0.02 250);
-  --sidebar-primary: oklch(0.82 0.22 85); /* Gold highlights */
-  --sidebar-primary-foreground: oklch(0.14 0.08 280);
-  --sidebar-accent: oklch(0.26 0.12 280);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.26 0.12 280);
-  --sidebar-ring: oklch(0.82 0.22 85);
+  --chart-1: #5B2E91;
+  --chart-2: #005BAC;
+  --chart-3: #00ADEF;
+  --chart-4: #F5B400;
+  --chart-5: #18C5C7;
+
+  --sidebar: #1E293B; /* Dark Navy Sidebar */
+  --sidebar-foreground: #F8FAFC;
+  --sidebar-primary: #5B2E91;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #273549;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #273549;
+  --sidebar-ring: #5B2E91;
 }
 
 .dark {
-  --background: oklch(0.12 0.05 280);
-  --foreground: oklch(0.98 0.005 250);
-  --card: oklch(0.18 0.06 280);
-  --card-foreground: oklch(0.98 0.005 250);
-  --popover: oklch(0.18 0.06 280);
-  --popover-foreground: oklch(0.98 0.005 250);
-  --primary: oklch(0.82 0.22 85);
-  --primary-foreground: oklch(0.18 0.06 280);
-  --secondary: oklch(0.24 0.08 280);
-  --secondary-foreground: oklch(0.98 0.005 250);
-  --muted: oklch(0.22 0.06 280);
-  --muted-foreground: oklch(0.7 0.02 250);
-  --accent: oklch(0.82 0.22 85);
-  --accent-foreground: oklch(0.18 0.06 280);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.82 0.22 85);
+  --background: #0B0F19;
+  --foreground: #F8FAFC;
+  --card: #151F32;
+  --card-foreground: #F8FAFC;
+  --popover: #151F32;
+  --popover-foreground: #F8FAFC;
+  --primary: #00ADEF;
+  --primary-foreground: #151F32;
+  --secondary: #5B2E91;
+  --secondary-foreground: #F8FAFC;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  --accent: #F5B400;
+  --accent-foreground: #151F32;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #00ADEF;
+  --brand-navy: #F8FAFC;
 }
 
 @layer base {
@@ -149,22 +191,53 @@
   h6 {
     font-family: var(--font-display);
     letter-spacing: -0.015em;
-    color: var(--color-brand-navy); /* Deep Purple-Navy by default instead of black */
+    color: var(--color-brand-navy);
   }
 }
 
 @utility bg-brand-gradient {
-  background-image: linear-gradient(135deg, oklch(0.50 0.20 220) 0%, oklch(0.40 0.24 260) 50%, oklch(0.24 0.16 280) 100%);
+  background-image: linear-gradient(135deg, var(--royal-purple) 0%, var(--lic-blue) 50%, var(--dark-navy) 100%);
 }
 @utility bg-brand-soft {
-  background-image: linear-gradient(180deg, oklch(0.97 0.02 250) 0%, oklch(0.91 0.04 250) 100%);
+  background-image: linear-gradient(180deg, #F6F8FC 0%, #E2E8F0 100%);
 }
 @utility text-brand-gradient {
-  background-image: linear-gradient(135deg, oklch(0.50 0.20 220), oklch(0.24 0.16 280));
+  background-image: linear-gradient(135deg, var(--royal-purple), var(--lic-blue));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
+@utility bg-premium-gradient {
+  background-image: linear-gradient(135deg, var(--royal-purple) 0%, var(--sbi-blue) 100%);
+}
 @utility ring-brand {
-  box-shadow: 0 0 0 3px oklch(0.50 0.20 220 / 0.15);
+  box-shadow: 0 0 0 3px rgba(91, 46, 145, 0.15);
+}
+
+@utility bg-glass {
+  background-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@utility bg-glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+@utility bg-glass-card-dark {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@utility border-glass {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+@utility text-glow-gold {
+  text-shadow: 0 0 8px rgba(245, 180, 0, 0.5);
 }

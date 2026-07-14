@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { useAppStore } from "@/lib/app-store";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,12 @@ export const Route = createFileRoute("/admin/applications")({
 });
 
 function AdminApplications() {
-  const { customers } = useAppStore();
+  const { customers, currentUser } = useAppStore();
+
+  if (currentUser?.role === "assistant_admin") {
+    return <Navigate to="/admin/tasks" replace />;
+  }
+
   const recent = customers.slice(0, 20);
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">

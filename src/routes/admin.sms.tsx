@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useAppStore } from "@/lib/app-store";
 import { Card } from "@/components/ui/card";
@@ -22,7 +22,12 @@ export const Route = createFileRoute("/admin/sms")({
 });
 
 function SmsPage() {
-  const { sms, resendSms, triggerScheduler } = useAppStore();
+  const { sms, resendSms, triggerScheduler, currentUser } = useAppStore();
+
+  if (currentUser?.role === "assistant_admin") {
+    return <Navigate to="/admin/tasks" replace />;
+  }
+
   const [q, setQ] = useState("");
   const filtered = useMemo(
     () =>

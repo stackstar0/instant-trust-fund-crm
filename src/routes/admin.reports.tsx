@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useAppStore } from "@/lib/app-store";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,11 @@ function download(name: string, content: string, mime: string) {
 }
 
 function ReportsPage() {
-  const { customers, sms } = useAppStore();
+  const { customers, sms, currentUser } = useAppStore();
+
+  if (currentUser?.role === "assistant_admin") {
+    return <Navigate to="/admin/tasks" replace />;
+  }
 
   const reports = [
     {
