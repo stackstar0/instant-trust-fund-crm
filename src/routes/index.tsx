@@ -341,7 +341,7 @@ function LandingPage() {
         </div>
       </section>
       {/* 2. Trusted Partners (Animated marquee) */}
-      <section className="bg-gradient-to-b from-slate-50 to-white py-12 border-b overflow-hidden">
+      <section className="bg-gradient-to-r from-lic-blue/10 via-sbi-blue/5 to-gold/10 py-12 border-b overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-center gap-2 mb-6">
             <Sparkles className="h-4 w-4 text-gold" />
@@ -352,7 +352,7 @@ function LandingPage() {
           <div className="relative flex overflow-x-hidden py-4">
             <div className="animate-marquee flex gap-6 whitespace-nowrap items-center">
               {partners.map((p, idx) => (
-                <div key={idx} className="flex items-center gap-2 border border-slate-100 bg-white px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 shrink-0 hover:border-gold/50 cursor-pointer hover:-translate-y-0.5">
+                <div key={idx} className="flex items-center gap-2 border border-slate-200/50 bg-white/70 backdrop-blur-md px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 shrink-0 hover:border-gold/50 cursor-pointer hover:-translate-y-0.5">
                   <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-r from-royal-purple to-lic-blue inline-block shadow-sm" />
                   <span className="text-xs font-black text-brand-navy tracking-tight">{p}</span>
                 </div>
@@ -360,7 +360,7 @@ function LandingPage() {
             </div>
             <div className="absolute top-4 animate-marquee2 flex gap-6 whitespace-nowrap items-center">
               {partners.map((p, idx) => (
-                <div key={`dup-${idx}`} className="flex items-center gap-2 border border-slate-100 bg-white px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 shrink-0 hover:border-gold/50 cursor-pointer hover:-translate-y-0.5">
+                <div key={`dup-${idx}`} className="flex items-center gap-2 border border-slate-200/50 bg-white/70 backdrop-blur-md px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 shrink-0 hover:border-gold/50 cursor-pointer hover:-translate-y-0.5">
                   <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-r from-royal-purple to-lic-blue inline-block shadow-sm" />
                   <span className="text-xs font-black text-brand-navy tracking-tight">{p}</span>
                 </div>
@@ -370,7 +370,7 @@ function LandingPage() {
         </div>
       </section>
       {/* 2.5 Statistics Section */}
-      <section className="bg-gradient-to-b from-white to-slate-50 py-16 border-b">
+      <section className="bg-gradient-to-br from-sbi-blue/10 via-gold/5 to-lic-blue/10 py-16 border-b">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
             {[
@@ -380,7 +380,7 @@ function LandingPage() {
               { val: "₹250 Cr+", label: "Loans Processed", desc: "Substantial capital disbursements", color: "from-royal-purple to-soft-pink" },
               { val: "98%", label: "Approval Success", desc: "Industry-leading approval rates", color: "from-soft-pink to-gold" }
             ].map((stat, idx) => (
-              <Card key={idx} className="p-6 border border-slate-100 bg-white shadow-md hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 text-center relative overflow-hidden group">
+              <Card key={idx} className="p-6 border border-slate-200/50 bg-white/70 backdrop-blur-md shadow-md hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 text-center relative overflow-hidden group">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-royal-purple to-lic-blue opacity-70" />
                 <span className={`text-3xl md:text-4xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent block mb-1 group-hover:scale-105 transition-transform`}>
                   {stat.val}
@@ -397,7 +397,7 @@ function LandingPage() {
         </div>
       </section>
 
-      <section id="loans-grid" className="bg-gradient-to-b from-slate-50 via-white to-slate-50 px-6 py-20 space-y-10 border-b">
+      <section id="loans-grid" className="bg-gradient-to-b from-lic-blue/10 via-gold/5 to-sbi-blue/10 px-6 py-20 space-y-10 border-b">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <Badge className="bg-gradient-to-r from-royal-purple to-lic-blue text-white font-bold shadow-md px-3 py-1">12 Active Products</Badge>
           <h2 className="text-3xl font-extrabold text-brand-navy">Explore Customized Loans</h2>
@@ -408,7 +408,7 @@ function LandingPage() {
           {filteredLoans.map((l) => {
             const IconComponent = l.icon;
             return (
-              <Card key={l.name} className="p-6 border border-slate-100 bg-white shadow-md hover:shadow-elevated transition-all duration-300 hover:-translate-y-1.5 relative overflow-hidden group">
+              <Card key={l.name} className="p-6 border border-slate-200/50 bg-white/70 backdrop-blur-md shadow-md hover:shadow-elevated transition-all duration-300 hover:-translate-y-1.5 relative overflow-hidden group">
                 {/* Visual Accent Gradient Border */}
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-royal-purple via-lic-blue to-sbi-blue opacity-80" />
                 
@@ -446,10 +446,10 @@ function LandingPage() {
         </div>
       </section>
       {/* 4. Interactive Calculators Section */}
-      <section id="calculator-section" className="bg-slate-50 border-t border-b py-16 px-6">
+      <section id="calculator-section" className="bg-gradient-to-tr from-sbi-blue/10 via-lic-blue/5 to-gold/10 border-t border-b py-16 px-6">
         <div className="max-w-7xl mx-auto grid gap-12 lg:grid-cols-2">
           {/* EMI Calculator */}
-          <Card className="p-6 border bg-white shadow-card space-y-6">
+          <Card className="p-6 border border-slate-200/50 bg-white/70 backdrop-blur-md shadow-card space-y-6">
             <div>
               <h3 className="text-lg font-bold text-brand-navy">EMI Repayment Estimator</h3>
               <p className="text-xs text-muted-foreground mt-0.5">Calculate your monthly outflow instantly based on loan parameters.</p>
@@ -522,7 +522,7 @@ function LandingPage() {
           </Card>
 
           {/* Age Calculator */}
-          <Card className="p-6 border bg-white shadow-card space-y-6">
+          <Card className="p-6 border border-slate-200/50 bg-white/70 backdrop-blur-md shadow-card space-y-6">
             <div>
               <h3 className="text-lg font-bold text-brand-navy">Age Eligibility Appraiser</h3>
               <p className="text-xs text-muted-foreground mt-0.5">Toggle your age value below to discover custom portfolio matches.</p>
@@ -593,7 +593,7 @@ function LandingPage() {
         </Card>
       </section>
       {/* 6. Insurance Categories */}
-      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-20 px-6 border-t border-b">
+      <section className="bg-gradient-to-br from-gold/10 via-lic-blue/5 to-sbi-blue/10 py-20 px-6 border-t border-b">
         <div className="max-w-7xl mx-auto space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <Badge className="bg-gradient-to-r from-lic-blue to-sbi-blue text-white font-bold shadow-md px-3 py-1">7 Active Coverages</Badge>
@@ -605,7 +605,7 @@ function LandingPage() {
             {extendedInsurance.map((i) => {
               const Icon = i.icon;
               return (
-                <Card key={i.name} className="p-6 border border-slate-100 bg-white shadow-md hover:shadow-elevated transition-all duration-300 hover:-translate-y-1.5 relative overflow-hidden group">
+                <Card key={i.name} className="p-6 border border-slate-200/50 bg-white/70 backdrop-blur-md shadow-md hover:shadow-elevated transition-all duration-300 hover:-translate-y-1.5 relative overflow-hidden group">
                   {/* Decorative Border */}
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-lic-blue via-sbi-blue to-turquoise opacity-85" />
                   
@@ -642,7 +642,7 @@ function LandingPage() {
         </div>
       </section>
       {/* 7. Loan Approval Timeline */}
-      <section className="max-w-7xl mx-auto px-6 py-16 space-y-8">
+      <section className="max-w-7xl mx-auto my-12 p-8 md:p-12 rounded-3xl bg-gradient-to-br from-sbi-blue/10 via-lic-blue/5 to-gold/10 border border-slate-200/50 shadow-xl space-y-8">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="text-3xl font-extrabold text-brand-navy">Fast Approval Timeline</h2>
           <p className="text-sm text-muted-foreground mt-1">Get your funds dispersed with minimal roadblocks. Here is our workflow:</p>
@@ -665,7 +665,7 @@ function LandingPage() {
       </section>
 
       {/* 8. FAQs */}
-      <section className="bg-slate-50 py-16 px-6 border-t border-b">
+      <section className="bg-gradient-to-b from-lic-blue/10 via-sbi-blue/5 to-gold/10 py-16 px-6 border-t border-b">
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-3xl font-extrabold text-brand-navy">Frequently Asked Questions</h2>
@@ -678,7 +678,7 @@ function LandingPage() {
               { q: "Do you charge extra consulting fee?", a: "No, Instant Trust Fund provides transparent advisory comparisons. Our consulting costs are covered directly by lending partners without adding marks to your rates." },
               { q: "How are properties verified?", a: "We sync with Karnataka Bhoomi title servers and Dishank spatial coordinates to run primary verification on secure land properties." }
             ].map((faq, idx) => (
-              <Card key={idx} className="p-5 border bg-white shadow-sm space-y-2">
+              <Card key={idx} className="p-5 border border-slate-200/50 bg-white/70 backdrop-blur-md shadow-sm space-y-2">
                 <h4 className="text-xs font-bold text-brand-navy flex items-center gap-1.5">
                   <HelpCircle className="h-4 w-4 text-primary shrink-0" /> {faq.q}
                 </h4>

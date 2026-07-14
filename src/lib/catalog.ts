@@ -15,6 +15,13 @@ import motorImg from "@/assets/insurance-motor.jpg";
 import travelImg from "@/assets/insurance-travel.jpg";
 import businessInsImg from "@/assets/insurance-business.jpg";
 
+// WhatsApp upload assets
+import waProfessionalImg from "@/assets/WhatsApp Image 2026-07-13 at 11.47.39 AM.jpeg";
+import waEduInstImg from "@/assets/WhatsApp Image 2026-07-13 at 11.47.41 AM (1).jpeg";
+import waEquipmentImg from "@/assets/WhatsApp Image 2026-07-13 at 11.47.41 AM.jpeg";
+import waCommercialImg from "@/assets/WhatsApp Image 2026-07-13 at 11.47.42 AM.jpeg";
+import waHospitalImg from "@/assets/WhatsApp Image 2026-07-13 at 11.47.43 AM.jpeg";
+
 
 export type CategoryKind = "loan" | "insurance" | "service";
 
@@ -127,7 +134,7 @@ export const loans: CatalogItem[] = [
     kind: "loan",
     name: "Professional Loan",
     tagline: "Specialized funding for qualified professionals.",
-    image: personalImg,
+    image: waProfessionalImg,
     description:
       "Customized unsecured funding solutions designed for Doctors, Chartered Accountants, Architects, and Consulting Professionals.",
     features: ["Loans up to ₹75 L", "No collateral required", "Special interest rates"],
@@ -151,7 +158,7 @@ export const loans: CatalogItem[] = [
     kind: "loan",
     name: "Professional Equipment Loan",
     tagline: "Finance state-of-the-art tools and equipment.",
-    image: businessImg,
+    image: waEquipmentImg,
     description:
       "Finance the purchase of medical equipment, software, diagnostic tools, and office machinery for your professional practice.",
     features: ["Up to 90% funding of invoice value", "Loans up to ₹5 Cr", "Tenure up to 7 years"],
@@ -199,7 +206,7 @@ export const loans: CatalogItem[] = [
     kind: "loan",
     name: "Commercial Loan",
     tagline: "Finance commercial spaces and operations.",
-    image: businessImg,
+    image: waCommercialImg,
     description:
       "Finance the purchase of commercial properties, offices, warehouses, or fund large scale corporate activities.",
     features: ["Loans up to ₹25 Cr", "Tenure up to 15 years", "Competitive corporate interest rates"],
@@ -247,7 +254,7 @@ export const loans: CatalogItem[] = [
     kind: "loan",
     name: "Hospital Funding",
     tagline: "Finance healthcare infrastructure and modernization.",
-    image: businessImg,
+    image: waHospitalImg,
     description:
       "Specialized financial assistance for doctors, trusts, and corporations to set up hospitals, nursing homes, diagnostics labs, or upgrade healthcare centers.",
     features: ["Loans up to ₹50 Cr", "Tenure up to 15 years", "Structured repayment linked to hospital revenues"],
@@ -271,7 +278,7 @@ export const loans: CatalogItem[] = [
     kind: "loan",
     name: "Educational Institution Funding",
     tagline: "Empower academic growth & infrastructure.",
-    image: educationImg,
+    image: waEduInstImg,
     description:
       "Comprehensive funding for schools, colleges, universities, and coaching institutes to construct campuses, labs, hostels, or upgrade tech equipment.",
     features: ["Funding up to ₹30 Cr", "Tenure up to 12 years", "Low interest rates for registered trusts"],
