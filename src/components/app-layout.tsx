@@ -378,16 +378,21 @@ export function AppLayout({ children }: { children: ReactNode }) {
 function SiteFooter() {
   return (
     <footer className="bg-brand-navy text-white/90">
-      <div className="mx-auto grid max-w-7xl gap-8 px-6 py-12 sm:grid-cols-2 md:grid-cols-4">
-        <div>
+      <div className="mx-auto grid max-w-7xl gap-8 px-6 py-12 sm:grid-cols-2 md:grid-cols-5">
+        <div className="sm:col-span-2 md:col-span-1 space-y-4">
           <div className="flex items-center gap-3">
             <img src={logo} alt="" className="h-12 w-12 object-contain" width={48} height={48} />
             <span className="text-xl font-black text-white tracking-tight">Instant Funds for You</span>
           </div>
-          <p className="mt-3 text-sm text-white/70">
+          <p className="text-sm text-white/70 leading-relaxed">
             A modern loan, insurance and financial-advisory partner for millions of Indians. Fast,
             transparent, trusted.
           </p>
+          <div className="rounded-lg bg-white/5 p-3 text-xs text-white/70 space-y-1">
+            <div className="font-semibold text-white">Direct Care Helpline</div>
+            <div className="font-black text-gold">1800-123-4567</div>
+            <div className="text-[10px] text-white/50">care@instantfundsforyou.demo</div>
+          </div>
         </div>
         <div>
           <h4 className="text-sm font-semibold text-white">Loans</h4>
@@ -416,11 +421,15 @@ function SiteFooter() {
         <div>
           <h4 className="text-sm font-semibold text-white">Company</h4>
           <ul className="mt-3 space-y-2 text-sm text-white/70">
-
             <li>
-              <Link to="/admin" className="hover:text-accent">
-                Admin Dashboard
-              </Link>
+              <a href="/#about-section" className="hover:text-accent">
+                About Us
+              </a>
+            </li>
+            <li>
+              <a href="/#callback-form" className="hover:text-accent">
+                Contact Us
+              </a>
             </li>
             <li>
               <Link to="/terms" className="hover:text-accent">
@@ -432,11 +441,32 @@ function SiteFooter() {
                 Privacy Policy
               </Link>
             </li>
+            <li>
+              <Link to="/admin" className="hover:text-accent">
+                Admin Dashboard
+              </Link>
+            </li>
           </ul>
-          <div className="mt-4 rounded-lg bg-white/5 p-3 text-xs text-white/70">
-            <div className="font-semibold text-white">Contact</div>
-            <div className="mt-1">1800-123-4567 · care@instantfundsforyou.demo</div>
-          </div>
+        </div>
+        <div>
+          <h4 className="text-sm font-semibold text-white">Partners</h4>
+          <ul className="mt-3 space-y-2 text-sm text-white/70">
+            <li>
+              <a href="/#insurance-grid" className="hover:text-accent">
+                RenewBuy Partner
+              </a>
+            </li>
+            <li>
+              <a href="/#loans-grid" className="hover:text-accent">
+                Authorized Banks
+              </a>
+            </li>
+            <li>
+              <Link to="/admin" className="hover:text-accent">
+                Sub-Advisors &amp; Agents
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
       <div className="border-t border-white/10">

@@ -14,6 +14,7 @@ import propertyImg from "@/assets/insurance-property.jpg";
 import motorImg from "@/assets/insurance-motor.jpg";
 import travelImg from "@/assets/insurance-travel.jpg";
 import businessInsImg from "@/assets/insurance-business.jpg";
+import goldImg from "@/assets/loan-gold.jpg";
 
 // WhatsApp upload assets
 import waProfessionalImg from "@/assets/WhatsApp Image 2026-07-13 at 11.47.39 AM.jpeg";
@@ -321,6 +322,31 @@ export const loans: CatalogItem[] = [
       { q: "Can I transfer my existing property loan?", a: "Yes, balance transfers are supported at reduced interest rates." },
     ],
     related: ["property-insurance", "loan-against-property"],
+  },
+  {
+    slug: "gold-loan",
+    kind: "loan",
+    name: "Gold Loan",
+    tagline: "Instant liquidity against your gold ornaments.",
+    image: goldImg,
+    description:
+      "Unlock the value of your gold ornaments instantly with low interest rates, flexible repayment options, and maximum safety of your assets.",
+    features: ["Loans up to ₹50 Lakhs", "Same-day cash disbursal", "Minimal documentation & zero hidden charges"],
+    benefits: ["Highest LTV (Loan-to-Value) ratio", "Secure vault storage with insurance", "Pay interest only on outstanding amount"],
+    eligibility: ["Age 18–70 years", "Must own gold ornaments (18 karat & above)", "Indian citizenship"],
+    documents: [...commonDocs, "Proof of ownership of gold (optional/declaration)"],
+    rate: "7.90% – 12.00% p.a.",
+    tenure: "3 months – 2 years",
+    processingTime: "1 hour",
+    subtypes: [
+      { name: "Bullet Repayment", description: "Pay interest and principal together at the end of the tenure." },
+      { name: "Monthly Interest Pay", description: "Pay interest monthly, principal at the end of the term." },
+    ],
+    faqs: [
+      { q: "Is a CIBIL score required for a gold loan?", a: "No. Since gold loans are secured, credit score requirement is extremely lenient." },
+      { q: "How is my gold stored?", a: "Your gold is valued and stored in highly secure, fireproof vaults protected by 24/7 security and comprehensive insurance coverage." },
+    ],
+    related: ["personal-loan", "property-loan"],
   },
 ];
 

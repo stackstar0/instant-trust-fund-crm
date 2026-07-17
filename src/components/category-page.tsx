@@ -23,145 +23,161 @@ import { ApplyDialog } from "@/components/apply-dialog";
 import { EmiCalculator } from "@/components/emi-calculator";
 import { AgeCalculator } from "@/components/age-calculator";
 
-const SbiLogo = () => (
-  <svg viewBox="0 0 100 100" className="h-8 w-8" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="50" r="36" fill="#005BAC" />
-    <line x1="50" y1="50" x2="50" y2="86" stroke="white" strokeWidth="8" />
-    <circle cx="50" cy="50" r="10" fill="white" />
-  </svg>
-);
+const PARTNER_BRANDS: Record<string, { bg: string; text: string; label: string }> = {
+  "HDFC Bank": { bg: "#004C8F", text: "#FFFFFF", label: "HDFC BANK" },
+  "ICICI Bank": { bg: "#8F2A28", text: "#FFC72C", label: "ICICI BANK" },
+  "Axis Bank": { bg: "#971B49", text: "#FFFFFF", label: "AXIS BANK" },
+  "Kotak Mahindra Bank": { bg: "#DD1B1F", text: "#FFFFFF", label: "KOTAK BANK" },
+  "SBI": { bg: "#005BAC", text: "#FFFFFF", label: "SBI" },
+  "Bank of Baroda": { bg: "#F05A28", text: "#FFFFFF", label: "BOB" },
+  "Punjab National Bank": { bg: "#A20F16", text: "#FFFFFF", label: "PNB" },
+  "Union Bank": { bg: "#0D47A1", text: "#FFFFFF", label: "UNION BANK" },
+  "Canara Bank": { bg: "#006FB4", text: "#FFFFFF", label: "CANARA BANK" },
+  "IDFC FIRST Bank": { bg: "#9E1B1E", text: "#FFFFFF", label: "IDFC FIRST" },
+  "AU Small Finance Bank": { bg: "#4C276E", text: "#FFFFFF", label: "AU SFB" },
+  "Yes Bank": { bg: "#0F4B91", text: "#FFFFFF", label: "YES BANK" },
+  "IndusInd Bank": { bg: "#800000", text: "#FFC72C", label: "INDUSIND" },
+  "Bajaj Finserv": { bg: "#005596", text: "#FFFFFF", label: "BAJAJ FINSERV" },
+  "Tata Capital": { bg: "#00A4E4", text: "#FFFFFF", label: "TATA CAPITAL" },
+  "Aditya Birla Capital": { bg: "#D32F2F", text: "#FFFFFF", label: "ADITYA BIRLA" },
+  "L&T Finance": { bg: "#00796B", text: "#FFFFFF", label: "L&T FINANCE" },
+  "Poonawalla Fincorp": { bg: "#1565C0", text: "#FFFFFF", label: "POONAWALLA" },
+  "Hero FinCorp": { bg: "#E53935", text: "#FFFFFF", label: "HERO FINCORP" },
+  "Piramal Finance": { bg: "#2E7D32", text: "#FFFFFF", label: "PIRAMAL" },
+  "Shriram Finance": { bg: "#FFB300", text: "#1E293B", label: "SHRIRAM" },
+  "Cholamandalam Finance": { bg: "#0A3B75", text: "#FFFFFF", label: "CHOLA" },
+  "Mahindra Finance": { bg: "#E31B23", text: "#FFFFFF", label: "MAHINDRA" },
+  "ICICI Lombard": { bg: "#8F2A28", text: "#FFFFFF", label: "ICICI LOMBARD" },
+  "HDFC ERGO": { bg: "#004C8F", text: "#FFFFFF", label: "HDFC ERGO" },
+  "Niva Bupa": { bg: "#0082C3", text: "#FFFFFF", label: "NIVA BUPA" },
+  "Star Health": { bg: "#00599B", text: "#FFFFFF", label: "STAR HEALTH" },
+  "Care Health": { bg: "#4CAF50", text: "#FFFFFF", label: "CARE HEALTH" },
+  "Tata AIG": { bg: "#002B49", text: "#FFFFFF", label: "TATA AIG" },
+  "SBI General": { bg: "#005BAC", text: "#FFFFFF", label: "SBI GENERAL" },
+  "Reliance General": { bg: "#005BAC", text: "#FFFFFF", label: "RELIANCE GEN" },
+  "Bajaj Allianz": { bg: "#005BAC", text: "#FFFFFF", label: "BAJAJ ALLIANZ" },
+  "Aditya Birla Health": { bg: "#D32F2F", text: "#FFFFFF", label: "ADITYA BIRLA" },
+  "ManipalCigna": { bg: "#007A87", text: "#FFFFFF", label: "MANIPALCIGNA" },
+  "Future Generali": { bg: "#C62828", text: "#FFFFFF", label: "FUTURE GENERALI" },
+  "Kotak General Insurance": { bg: "#DD1B1F", text: "#FFFFFF", label: "KOTAK GENERAL" },
+  "Go Digit": { bg: "#FFC72C", text: "#1A1A1A", label: "DIGIT" },
+  "ACKO": { bg: "#1AC7C2", text: "#FFFFFF", label: "ACKO" },
+  "Royal Sundaram": { bg: "#0D47A1", text: "#FFFFFF", label: "ROYAL SUNDARAM" },
+  "Liberty General": { bg: "#1565C0", text: "#FFFFFF", label: "LIBERTY" },
+  "RenewBuy": { bg: "#E31E24", text: "#FFFFFF", label: "RENEWBUY" },
+  "PolicyBazaar Partner": { bg: "#FF5A00", text: "#FFFFFF", label: "POLICYBAZAAR" },
+  "InsuranceDekho Partner": { bg: "#009688", text: "#FFFFFF", label: "INSURANCEDEKHO" },
+  "Turtlemint": { bg: "#00A4E4", text: "#FFFFFF", label: "TURTLEMINT" },
+  "FinShell": { bg: "#00B0FF", text: "#FFFFFF", label: "FINSHELL" },
+  "Rupeek (Gold Loans)": { bg: "#008080", text: "#FFFFFF", label: "RUPEEK" },
+  "Paisabazaar": { bg: "#002A54", text: "#FFFFFF", label: "PAISABAZAAR" },
+  "LoanTap": { bg: "#00C853", text: "#FFFFFF", label: "LOANTAP" },
+  "KreditBee": { bg: "#FF6F00", text: "#FFFFFF", label: "KREDITBEE" },
+  "MoneyView": { bg: "#3F51B5", text: "#FFFFFF", label: "MONEYVIEW" },
+  "Muthoot Finance": { bg: "#E31E24", text: "#FFFFFF", label: "MUTHOOT" },
+  "Manappuram Finance": { bg: "#FFB300", text: "#1E293B", label: "MANAPPURAM" },
+  "Rupeek": { bg: "#008080", text: "#FFFFFF", label: "RUPEEK" },
+  "HDFC Credila": { bg: "#004C8F", text: "#FFFFFF", label: "HDFC CREDILA" },
+  "HDFC Life": { bg: "#004C8F", text: "#FFFFFF", label: "HDFC LIFE" },
+  "ICICI Prudential": { bg: "#8F2A28", text: "#FFFFFF", label: "ICICI PRU" },
+  "SBI Life": { bg: "#005BAC", text: "#FFFFFF", label: "SBI LIFE" },
+  "Max Life": { bg: "#0F2D59", text: "#FFFFFF", label: "MAX LIFE" },
+  "Tata AIA": { bg: "#002B49", text: "#FFFFFF", label: "TATA AIA" },
+  "LIC": { bg: "#0054A6", text: "#FFD200", label: "LIC" },
+  "Bajaj Allianz Life": { bg: "#005BAC", text: "#FFFFFF", label: "BAJAJ LIFE" }
+};
 
-const LicLogo = () => (
-  <svg viewBox="0 0 120 100" className="h-8 w-12" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M20,60 C20,30 50,20 60,10 C70,20 100,30 100,60 C100,90 20,90 20,60 Z" fill="#0054A6" />
-    <circle cx="60" cy="50" r="18" fill="#FFD200" />
-    <path d="M50,45 C50,30 70,30 70,45 C70,60 50,60 50,45 Z" fill="#E31E24" />
-    <path d="M15,50 Q10,75 40,85" stroke="white" strokeWidth="4" strokeLinecap="round" />
-    <path d="M105,50 Q110,75 80,85" stroke="white" strokeWidth="4" strokeLinecap="round" />
-  </svg>
-);
-
-const HdfcLogo = () => (
-  <svg viewBox="0 0 150 40" className="h-8 w-24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="150" height="40" rx="4" fill="#004C8F" />
-    <rect x="10" y="8" width="8" height="24" fill="#E31E24" />
-    <rect x="22" y="8" width="8" height="24" fill="white" />
-    <rect x="34" y="8" width="8" height="24" fill="white" />
-    <rect x="46" y="8" width="8" height="24" fill="white" />
-    <text x="62" y="26" fill="white" fontSize="16" fontWeight="bold" fontFamily="sans-serif">HDFC BANK</text>
-  </svg>
-);
-
-const IciciLogo = () => (
-  <svg viewBox="0 0 160 40" className="h-8 w-28" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="160" height="40" rx="4" fill="#8F2A28" />
-    <circle cx="20" cy="20" r="10" fill="#FFC72C" />
-    <text x="40" y="25" fill="#FFC72C" fontSize="15" fontWeight="black" fontFamily="sans-serif">ICICI Bank</text>
-  </svg>
-);
-
-const AxisLogo = () => (
-  <svg viewBox="0 0 140 40" className="h-8 w-24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="140" height="40" rx="4" fill="#971B49" />
-    <path d="M22,12 L32,28 L27,28 L17,12 Z" fill="white" />
-    <path d="M12,28 L22,12 L17,12 L7,28 Z" fill="white" />
-    <text x="42" y="26" fill="white" fontSize="16" fontWeight="black" fontFamily="sans-serif">AXIS BANK</text>
-  </svg>
-);
-
-const MuthootLogo = () => (
-  <svg viewBox="0 0 160 40" className="h-8 w-28" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="160" height="40" rx="4" fill="#E31E24" />
-    <circle cx="20" cy="20" r="8" fill="white" />
-    <circle cx="34" cy="20" r="8" fill="white" />
-    <text x="52" y="25" fill="white" fontSize="12" fontWeight="bold" fontFamily="sans-serif">MUTHOOT</text>
-  </svg>
-);
-
-const IiflLogo = () => (
-  <svg viewBox="0 0 140 40" className="h-8 w-24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="140" height="40" rx="4" fill="#F7941D" />
-    <text x="15" y="25" fill="white" fontSize="18" fontWeight="black" fontFamily="sans-serif">IIFL</text>
-    <text x="60" y="24" fill="white" fontSize="11" fontWeight="bold" fontFamily="sans-serif">FINANCE</text>
-  </svg>
-);
-
-function BankPartners({ slug }: { slug: string }) {
-  const getPartners = (slug: string) => {
+const getProductPartners = (slug: string, kind: string): string[] => {
+  if (kind === "loan") {
     switch (slug) {
       case "property-loan":
-        return [
-          { name: "LIC Housing Finance", logo: LicLogo },
-          { name: "HDFC Bank", logo: HdfcLogo },
-          { name: "SBI", logo: SbiLogo },
-        ];
-      case "loan-against-property":
-      case "commercial-loan":
-        return [
-          { name: "HDFC Bank", logo: HdfcLogo },
-          { name: "ICICI Bank", logo: IciciLogo },
-          { name: "Axis Bank", logo: AxisLogo },
-        ];
-      case "business-loan":
+        return ["SBI", "HDFC Bank", "ICICI Bank", "Axis Bank", "Bank of Baroda", "Punjab National Bank", "Canara Bank"];
+      case "personal-loan":
       case "professional-loan":
       case "professional-equipment-loan":
+        return ["HDFC Bank", "ICICI Bank", "Axis Bank", "Kotak Mahindra Bank", "Tata Capital", "Bajaj Finserv", "IDFC FIRST Bank", "Yes Bank"];
+      case "business-loan":
       case "hospital-funding":
       case "educational-institution-funding":
-        return [
-          { name: "SBI", logo: SbiLogo },
-          { name: "ICICI Bank", logo: IciciLogo },
-          { name: "Axis Bank", logo: AxisLogo },
-        ];
+        return ["HDFC Bank", "ICICI Bank", "Axis Bank", "Bajaj Finserv", "Tata Capital", "Aditya Birla Capital", "L&T Finance"];
       case "car-loan":
-        return [
-          { name: "HDFC Bank", logo: HdfcLogo },
-          { name: "SBI", logo: SbiLogo },
-          { name: "ICICI Bank", logo: IciciLogo },
-        ];
+      case "commercial-loan":
+        return ["SBI", "HDFC Bank", "ICICI Bank", "Mahindra Finance", "Cholamandalam Finance", "Shriram Finance"];
+      case "gold-loan":
+        return ["Muthoot Finance", "Manappuram Finance", "Rupeek"];
       case "education-loan":
-        return [
-          { name: "SBI", logo: SbiLogo },
-          { name: "HDFC Bank", logo: HdfcLogo },
-          { name: "ICICI Bank", logo: IciciLogo },
-        ];
-      case "personal-loan":
-        return [
-          { name: "HDFC Bank", logo: HdfcLogo },
-          { name: "ICICI Bank", logo: IciciLogo },
-          { name: "Axis Bank", logo: AxisLogo },
-        ];
+        return ["SBI", "HDFC Credila", "Axis Bank", "ICICI Bank"];
+      case "loan-against-property":
+        return ["SBI", "HDFC Bank", "ICICI Bank", "Tata Capital", "Bajaj Finserv"];
       default:
-        return [
-          { name: "SBI", logo: SbiLogo },
-          { name: "HDFC Bank", logo: HdfcLogo },
-          { name: "ICICI Bank", logo: IciciLogo },
-        ];
+        return ["SBI", "HDFC Bank", "ICICI Bank", "Axis Bank"];
     }
-  };
+  } else if (kind === "insurance") {
+    switch (slug) {
+      case "health-insurance":
+      case "family-insurance":
+        return ["Star Health", "Niva Bupa", "Care Health", "HDFC ERGO", "ICICI Lombard", "Tata AIG", "Aditya Birla Health"];
+      case "life-insurance":
+      case "child-plans":
+      case "pension-plans":
+        return ["HDFC Life", "ICICI Prudential", "SBI Life", "Max Life", "Tata AIA", "LIC", "Bajaj Allianz Life"];
+      case "motor-insurance":
+        return ["ICICI Lombard", "HDFC ERGO", "Tata AIG", "Reliance General", "ACKO", "Go Digit", "Bajaj Allianz"];
+      case "travel-insurance":
+        return ["Tata AIG", "ICICI Lombard", "Reliance General", "HDFC ERGO"];
+      default:
+        return ["ICICI Lombard", "HDFC ERGO", "Tata AIG", "Bajaj Allianz"];
+    }
+  }
+  return [];
+};
 
-  const partners = getPartners(slug);
+function ProductPartners({ slug, kind }: { slug: string; kind: string }) {
+  const partners = getProductPartners(slug, kind);
+  if (partners.length === 0) return null;
 
   return (
-    <section className="bg-card border-t border-b py-12">
-      <div className="mx-auto max-w-7xl px-6 text-center">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-          Associated Banks & Financial Institutions
-        </h3>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Official partnership channels for fast processing & lower rates.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center items-center gap-8 md:gap-12">
-          {partners.map(({ name, logo: LogoComponent }) => (
-            <div
-              key={name}
-              className="flex items-center gap-3 bg-background border px-5 py-3 rounded-2xl shadow-sm hover:shadow-md transition"
-              title={name}
-            >
-              <LogoComponent />
-              <span className="text-xs font-bold text-foreground">{name}</span>
-            </div>
-          ))}
+    <section className="bg-gradient-to-r from-lic-blue/10 via-sbi-blue/5 to-gold/10 border-t border-b py-12">
+      <div className="mx-auto max-w-7xl px-6 text-center space-y-6">
+        <div>
+          <h3 className="text-sm font-black uppercase tracking-widest text-brand-navy">
+            {kind === "loan"
+              ? "Available Through Our Trusted Lending Partners"
+              : "Available Through Our Trusted Insurance Partners"}
+          </h3>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Official partnership channels for fast processing &amp; lower rates.
+          </p>
         </div>
+        
+        <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 mt-6">
+          {partners.map((p) => {
+            const config = PARTNER_BRANDS[p] || { bg: "#0066CC", text: "#FFFFFF", label: p.toUpperCase() };
+            return (
+              <div
+                key={p}
+                className="flex items-center gap-3 bg-white/80 border border-slate-200/60 px-5 py-3 rounded-2xl shadow-sm hover:shadow-elevated hover:scale-105 hover:border-gold/50 transition-all duration-300 cursor-pointer group"
+                title={p}
+              >
+                <div
+                  className="flex items-center justify-center h-8 px-3 rounded-xl text-[10px] font-black tracking-tighter uppercase shadow-inner select-none transition-all group-hover:brightness-110"
+                  style={{ backgroundColor: config.bg, color: config.text }}
+                >
+                  {config.label}
+                </div>
+                <span className="text-xs font-black text-brand-navy group-hover:text-primary transition-colors">
+                  {p}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        
+        <p className="text-[10px] text-slate-500 italic mt-4 max-w-2xl mx-auto">
+          * {kind === "loan"
+            ? "Loan approval, interest rates, and eligibility are determined by the respective financial institution."
+            : "Policy approval, premiums, and eligibility are determined by the respective insurance provider."}
+        </p>
       </div>
     </section>
   );
@@ -318,8 +334,8 @@ export function CategoryPage({ item }: { item: CatalogItem }) {
         </div>
       </section>
 
-      {/* Associated Banks (loans only) */}
-      {item.kind === "loan" && <BankPartners slug={item.slug} />}
+      {/* Associated Banks & Insurers */}
+      {item.kind !== "service" && <ProductPartners slug={item.slug} kind={item.kind} />}
 
       {/* EMI Calculator (loans only) */}
       {item.kind === "loan" && (
