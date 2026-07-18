@@ -232,12 +232,12 @@ function CustomersPage() {
                         disabled={currentUser?.role === "assistant_admin"}
                         title={currentUser?.role === "assistant_admin" ? "Super Admin access required" : "Delete customer"}
                         onClick={() => {
-                          if (currentUser?.role === "assistant_admin") {
-                            toast.error("Permission Denied: Super Admin access required");
-                            return;
+                          try {
+                            deleteCustomer(c.id);
+                            toast.success("Deleted");
+                          } catch (err: any) {
+                            toast.error(err.message || "Permission Denied");
                           }
-                          deleteCustomer(c.id);
-                          toast.success("Deleted");
                         }}
                       >
                         <Trash2 className="h-4 w-4 text-rose-600" />
@@ -284,9 +284,13 @@ function CustomersPage() {
                 <Button
                   size="sm"
                   onClick={() => {
-                    updateStatus(selected.id, "Approved");
-                    toast.success("Approved");
-                    setSelected(null);
+                    try {
+                      updateStatus(selected.id, "Approved");
+                      toast.success("Approved");
+                      setSelected(null);
+                    } catch (err: any) {
+                      toast.error(err.message || "Permission Denied");
+                    }
                   }}
                 >
                   Approve
@@ -295,9 +299,13 @@ function CustomersPage() {
                   size="sm"
                   variant="outline"
                   onClick={() => {
-                    updateStatus(selected.id, "In Review");
-                    toast.info("Marked In Review");
-                    setSelected(null);
+                    try {
+                      updateStatus(selected.id, "In Review");
+                      toast.info("Marked In Review");
+                      setSelected(null);
+                    } catch (err: any) {
+                      toast.error(err.message || "Permission Denied");
+                    }
                   }}
                 >
                   Move to Review
@@ -306,9 +314,13 @@ function CustomersPage() {
                   size="sm"
                   variant="destructive"
                   onClick={() => {
-                    updateStatus(selected.id, "Rejected");
-                    toast.error("Rejected");
-                    setSelected(null);
+                    try {
+                      updateStatus(selected.id, "Rejected");
+                      toast.error("Rejected");
+                      setSelected(null);
+                    } catch (err: any) {
+                      toast.error(err.message || "Permission Denied");
+                    }
                   }}
                 >
                   Reject

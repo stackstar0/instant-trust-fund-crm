@@ -13,22 +13,10 @@ import {
   AlertTriangle,
   RefreshCw,
 } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-  LineChart,
-  Line,
-} from "recharts";
+import { lazy, Suspense } from "react";
 import { monthlyApplications, distributionBy, smsWeekly, inr } from "@/lib/mock-data";
+
+const DashboardCharts = lazy(() => import("@/components/dashboard-charts"));
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({ meta: [{ title: "Admin Dashboard — IFY CRM" }] }),
@@ -156,96 +144,23 @@ function AdminDashboard() {
       </div>
 
       {/* Charts */}
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <Card className="p-6">
-          <h3 className="text-lg font-bold">Monthly Applications</h3>
-          <p className="text-xs text-muted-foreground">Trailing 6 months</p>
-          <div className="mt-4 h-64">
-            <ResponsiveContainer>
-              <BarChart data={monthly}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis dataKey="month" stroke="var(--color-muted-foreground)" fontSize={12} />
-                <YAxis stroke="var(--color-muted-foreground)" fontSize={12} />
-                <Tooltip
-                  contentStyle={{ borderRadius: 8, border: "1px solid var(--color-border)" }}
-                />
-                <Bar dataKey="applications" fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <h3 className="text-lg font-bold">SMS Delivery — Last 7 days</h3>
-          <div className="mt-4 h-64">
-            <ResponsiveContainer>
-              <LineChart data={smsChart}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis dataKey="day" stroke="var(--color-muted-foreground)" fontSize={12} />
-                <YAxis stroke="var(--color-muted-foreground)" fontSize={12} />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="sent"
-                  stroke="var(--color-chart-1)"
-                  strokeWidth={3}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="failed"
-                  stroke="var(--color-destructive)"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <h3 className="text-lg font-bold">Loan Distribution</h3>
-          <div className="mt-4 h-72">
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={loanDist}
-                  dataKey="value"
-                  nameKey="name"
-                  outerRadius={90}
-                  label={(e) => (e as { name: string }).name}
-                >
-                  {loanDist.map((_, i) => (
-                    <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <h3 className="text-lg font-bold">Insurance Distribution</h3>
-          <div className="mt-4 h-72">
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={insDist}
-                  dataKey="value"
-                  nameKey="name"
-                  outerRadius={90}
-                  label={(e) => (e as { name: string }).name}
-                >
-                  {insDist.map((_, i) => (
-                    <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-      </div>
+      <Suspense fallback={
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <Card className="p-6 h-[320px] animate-pulse bg-slate-900/50 border border-slate-800 rounded-2xl" />
+          <Card className="p-6 h-[320px] animate-pulse bg-slate-900/50 border border-slate-800 rounded-2xl" />
+          <Card className="p-6 h-[352px] animate-pulse bg-slate-900/50 border border-slate-800 rounded-2xl" />
+          <Card className="p-6 h-[352px] animate-pulse bg-slate-900/50 border border-slate-800 rounded-2xl" />
+        </div>
+      }>
+        <div className="mt-8">
+          <DashboardCharts
+            monthly={monthly}
+            smsChart={smsChart}
+            loanDist={loanDist}
+            insDist={insDist}
+          />
+        </div>
+      </Suspense>
     </div>
   );
 }

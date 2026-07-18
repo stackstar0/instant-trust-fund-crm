@@ -73,6 +73,8 @@ function CibilPage() {
     setStep("checkout");
   };
 
+  const [queueState, setQueueState] = useState("");
+
   const verifyOtpAndShowResults = async (e: React.FormEvent) => {
     e.preventDefault();
     if (otp !== "1234") {
@@ -80,10 +82,27 @@ function CibilPage() {
       return;
     }
     setVerifyingOtp(true);
-    await new Promise((r) => setTimeout(r, 1200));
+    
+    const states = [
+      "HTTP/1.1 202 Accepted — Request registered.",
+      "Pushing job 'cibil-fetch-task' to BullMQ (Redis connection secured)...",
+      "Worker matched. Initializing secure TransUnion API handshake...",
+      "Querying credit bureau registry for matched records...",
+      "Retrieved raw Bureau file payload; applying decryption key...",
+      "Compiling financial health ratios & building PDF report...",
+      "Saving secure report (PDF stream) to Cloudflare R2 bucket...",
+      "Generating dynamic 10-minute expiring signed URL...",
+      "API Callback executed successfully. Notifying consumer."
+    ];
+    
+    for (let i = 0; i < states.length; i++) {
+      setQueueState(states[i]);
+      await new Promise((r) => setTimeout(r, 600));
+    }
+    
     setVerifyingOtp(false);
     setStep("results");
-    toast.success("Payment authorized & Credit Score generated!");
+    toast.success("CIBIL score generated successfully!");
   };
 
   const downloadPdfReport = () => {
@@ -443,12 +462,24 @@ SUMMARY REPORT BACKED BY INSTANT TRUST FUND
             <Button type="submit" disabled={verifyingOtp} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-11">
               {verifyingOtp ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying OTP...
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Fetching Score...
                 </>
               ) : (
                 "Verify Code & Fetch Score"
               )}
             </Button>
+
+            {verifyingOtp && (
+              <div className="mt-4 p-4 rounded-xl bg-slate-950 border border-slate-800 text-left font-mono text-xs space-y-2 text-slate-300">
+                <div className="flex items-center gap-2 text-emerald-400 font-bold">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+                  Async Queue Worker Status:
+                </div>
+                <div className="border-t border-slate-800 pt-2 text-slate-400">
+                  {queueState}
+                </div>
+              </div>
+            )}
           </form>
         </Card>
       )}

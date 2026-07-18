@@ -1,6 +1,7 @@
 // In-memory store: seeded mock customers + newly submitted applications.
 // Runtime state (no persistence) — the whole app subscribes via useAppStore.
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { encryptField } from "./crypto";
 import {
   generateCustomers,
   generateSmsLogs,
@@ -79,6 +80,8 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       }
       const newCust: MockCustomer = {
         ...a,
+        aadhaar: a.aadhaar && a.aadhaar !== "Not Provided" ? encryptField(a.aadhaar) : "Not Provided",
+        pan: a.pan && a.pan !== "Not Provided" ? encryptField(a.pan) : "Not Provided",
         id: `IFY${(10000 + customers.length + 1).toString()}`,
         status: "Pending",
         appliedOn: new Date().toISOString(),
@@ -87,9 +90,18 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       setCustomers((prev) => [newCust, ...prev]);
       return newCust;
     },
-    updateStatus: (id, status) =>
-      setCustomers((prev) => prev.map((c) => (c.id === id ? { ...c, status } : c))),
-    deleteCustomer: (id) => setCustomers((prev) => prev.filter((c) => c.id !== id)),
+    updateStatus: (id, status) => {
+      if (currentUser?.role !== "super_admin" && currentUser?.role !== "assistant_admin") {
+        throw new Error("Access Denied: Customer role cannot update application status.");
+      }
+      setCustomers((prev) => prev.map((c) => (c.id === id ? { ...c, status } : c)));
+    },
+    deleteCustomer: (id) => {
+      if (currentUser?.role !== "super_admin") {
+        throw new Error("Access Denied: Super Admin role required to delete customer entities.");
+      }
+      setCustomers((prev) => prev.filter((c) => c.id !== id));
+    },
     resendSms: (id) =>
       setSms((prev) =>
         prev.map((s) =>

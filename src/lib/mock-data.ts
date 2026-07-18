@@ -1,5 +1,5 @@
-// Deterministic mock data generators for the CRM demo. No PII, all synthetic.
 import { loans, insurance } from "./catalog";
+import { encryptField, decryptField } from "./crypto";
 
 export interface MockCustomer {
   id: string;
@@ -224,8 +224,8 @@ export function generateCustomers(count = 100): MockCustomer[] {
         15,
       ),
       email: `${first.toLowerCase()}.${last.toLowerCase()}${Math.floor(rand() * 90 + 10)}@example.com`,
-      aadhaar: `${pad(Math.floor(rand() * 9000 + 1000), 4)} ${pad(Math.floor(rand() * 9000 + 1000), 4)} ${pad(Math.floor(rand() * 9000 + 1000), 4)}`,
-      pan: `${String.fromCharCode(65 + Math.floor(rand() * 26))}${String.fromCharCode(65 + Math.floor(rand() * 26))}${String.fromCharCode(65 + Math.floor(rand() * 26))}${String.fromCharCode(65 + Math.floor(rand() * 26))}${String.fromCharCode(65 + Math.floor(rand() * 26))}${pad(Math.floor(rand() * 9000 + 1000), 4)}${String.fromCharCode(65 + Math.floor(rand() * 26))}`,
+      aadhaar: encryptField(`${pad(Math.floor(rand() * 9000 + 1000), 4)} ${pad(Math.floor(rand() * 9000 + 1000), 4)} ${pad(Math.floor(rand() * 9000 + 1000), 4)}`),
+      pan: encryptField(`${String.fromCharCode(65 + Math.floor(rand() * 26))}${String.fromCharCode(65 + Math.floor(rand() * 26))}${String.fromCharCode(65 + Math.floor(rand() * 26))}${String.fromCharCode(65 + Math.floor(rand() * 26))}${String.fromCharCode(65 + Math.floor(rand() * 26))}${pad(Math.floor(rand() * 9000 + 1000), 4)}${String.fromCharCode(65 + Math.floor(rand() * 26))}`),
       productType: product,
       productKind: kind,
       status: pick(STATUSES, rand()),
@@ -319,8 +319,14 @@ export function generateNotifications(customers: MockCustomer[]): MockNotificati
 }
 
 // Utility masking
-export const maskAadhaar = (a: string) => a.replace(/\d(?=\d{4})/g, "•");
-export const maskPan = (p: string) => p.slice(0, 3) + "•••" + p.slice(-2);
+export const maskAadhaar = (a: string) => {
+  const dec = decryptField(a);
+  return dec.replace(/\d(?=\d{4})/g, "•");
+};
+export const maskPan = (p: string) => {
+  const dec = decryptField(p);
+  return dec.slice(0, 3) + "•••" + dec.slice(-2);
+};
 export const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
 
 // Aggregations for charts
