@@ -103,8 +103,6 @@ const getProductPartners = (slug: string, kind: string): string[] => {
       case "car-loan":
       case "commercial-loan":
         return ["SBI", "HDFC Bank", "ICICI Bank", "Mahindra Finance", "Cholamandalam Finance", "Shriram Finance"];
-      case "gold-loan":
-        return ["Muthoot Finance", "Manappuram Finance", "Rupeek"];
       case "education-loan":
         return ["SBI", "HDFC Credila", "Axis Bank", "ICICI Bank"];
       case "loan-against-property":

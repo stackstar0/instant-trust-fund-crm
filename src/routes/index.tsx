@@ -17,7 +17,6 @@ import {
   Zap,
   Award,
   Users,
-  IndianRupee,
   FileCheck2,
   Phone,
   Mail,
@@ -86,8 +85,7 @@ const extendedLoans = [
   { name: "Commercial Vehicle Loan", slug: "commercial-loan", icon: Truck, rate: "9.8%", startingAmt: "₹1.5 Crore", approvalTime: "48h Approval", tagline: "Funding for trucks, buses & corporate fleets." },
   { name: "Car Loan", slug: "car-loan", icon: Car, rate: "8.7%", startingAmt: "₹50 Lakhs", approvalTime: "24h Approval", tagline: "Drive home your dream hatchback, sedan, or SUV today." },
   { name: "Hospital Funding", slug: "hospital-funding", icon: HeartPulse, rate: "10.5%", startingAmt: "₹10 Crore", approvalTime: "7 Days", tagline: "Capital setup for clinics, diagnostics centers & hospitals." },
-  { name: "Agricultural Loan", slug: "property-loan", icon: Sprout, rate: "7.5%", startingAmt: "₹1 Crore", approvalTime: "3 Days", tagline: "Earthy funding for crop inputs, tractors & farm upgrades." },
-  { name: "Gold Loan", slug: "gold-loan", icon: IndianRupee, rate: "7.9%", startingAmt: "₹50 Lakhs", approvalTime: "1h Disbursal", tagline: "Instant cash against your gold ornaments with maximum security." }
+  { name: "Agricultural Loan", slug: "property-loan", icon: Sprout, rate: "7.5%", startingAmt: "₹1 Crore", approvalTime: "3 Days", tagline: "Earthy funding for crop inputs, tractors & farm upgrades." }
 ];
 
 const extendedInsurance = [
