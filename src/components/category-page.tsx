@@ -47,6 +47,10 @@ const PARTNER_BRANDS: Record<string, { bg: string; text: string; label: string }
   "Shriram Finance": { bg: "#FFB300", text: "#1E293B", label: "SHRIRAM" },
   "Cholamandalam Finance": { bg: "#0A3B75", text: "#FFFFFF", label: "CHOLA" },
   "Mahindra Finance": { bg: "#E31B23", text: "#FFFFFF", label: "MAHINDRA" },
+  "Tata Motors Finance": { bg: "#00A4E4", text: "#FFFFFF", label: "TATA MOTORS" },
+  "HDB Financial Services": { bg: "#004C8F", text: "#FFFFFF", label: "HDB" },
+  "PNB Housing Finance": { bg: "#A20F16", text: "#FFFFFF", label: "PNB HOUSING" },
+  "LIC Housing Finance": { bg: "#0054A6", text: "#FFD200", label: "LIC HOUSING" },
   "ICICI Lombard": { bg: "#8F2A28", text: "#FFFFFF", label: "ICICI LOMBARD" },
   "HDFC ERGO": { bg: "#004C8F", text: "#FFFFFF", label: "HDFC ERGO" },
   "Niva Bupa": { bg: "#0082C3", text: "#FFFFFF", label: "NIVA BUPA" },
@@ -84,29 +88,97 @@ const PARTNER_BRANDS: Record<string, { bg: string; text: string; label: string }
   "Max Life": { bg: "#0F2D59", text: "#FFFFFF", label: "MAX LIFE" },
   "Tata AIA": { bg: "#002B49", text: "#FFFFFF", label: "TATA AIA" },
   "LIC": { bg: "#0054A6", text: "#FFD200", label: "LIC" },
-  "Bajaj Allianz Life": { bg: "#005BAC", text: "#FFFFFF", label: "BAJAJ LIFE" }
+  "Bajaj Allianz Life": { bg: "#005BAC", text: "#FFFFFF", label: "BAJAJ LIFE" },
+  "Aditya Birla Sun Life": { bg: "#D32F2F", text: "#FFFFFF", label: "ADITYA SUN LIFE" },
+  "Kotak Life": { bg: "#DD1B1F", text: "#FFFFFF", label: "KOTAK LIFE" },
 };
 
 const getProductPartners = (slug: string, kind: string): string[] => {
   if (kind === "loan") {
     switch (slug) {
       case "property-loan":
-        return ["SBI", "HDFC Bank", "ICICI Bank", "Axis Bank", "Bank of Baroda", "Punjab National Bank", "Canara Bank"];
+      case "home-loan":
+        return [
+          "SBI",
+          "HDFC Bank",
+          "ICICI Bank",
+          "Axis Bank",
+          "Bank of Baroda",
+          "Punjab National Bank",
+          "Canara Bank",
+          "Union Bank",
+          "Kotak Mahindra Bank",
+          "IDFC FIRST Bank",
+        ];
       case "personal-loan":
       case "professional-loan":
       case "professional-equipment-loan":
-        return ["HDFC Bank", "ICICI Bank", "Axis Bank", "Kotak Mahindra Bank", "Tata Capital", "Bajaj Finserv", "IDFC FIRST Bank", "Yes Bank"];
+        return [
+          "HDFC Bank",
+          "ICICI Bank",
+          "Axis Bank",
+          "Kotak Mahindra Bank",
+          "IDFC FIRST Bank",
+          "Yes Bank",
+          "Bajaj Finserv",
+          "Tata Capital",
+          "Aditya Birla Capital",
+          "Poonawalla Fincorp",
+          "Hero FinCorp",
+          "L&T Finance",
+        ];
       case "business-loan":
       case "hospital-funding":
       case "educational-institution-funding":
-        return ["HDFC Bank", "ICICI Bank", "Axis Bank", "Bajaj Finserv", "Tata Capital", "Aditya Birla Capital", "L&T Finance"];
+        return [
+          "HDFC Bank",
+          "ICICI Bank",
+          "Axis Bank",
+          "Tata Capital",
+          "Bajaj Finserv",
+          "Aditya Birla Capital",
+          "L&T Finance",
+          "Poonawalla Fincorp",
+          "IDFC FIRST Bank",
+          "Kotak Mahindra Bank",
+        ];
       case "car-loan":
       case "commercial-loan":
-        return ["SBI", "HDFC Bank", "ICICI Bank", "Mahindra Finance", "Cholamandalam Finance", "Shriram Finance"];
+        return [
+          "SBI",
+          "HDFC Bank",
+          "ICICI Bank",
+          "Axis Bank",
+          "Mahindra Finance",
+          "Cholamandalam Finance",
+          "Shriram Finance",
+          "Tata Motors Finance",
+          "HDB Financial Services",
+        ];
       case "education-loan":
-        return ["SBI", "HDFC Credila", "Axis Bank", "ICICI Bank"];
+        return [
+          "SBI",
+          "HDFC Bank",
+          "ICICI Bank",
+          "Axis Bank",
+          "Canara Bank",
+          "Bank of Baroda",
+          "Punjab National Bank",
+          "Union Bank",
+        ];
       case "loan-against-property":
-        return ["SBI", "HDFC Bank", "ICICI Bank", "Tata Capital", "Bajaj Finserv"];
+        return [
+          "SBI",
+          "HDFC Bank",
+          "ICICI Bank",
+          "Axis Bank",
+          "Tata Capital",
+          "Bajaj Finserv",
+          "Aditya Birla Capital",
+          "Kotak Mahindra Bank",
+          "PNB Housing Finance",
+          "LIC Housing Finance",
+        ];
       default:
         return ["SBI", "HDFC Bank", "ICICI Bank", "Axis Bank"];
     }
@@ -114,15 +186,52 @@ const getProductPartners = (slug: string, kind: string): string[] => {
     switch (slug) {
       case "health-insurance":
       case "family-insurance":
-        return ["Star Health", "Niva Bupa", "Care Health", "HDFC ERGO", "ICICI Lombard", "Tata AIG", "Aditya Birla Health"];
+        return [
+          "Star Health",
+          "Niva Bupa",
+          "Care Health",
+          "HDFC ERGO",
+          "ICICI Lombard",
+          "Tata AIG",
+          "SBI General",
+          "Aditya Birla Health",
+          "ManipalCigna",
+          "Reliance General",
+        ];
       case "life-insurance":
       case "child-plans":
       case "pension-plans":
-        return ["HDFC Life", "ICICI Prudential", "SBI Life", "Max Life", "Tata AIA", "LIC", "Bajaj Allianz Life"];
+        return [
+          "LIC",
+          "HDFC Life",
+          "ICICI Prudential",
+          "SBI Life",
+          "Max Life",
+          "Tata AIA",
+          "Bajaj Allianz Life",
+          "Aditya Birla Sun Life",
+          "Kotak Life",
+        ];
       case "motor-insurance":
-        return ["ICICI Lombard", "HDFC ERGO", "Tata AIG", "Reliance General", "ACKO", "Go Digit", "Bajaj Allianz"];
+        return [
+          "ICICI Lombard",
+          "HDFC ERGO",
+          "Tata AIG",
+          "Reliance General",
+          "ACKO",
+          "Go Digit",
+          "Bajaj Allianz",
+          "SBI General",
+          "Royal Sundaram",
+        ];
       case "travel-insurance":
-        return ["Tata AIG", "ICICI Lombard", "Reliance General", "HDFC ERGO"];
+        return [
+          "Tata AIG",
+          "ICICI Lombard",
+          "HDFC ERGO",
+          "Reliance General",
+          "Bajaj Allianz",
+        ];
       default:
         return ["ICICI Lombard", "HDFC ERGO", "Tata AIG", "Bajaj Allianz"];
     }

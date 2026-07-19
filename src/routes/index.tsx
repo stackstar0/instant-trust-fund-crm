@@ -55,22 +55,24 @@ export const Route = createFileRoute("/")({
 });
 
 const loanPartners = [
-  "HDFC Bank", "ICICI Bank", "Axis Bank", "Kotak Mahindra Bank", "SBI", "Bank of Baroda",
-  "Punjab National Bank", "Union Bank", "Canara Bank", "IDFC FIRST Bank", "AU Small Finance Bank",
-  "Yes Bank", "IndusInd Bank", "Bajaj Finserv", "Tata Capital", "Aditya Birla Capital",
-  "L&T Finance", "Poonawalla Fincorp", "Hero FinCorp", "Piramal Finance", "Shriram Finance",
-  "Cholamandalam Finance", "Mahindra Finance"
+  "SBI", "HDFC Bank", "ICICI Bank", "Axis Bank", "Bank of Baroda", "Punjab National Bank", 
+  "Canara Bank", "Union Bank", "Kotak Mahindra Bank", "IDFC FIRST Bank", "Yes Bank", 
+  "Bajaj Finserv", "Tata Capital", "Aditya Birla Capital", "Poonawalla Fincorp", 
+  "Hero FinCorp", "L&T Finance", "Mahindra Finance", "Cholamandalam Finance", 
+  "Shriram Finance", "Tata Motors Finance", "HDB Financial Services", 
+  "PNB Housing Finance", "LIC Housing Finance"
 ];
 
 const insurancePartners = [
-  "ICICI Lombard", "HDFC ERGO", "Niva Bupa", "Star Health", "Care Health", "Tata AIG",
-  "SBI General", "Reliance General", "Bajaj Allianz", "Aditya Birla Health", "ManipalCigna",
-  "Future Generali", "Kotak General Insurance", "Go Digit", "ACKO", "Royal Sundaram", "Liberty General"
+  "Star Health", "Niva Bupa", "Care Health", "HDFC ERGO", "ICICI Lombard", "Tata AIG", 
+  "SBI General", "Aditya Birla Health", "ManipalCigna", "Reliance General", "LIC", 
+  "HDFC Life", "ICICI Prudential", "SBI Life", "Max Life", "Tata AIA", "Bajaj Allianz Life", 
+  "Aditya Birla Sun Life", "Kotak Life", "ACKO", "Go Digit", "Bajaj Allianz", "Royal Sundaram"
 ];
 
 const techPartners = [
   "RenewBuy", "PolicyBazaar Partner", "InsuranceDekho Partner", "Turtlemint", "FinShell",
-  "Rupeek (Gold Loans)", "Paisabazaar", "LoanTap", "KreditBee", "MoneyView"
+  "Paisabazaar", "LoanTap", "KreditBee", "MoneyView"
 ];
 
 const extendedLoans = [
@@ -695,7 +697,7 @@ function LandingPage() {
                   </div>
 
                   <div className="mt-4 flex items-center justify-between pt-1">
-                    <span className="text-[10px] font-black text-primary bg-primary/5 border border-primary/10 px-2.5 py-1 rounded-lg">
+                    <span className="text-[10px] font-black text-white bg-lic-blue px-2.5 py-1 rounded-lg">
                       {i.premium}
                     </span>
                     <Link to="/insurance/$slug" params={{ slug: i.slug }} className="text-xs text-secondary font-black hover:underline flex items-center gap-1 group/btn">

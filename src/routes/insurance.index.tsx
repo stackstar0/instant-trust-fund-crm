@@ -46,7 +46,7 @@ function InsuranceIndex() {
               <h3 className="text-xl font-bold">{i.name}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{i.tagline}</p>
               <div className="mt-4 flex items-center justify-between text-xs">
-                <span className="rounded-full bg-secondary px-3 py-1 font-semibold text-primary">
+                <span className="rounded-full bg-lic-blue px-3 py-1 font-semibold text-white">
                   {i.premium}
                 </span>
                 <span className="font-semibold text-primary group-hover:underline">

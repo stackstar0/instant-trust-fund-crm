@@ -47,7 +47,7 @@ function LoansIndex() {
               <h3 className="text-xl font-bold">{l.name}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{l.tagline}</p>
               <div className="mt-4 flex items-center justify-between text-xs">
-                <span className="rounded-full bg-secondary px-3 py-1 font-semibold text-primary">
+                <span className="rounded-full bg-sbi-blue px-3 py-1 font-semibold text-white">
                   {l.rate}
                 </span>
                 <span className="font-semibold text-primary group-hover:underline">
