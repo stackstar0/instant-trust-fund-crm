@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { mockProperties, type MockProperty } from "@/lib/properties-data";
-import satelliteMap from "@/assets/satellite_map.png";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,8 +11,7 @@ import {
   MapPin,
   CheckCircle2,
   Lock,
-  Compass,
-  Layers,
+  ArrowUpRight,
   Map,
   AlertTriangle,
   Phone,
@@ -201,10 +199,7 @@ function PropertySearchPage() {
   const [district, setDistrict] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProperty, setSelectedProperty] = useState<MockProperty | null>(null);
-  const [mapMode, setMapMode] = useState<"dishank" | "satellite">("dishank");
-  
-  // Custom Filters
-  const [priceRange, setPriceRange] = useState<number>(30000000); // 3 Crores default max
+  const [priceRange, setPriceRange] = useState<number>(30000000);
   const [landClass, setLandClass] = useState<string>("All");
 
   // Lead submission modal state
@@ -348,8 +343,11 @@ function PropertySearchPage() {
                   <option value="Bengaluru Urban">Bengaluru Urban</option>
                   <option value="Mysuru">Mysuru</option>
                   <option value="Belagavi">Belagavi</option>
-                  <option value="Mangaluru (Dakshina Kannada)">Mangaluru</option>
+                  <option value="Mangaluru (Dakshina Kannada)">Mangaluru (DK)</option>
                   <option value="Hubli-Dharwad (Dharwad)">Hubli-Dharwad</option>
+                  <option value="Kalaburagi">Kalaburagi</option>
+                  <option value="Shivamogga">Shivamogga</option>
+                  <option value="Tumakuru">Tumakuru</option>
                 </select>
               </div>
 
@@ -557,62 +555,30 @@ function PropertySearchPage() {
                     <p className="text-[10px] text-slate-400 max-w-xs mt-1">Official Dishank mapping is restricted for your admin privilege level.</p>
                   </div>
                 ) : (
-                  <div className="relative h-[250px] w-full rounded-lg bg-slate-900 border overflow-hidden flex items-center justify-center">
-                    {mapMode === "satellite" ? (
-                      <img
-                        src={satelliteMap}
-                        alt="Satellite View"
-                        className="absolute inset-0 h-full w-full object-cover opacity-80"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
-                        backgroundImage: "linear-gradient(to right, #475569 1px, transparent 1px), linear-gradient(to bottom, #475569 1px, transparent 1px)",
-                        backgroundSize: "20px 20px"
-                      }} />
-                    )}
-
-                    <svg className="absolute inset-0 h-full w-full opacity-70" viewBox="0 0 100 100" preserveAspectRatio="none">
-                      <path d="M 0,0 L 40,0 L 35,35 L 0,40 Z" fill={mapMode === "satellite" ? "transparent" : "#334155"} stroke={mapMode === "satellite" ? "rgba(255,255,255,0.4)" : "#475569"} strokeWidth="0.5" />
-                      <path d="M 40,0 L 100,0 L 100,30 L 70,35 L 35,35 Z" fill={mapMode === "satellite" ? "transparent" : "#334155"} stroke={mapMode === "satellite" ? "rgba(255,255,255,0.4)" : "#475569"} strokeWidth="0.5" />
-                      <path d="M 0,40 L 35,35 L 45,70 L 0,80 Z" fill={mapMode === "satellite" ? "transparent" : "#334155"} stroke={mapMode === "satellite" ? "rgba(255,255,255,0.4)" : "#475569"} strokeWidth="0.5" />
-                      <path d="M 70,35 L 100,30 L 100,80 L 80,85 Z" fill={mapMode === "satellite" ? "transparent" : "#334155"} stroke={mapMode === "satellite" ? "rgba(255,255,255,0.4)" : "#475569"} strokeWidth="0.5" />
-                      <path
-                        d="M 35,35 L 70,35 L 80,85 L 45,70 Z"
-                        fill={selectedProperty.status === "Disputed" ? "rgba(239, 68, 68, 0.25)" : "rgba(217, 119, 6, 0.2)"}
-                        stroke={selectedProperty.status === "Disputed" ? "#ef4444" : "#ffd700"}
-                        strokeWidth="2"
-                      />
-                    </svg>
-
-                    <div className="absolute top-[48%] left-[55%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-                      <div className="rounded-full bg-accent h-6 w-6 flex items-center justify-center shadow-lg border border-white text-[9px] font-black text-accent-foreground">
-                        ★
-                      </div>
-                      <span className="mt-1 font-mono text-[10px] font-bold text-white bg-slate-950/80 px-1.5 py-0.5 rounded border border-white/20">
-                        Plot {selectedProperty.surveyNumber}
-                      </span>
+                  <div className="relative h-[380px] w-full rounded-xl overflow-hidden border border-slate-700">
+                    <iframe
+                      key={`${selectedProperty.lat}-${selectedProperty.lng}`}
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=${selectedProperty.lng - 0.012}%2C${selectedProperty.lat - 0.010}%2C${selectedProperty.lng + 0.012}%2C${selectedProperty.lat + 0.010}&layer=mapnik&marker=${selectedProperty.lat}%2C${selectedProperty.lng}`}
+                      className="h-full w-full"
+                      style={{ border: 0 }}
+                      title={`Map view for Survey ${selectedProperty.surveyNumber}`}
+                      loading="lazy"
+                      allowFullScreen
+                    />
+                    {/* Overlay label */}
+                    <div className="absolute top-3 left-3 bg-slate-950/90 text-white text-[11px] font-mono rounded-lg px-3 py-2 border border-white/10 backdrop-blur-sm pointer-events-none">
+                      <div className="font-bold text-amber-400">📍 Survey {selectedProperty.surveyNumber}</div>
+                      <div className="text-slate-300">{selectedProperty.village}, {selectedProperty.district}</div>
+                      <div className="text-slate-400 mt-0.5">Lat: {selectedProperty.lat} | Lng: {selectedProperty.lng}</div>
                     </div>
-
-                    <div className="absolute bottom-3 left-3 flex gap-1 text-[10px] bg-slate-950/80 text-white rounded border border-white/10 p-1">
-                      <button
-                        type="button"
-                        className={`flex items-center gap-1 px-1.5 py-0.5 rounded font-semibold transition-colors ${mapMode === "dishank" ? "bg-primary text-white" : "hover:bg-white/10 text-white/80"}`}
-                        onClick={() => setMapMode("dishank")}
-                      >
-                        <Layers className="h-3 w-3" /> Dishank Map
-                      </button>
-                      <button
-                        type="button"
-                        className={`flex items-center gap-1 px-1.5 py-0.5 rounded font-semibold transition-colors ${mapMode === "satellite" ? "bg-primary text-white" : "hover:bg-white/10 text-white/80"}`}
-                        onClick={() => setMapMode("satellite")}
-                      >
-                        <Compass className="h-3 w-3" /> Satellite
-                      </button>
-                    </div>
-
-                    <div className="absolute top-3 right-3 text-[10px] bg-slate-950/80 text-white/90 rounded border border-white/10 px-2 py-1 font-semibold">
-                      Scale: 1 : 2,500
-                    </div>
+                    <a
+                      href={`https://www.openstreetmap.org/?mlat=${selectedProperty.lat}&mlon=${selectedProperty.lng}#map=15/${selectedProperty.lat}/${selectedProperty.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute bottom-3 right-3 bg-primary text-white text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:bg-brand-navy transition-colors"
+                    >
+                      <ArrowUpRight className="h-3 w-3" /> Open in OpenStreetMap
+                    </a>
                   </div>
                 )}
 
