@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
-import { useAppStore } from "@/lib/app-store";
+import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 
@@ -8,9 +8,13 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminLayoutGuard() {
-  const { currentUser } = useAppStore();
+  const { user, isLoading } = useAuth();
 
-  if (!currentUser || (currentUser.role !== "super_admin" && currentUser.role !== "assistant_admin")) {
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-[70vh]">Loading...</div>;
+  }
+
+  if (!user || (user.role !== "super_admin" && user.role !== "assistant_admin")) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 text-center">
         <div className="h-16 w-16 bg-rose-500/10 text-rose-600 rounded-full flex items-center justify-center mb-6">
@@ -21,8 +25,8 @@ function AdminLayoutGuard() {
           Staff authentication is required to access the admin CRM. Please log in as an administrator to proceed.
         </p>
         <div className="mt-6 flex gap-3">
-          <Link to="/login">
-            <Button className="bg-primary hover:bg-brand-navy">Go to Login</Button>
+          <Link to="/admin/login">
+            <Button className="bg-primary hover:bg-brand-navy">Go to Admin Login</Button>
           </Link>
           <Link to="/">
             <Button variant="outline">Back to Home</Button>

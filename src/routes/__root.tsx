@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
-import { AppStoreProvider } from "@/lib/app-store";
+import { AuthProvider } from "@/lib/auth-context";
 import { AppLayout } from "@/components/app-layout";
 
 import appCss from "../styles.css?url";
@@ -104,16 +104,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Home, Business, Vehicle, Education, Personal & Gold Loans plus Health, Life, Motor, Travel & Family Insurance. Apply online in minutes.",
       },
-      {
-        property: "og:image",
-        content:
-          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/3d0dc96e-7750-4269-ba2b-138d4ec8c6df",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/3d0dc96e-7750-4269-ba2b-138d4ec8c6df",
-      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -150,12 +140,12 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <AppStoreProvider>
+      <AuthProvider>
         <AppLayout>
           <Outlet />
         </AppLayout>
         <Toaster richColors position="top-right" />
-      </AppStoreProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

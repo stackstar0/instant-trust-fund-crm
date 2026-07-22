@@ -1,30 +1,30 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { fetchAPI } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "User Login — IFY CRM" }] }),
-  component: LoginPage,
+export const Route = createFileRoute("/admin/login")({
+  head: () => ({ meta: [{ title: "Admin Portal — IFY CRM" }] }),
+  component: AdminLoginPage,
 });
 
-function LoginPage() {
+function AdminLoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
   
-  const [loginId, setLoginId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loginId || !password) {
-      toast.error("Please enter your email or mobile number and password");
+    if (!email || !password) {
+      toast.error("Please enter email and password");
       return;
     }
     
@@ -32,12 +32,17 @@ function LoginPage() {
     try {
       const data = await fetchAPI("/auth/login", {
         method: "POST",
-        body: JSON.stringify({ loginId, password })
+        body: JSON.stringify({ loginId: email, password })
       });
       
+      if (data.user.role !== "super_admin") {
+        await fetchAPI("/auth/logout", { method: "POST" });
+        throw new Error("Unauthorized: Access restricted to Super Admins only.");
+      }
+
       login(data.user);
-      toast.success(`Welcome back, ${data.user.fullName}`);
-      navigate({ to: "/dashboard" });
+      toast.success("Admin access granted.");
+      navigate({ to: "/admin" });
     } catch (error: any) {
       toast.error(error.message || "Failed to login. Check your credentials.");
     } finally {
@@ -46,33 +51,33 @@ function LoginPage() {
   };
 
   return (
-    <div className="mx-auto max-w-md px-6 py-16 flex flex-col items-center">
-      <div className="text-center w-full mb-8">
-        <h1 className="text-3xl font-black text-brand-navy">Customer Login</h1>
+    <div className="mx-auto max-w-md px-6 py-16 flex flex-col items-center bg-brand-surface min-h-screen">
+      <div className="text-center w-full mb-8 flex flex-col items-center">
+        <div className="bg-primary/10 p-4 rounded-full mb-4">
+          <ShieldCheck className="h-8 w-8 text-primary" />
+        </div>
+        <h1 className="text-2xl font-black text-brand-navy">Super Admin Portal</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Sign in to access your dashboard and applications.
+          Secure access for system administrators
         </p>
       </div>
 
-      <Card className="p-8 w-full border bg-card shadow-lg">
+      <Card className="p-8 w-full border bg-card shadow-2xl rounded-xl">
         <form onSubmit={handleLogin} className="space-y-5">
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-brand-navy">Email or Mobile Number</label>
+            <label className="text-sm font-semibold text-brand-navy">Admin Email</label>
             <input 
-              type="text" 
+              type="email" 
               className="w-full flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              placeholder="name@example.com or 9876543210"
-              value={loginId}
-              onChange={(e) => setLoginId(e.target.value)}
+              placeholder="admin@instantfunds.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
           <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-semibold text-brand-navy">Password</label>
-              <button type="button" className="text-xs text-primary hover:underline">Forgot Password?</button>
-            </div>
+            <label className="text-sm font-semibold text-brand-navy">Password</label>
             <div className="relative">
               <input 
                 type={showPassword ? "text" : "password"} 
@@ -92,24 +97,14 @@ function LoginPage() {
             </div>
           </div>
 
-          <div className="flex items-center">
-            <input type="checkbox" id="remember" className="mr-2 rounded border-gray-300 text-primary focus:ring-primary" />
-            <label htmlFor="remember" className="text-sm text-muted-foreground">Remember me for 30 days</label>
-          </div>
-
           <Button 
             type="submit" 
-            className="w-full bg-primary hover:bg-brand-navy h-11 text-base font-medium transition-all"
+            className="w-full bg-brand-navy hover:bg-brand-navy/90 h-11 text-base font-medium transition-all"
             disabled={isLoading}
           >
-            {isLoading ? "Signing in..." : "Sign In"}
-            {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
+            {isLoading ? "Authenticating..." : "Login to Admin"}
           </Button>
         </form>
-
-        <div className="mt-6 text-center text-sm text-muted-foreground">
-          Don't have an account? <Link to="/register" className="text-primary font-semibold hover:underline">Register here</Link>
-        </div>
       </Card>
     </div>
   );

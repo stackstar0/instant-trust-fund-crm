@@ -1,5 +1,6 @@
-import { createFileRoute, Navigate } from "@tanstack/react-router";
-import { useAppStore } from "@/lib/app-store";
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAPI } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,58 +10,28 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  MessageSquare,
-  AlertTriangle,
-  RefreshCw,
 } from "lucide-react";
-import { lazy, Suspense } from "react";
-import { monthlyApplications, distributionBy, smsWeekly, inr } from "@/lib/mock-data";
-
-const DashboardCharts = lazy(() => import("@/components/dashboard-charts"));
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({ meta: [{ title: "Admin Dashboard — IFY CRM" }] }),
   component: AdminDashboard,
 });
 
-const CHART_COLORS = [
-  "var(--color-chart-1)",
-  "var(--color-chart-2)",
-  "var(--color-chart-3)",
-  "var(--color-chart-4)",
-  "var(--color-chart-5)",
-  "var(--color-brand-navy)",
-  "var(--color-sbi)",
-];
-
-function StatCard({
-  title,
-  value,
-  sub,
-  Icon,
-  tone = "primary",
-}: {
-  title: string;
-  value: string;
-  sub?: string;
-  Icon: React.ComponentType<{ className?: string }>;
-  tone?: "primary" | "accent" | "warn";
-}) {
+function StatCard({ title, value, Icon, tone = "primary" }: any) {
   const toneCls =
     tone === "accent"
-      ? "bg-accent/20 text-brand-navy"
+      ? "bg-amber-500/10 text-amber-600"
       : tone === "warn"
-        ? "bg-destructive/10 text-destructive"
+        ? "bg-rose-500/10 text-rose-600"
         : "bg-primary/10 text-primary";
   return (
-    <Card className="p-5">
+    <Card className="p-5 border shadow-sm">
       <div className="flex items-start justify-between">
         <div>
           <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
             {title}
           </div>
           <div className="mt-2 text-2xl font-black">{value}</div>
-          {sub && <div className="mt-1 text-xs text-muted-foreground">{sub}</div>}
         </div>
         <div className={`rounded-xl p-2.5 ${toneCls}`}>
           <Icon className="h-5 w-5" />
@@ -71,96 +42,79 @@ function StatCard({
 }
 
 function AdminDashboard() {
-  const { customers, sms, notifications, currentUser } = useAppStore();
+  const { data: appData, isLoading } = useQuery({
+    queryKey: ["all-applications"],
+    queryFn: () => fetchAPI("/applications/"),
+  });
 
-  if (currentUser?.role === "assistant_admin") {
-    return <Navigate to="/admin/tasks" replace />;
+  if (isLoading) {
+    return <div className="p-10 text-center animate-pulse">Loading Live CRM Data...</div>;
   }
-  const totalLoans = customers.filter((c) => c.productKind === "loan").length;
-  const totalIns = customers.filter((c) => c.productKind === "insurance").length;
-  const pending = customers.filter((c) => c.status === "Pending").length;
-  const approved = customers.filter((c) => c.status === "Approved").length;
-  const rejected = customers.filter((c) => c.status === "Rejected").length;
-  const today = new Date().toDateString();
-  const smsToday = sms.filter((s) => new Date(s.sentAt).toDateString() === today).length;
-  const smsFailed = sms.filter((s) => s.status === "Failed").length;
-  const renewals = notifications.filter((n) => n.type === "Insurance Renewal").length;
-  const totalDisbursed = customers
-    .filter((c) => c.productKind === "loan" && c.status === "Approved")
-    .reduce((s, c) => s + c.amount, 0);
 
-  const monthly = monthlyApplications(customers);
-  const loanDist = distributionBy(customers, "loan");
-  const insDist = distributionBy(customers, "insurance");
-  const smsChart = smsWeekly(sms);
+  const applications = appData?.applications || [];
+  
+  const totalLoans = applications.filter((c: any) => c.productKind === "loan").length;
+  const totalIns = applications.filter((c: any) => c.productKind === "insurance").length;
+  const pending = applications.filter((c: any) => c.status === "Pending").length;
+  const approved = applications.filter((c: any) => c.status === "Approved").length;
+  const rejected = applications.filter((c: any) => c.status === "Rejected").length;
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-black md:text-4xl">Admin Dashboard</h1>
+          <h1 className="text-3xl font-black md:text-4xl text-brand-navy">Admin Dashboard</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Real-time overview of your CRM (demo data).
+            Real-time overview of the financial CRM.
           </p>
         </div>
-        <Badge className="bg-accent text-accent-foreground">Live · Demo Mode</Badge>
+        <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20">Production Mode</Badge>
       </div>
 
-      {/* Stat grid */}
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Total Customers"
-          value={customers.length.toLocaleString("en-IN")}
-          Icon={Users}
-        />
-        <StatCard
-          title="Total Loans"
-          value={totalLoans.toString()}
-          sub={`${inr(totalDisbursed)} disbursed`}
-          Icon={Landmark}
-        />
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <StatCard title="Total Loans" value={totalLoans.toString()} Icon={Landmark} />
         <StatCard title="Insurance Policies" value={totalIns.toString()} Icon={ShieldCheck} />
-        <StatCard
-          title="Pending Applications"
-          value={pending.toString()}
-          Icon={Clock}
-          tone="accent"
-        />
-        <StatCard title="Approved" value={approved.toString()} Icon={CheckCircle2} />
-        <StatCard title="Rejected" value={rejected.toString()} Icon={XCircle} tone="warn" />
-        <StatCard title="SMS Sent Today" value={smsToday.toString()} Icon={MessageSquare} />
-        <StatCard
-          title="Failed SMS"
-          value={smsFailed.toString()}
-          Icon={AlertTriangle}
-          tone="warn"
-        />
-        <StatCard
-          title="Renewals This Month"
-          value={renewals.toString()}
-          Icon={RefreshCw}
-          tone="accent"
-        />
+        <StatCard title="Total Applications" value={applications.length.toString()} Icon={Users} />
+        <StatCard title="Pending Review" value={pending.toString()} Icon={Clock} tone="accent" />
+        <StatCard title="Approved Applications" value={approved.toString()} Icon={CheckCircle2} />
+        <StatCard title="Rejected Applications" value={rejected.toString()} Icon={XCircle} tone="warn" />
       </div>
 
-      {/* Charts */}
-      <Suspense fallback={
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <Card className="p-6 h-[320px] animate-pulse bg-slate-900/50 border border-slate-800 rounded-2xl" />
-          <Card className="p-6 h-[320px] animate-pulse bg-slate-900/50 border border-slate-800 rounded-2xl" />
-          <Card className="p-6 h-[352px] animate-pulse bg-slate-900/50 border border-slate-800 rounded-2xl" />
-          <Card className="p-6 h-[352px] animate-pulse bg-slate-900/50 border border-slate-800 rounded-2xl" />
+      <Card className="mt-8 p-6 border shadow-sm">
+        <h2 className="text-lg font-bold text-brand-navy border-b pb-3 mb-4">Recent Applications</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-slate-50 text-xs uppercase text-slate-500 font-bold border-b">
+              <tr>
+                <th className="px-4 py-3">Applicant Name</th>
+                <th className="px-4 py-3">Product</th>
+                <th className="px-4 py-3">Type</th>
+                <th className="px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y text-slate-600">
+              {applications.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground border-dashed border-2 m-4 rounded-xl">
+                    The database is currently empty. No records to display.
+                  </td>
+                </tr>
+              ) : (
+                applications.slice(0, 10).map((app: any) => (
+                  <tr key={app._id} className="hover:bg-slate-50/50">
+                    <td className="px-4 py-3 font-semibold text-brand-navy">{app.fullName}</td>
+                    <td className="px-4 py-3 capitalize">{app.productKind}</td>
+                    <td className="px-4 py-3 font-medium">{app.productType}</td>
+                    <td className="px-4 py-3">
+                      <Badge variant="outline">{app.status}</Badge>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      }>
-        <div className="mt-8">
-          <DashboardCharts
-            monthly={monthly}
-            smsChart={smsChart}
-            loanDist={loanDist}
-            insDist={insDist}
-          />
-        </div>
-      </Suspense>
+      </Card>
     </div>
   );
 }

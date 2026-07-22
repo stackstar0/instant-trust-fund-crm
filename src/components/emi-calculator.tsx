@@ -1,7 +1,13 @@
 import { useMemo, useState } from "react";
 import { Slider } from "@/components/ui/slider";
-import { inr } from "@/lib/mock-data";
 import { Card } from "@/components/ui/card";
+
+const inr = (value: number) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(value);
 
 export function EmiCalculator({
   defaultAmount = 2500000,

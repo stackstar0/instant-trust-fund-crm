@@ -330,3 +330,18 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
     next(error);
   }
 };
+
+export const getMe = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = (req as any).user;
+    if (!user) {
+      return next(new AppError("User not found", 404));
+    }
+    res.status(200).json({
+      status: "success",
+      user
+    });
+  } catch (error) {
+    next(error);
+  }
+};

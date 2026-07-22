@@ -26,12 +26,14 @@ import { Route as InsuranceIndexRouteImport } from './routes/insurance.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as LoansSlugRouteImport } from './routes/loans.$slug'
 import { Route as InsuranceSlugRouteImport } from './routes/insurance.$slug'
+import { Route as AssistantLoginRouteImport } from './routes/assistant.login'
 import { Route as AdminTasksRouteImport } from './routes/admin.tasks'
 import { Route as AdminSmsRouteImport } from './routes/admin.sms'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as AdminReferralsRouteImport } from './routes/admin.referrals'
 import { Route as AdminPropertiesRouteImport } from './routes/admin.properties'
 import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminCustomersRouteImport } from './routes/admin.customers'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
@@ -121,6 +123,11 @@ const InsuranceSlugRoute = InsuranceSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => InsuranceRoute,
 } as any)
+const AssistantLoginRoute = AssistantLoginRouteImport.update({
+  id: '/assistant/login',
+  path: '/assistant/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminTasksRoute = AdminTasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
@@ -149,6 +156,11 @@ const AdminPropertiesRoute = AdminPropertiesRouteImport.update({
 const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCustomersRoute = AdminCustomersRouteImport.update({
@@ -183,12 +195,14 @@ export interface FileRoutesByFullPath {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/customers': typeof AdminCustomersRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/properties': typeof AdminPropertiesRoute
   '/admin/referrals': typeof AdminReferralsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/sms': typeof AdminSmsRoute
   '/admin/tasks': typeof AdminTasksRoute
+  '/assistant/login': typeof AssistantLoginRoute
   '/insurance/$slug': typeof InsuranceSlugRoute
   '/loans/$slug': typeof LoansSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -208,12 +222,14 @@ export interface FileRoutesByTo {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/customers': typeof AdminCustomersRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/properties': typeof AdminPropertiesRoute
   '/admin/referrals': typeof AdminReferralsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/sms': typeof AdminSmsRoute
   '/admin/tasks': typeof AdminTasksRoute
+  '/assistant/login': typeof AssistantLoginRoute
   '/insurance/$slug': typeof InsuranceSlugRoute
   '/loans/$slug': typeof LoansSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -237,12 +253,14 @@ export interface FileRoutesById {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/customers': typeof AdminCustomersRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/properties': typeof AdminPropertiesRoute
   '/admin/referrals': typeof AdminReferralsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/sms': typeof AdminSmsRoute
   '/admin/tasks': typeof AdminTasksRoute
+  '/assistant/login': typeof AssistantLoginRoute
   '/insurance/$slug': typeof InsuranceSlugRoute
   '/loans/$slug': typeof LoansSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -267,12 +285,14 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/applications'
     | '/admin/customers'
+    | '/admin/login'
     | '/admin/notifications'
     | '/admin/properties'
     | '/admin/referrals'
     | '/admin/reports'
     | '/admin/sms'
     | '/admin/tasks'
+    | '/assistant/login'
     | '/insurance/$slug'
     | '/loans/$slug'
     | '/admin/'
@@ -292,12 +312,14 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/applications'
     | '/admin/customers'
+    | '/admin/login'
     | '/admin/notifications'
     | '/admin/properties'
     | '/admin/referrals'
     | '/admin/reports'
     | '/admin/sms'
     | '/admin/tasks'
+    | '/assistant/login'
     | '/insurance/$slug'
     | '/loans/$slug'
     | '/admin'
@@ -320,12 +342,14 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/applications'
     | '/admin/customers'
+    | '/admin/login'
     | '/admin/notifications'
     | '/admin/properties'
     | '/admin/referrals'
     | '/admin/reports'
     | '/admin/sms'
     | '/admin/tasks'
+    | '/assistant/login'
     | '/insurance/$slug'
     | '/loans/$slug'
     | '/admin/'
@@ -346,6 +370,7 @@ export interface RootRouteChildren {
   PropertiesRoute: typeof PropertiesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  AssistantLoginRoute: typeof AssistantLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -469,6 +494,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InsuranceSlugRouteImport
       parentRoute: typeof InsuranceRoute
     }
+    '/assistant/login': {
+      id: '/assistant/login'
+      path: '/assistant/login'
+      fullPath: '/assistant/login'
+      preLoaderRoute: typeof AssistantLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/tasks': {
       id: '/admin/tasks'
       path: '/tasks'
@@ -511,6 +543,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNotificationsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/customers': {
       id: '/admin/customers'
       path: '/customers'
@@ -539,6 +578,7 @@ interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminCustomersRoute: typeof AdminCustomersRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   AdminNotificationsRoute: typeof AdminNotificationsRoute
   AdminPropertiesRoute: typeof AdminPropertiesRoute
   AdminReferralsRoute: typeof AdminReferralsRoute
@@ -552,6 +592,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminApplicationsRoute: AdminApplicationsRoute,
   AdminCustomersRoute: AdminCustomersRoute,
+  AdminLoginRoute: AdminLoginRoute,
   AdminNotificationsRoute: AdminNotificationsRoute,
   AdminPropertiesRoute: AdminPropertiesRoute,
   AdminReferralsRoute: AdminReferralsRoute,
@@ -602,6 +643,7 @@ const rootRouteChildren: RootRouteChildren = {
   PropertiesRoute: PropertiesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  AssistantLoginRoute: AssistantLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
