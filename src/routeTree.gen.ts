@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as PropertiesRouteImport } from './routes/properties'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PolicybazaarRouteImport } from './routes/policybazaar'
@@ -46,6 +47,11 @@ const TermsRoute = TermsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PropertiesRoute = PropertiesRouteImport.update({
@@ -190,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/policybazaar': typeof PolicybazaarRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
+  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -217,6 +224,7 @@ export interface FileRoutesByTo {
   '/policybazaar': typeof PolicybazaarRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
+  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -248,6 +256,7 @@ export interface FileRoutesById {
   '/policybazaar': typeof PolicybazaarRoute
   '/privacy': typeof PrivacyRoute
   '/properties': typeof PropertiesRoute
+  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/policybazaar'
     | '/privacy'
     | '/properties'
+    | '/register'
     | '/sitemap.xml'
     | '/terms'
     | '/admin/analytics'
@@ -307,6 +317,7 @@ export interface FileRouteTypes {
     | '/policybazaar'
     | '/privacy'
     | '/properties'
+    | '/register'
     | '/sitemap.xml'
     | '/terms'
     | '/admin/analytics'
@@ -337,6 +348,7 @@ export interface FileRouteTypes {
     | '/policybazaar'
     | '/privacy'
     | '/properties'
+    | '/register'
     | '/sitemap.xml'
     | '/terms'
     | '/admin/analytics'
@@ -368,6 +380,7 @@ export interface RootRouteChildren {
   PolicybazaarRoute: typeof PolicybazaarRoute
   PrivacyRoute: typeof PrivacyRoute
   PropertiesRoute: typeof PropertiesRoute
+  RegisterRoute: typeof RegisterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   AssistantLoginRoute: typeof AssistantLoginRoute
@@ -387,6 +400,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/properties': {
@@ -641,6 +661,7 @@ const rootRouteChildren: RootRouteChildren = {
   PolicybazaarRoute: PolicybazaarRoute,
   PrivacyRoute: PrivacyRoute,
   PropertiesRoute: PropertiesRoute,
+  RegisterRoute: RegisterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   AssistantLoginRoute: AssistantLoginRoute,

@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AppStoreProvider } from "@/lib/app-store";
 import {
   Outlet,
   Link,
@@ -138,14 +139,19 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <AppLayout>
-          <Outlet />
-        </AppLayout>
-        <Toaster richColors position="top-right" />
+        <AppStoreProvider>
+          <AppLayout>
+            <Outlet />
+          </AppLayout>
+
+          <Toaster richColors position="top-right" />
+        </AppStoreProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
+
 }
