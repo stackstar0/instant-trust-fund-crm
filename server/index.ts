@@ -32,7 +32,32 @@ const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
   console.log("[SERVER] Database ready. No demo data seeded.");
 });
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
+app.use(
+  cors({
+    origin: "http://localhost:3000", // change if your frontend runs on another port
+    credentials: true,
+  })
+);
+
+app.use(helmet());
+app.use(morgan("dev"));
+
+app.use(apiRateLimiter);
+
+// Routes
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/applications", applicationRoutes);
+app.use("/api/v1/tasks", taskRoutes);
+app.use("/api/v1/crm", crmRoutes);
+app.use("/api/v1/settings", settingsRoutes);
+
+// Error handler (LAST)
+app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`[SERVER] Express Server running on port ${PORT}`);
 });
