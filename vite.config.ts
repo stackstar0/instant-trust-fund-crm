@@ -13,7 +13,12 @@ export default defineConfig(({ command }) => ({
       server: { entry: "server" },
     }),
     react(),
-    command === "build" ? nitro({ defaultPreset: process.env.NITRO_PRESET || (process.env.VERCEL ? "vercel" : "cloudflare-module") }) : null,
+    command === "build"
+      ? nitro({
+          defaultPreset:
+            process.env.NITRO_PRESET || (process.env.VERCEL ? "vercel" : "cloudflare-module"),
+        })
+      : null,
   ].filter(Boolean),
   css: { transformer: "lightningcss" },
   resolve: {

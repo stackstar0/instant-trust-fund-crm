@@ -7,7 +7,7 @@ export const Route = createFileRoute("/terms")({
       {
         name: "description",
         content:
-          "Terms and conditions governing your use of the Instant Funds for You website and demo services.",
+          "Terms and conditions governing your use of the Instant Funds for You financial services platform.",
       },
     ],
   }),
@@ -20,45 +20,45 @@ export const Route = createFileRoute("/terms")({
       </p>
       <div className="prose prose-slate mt-8 max-w-none space-y-4 text-sm text-muted-foreground">
         <p>
-          <strong>1. Demo notice.</strong> This website is a UI/UX prototype. No real financial
-          transactions, credit checks, disbursals, or insurance policies are processed. All customer
-          names, mobile numbers, PAN, Aadhaar, and SMS content are synthetic and used for
-          demonstration only.
+          <strong>1. Service scope.</strong> This platform facilitates financial-service requests
+          such as loan applications, insurance enquiries, property verification, and CIBIL-report
+          requests. The parties and processes involved may include the platform operator, partner
+          lenders, insurers, and authorised verification providers.
         </p>
         <p>
-          <strong>2. Website ownership.</strong> This demo website is created and maintained for portfolio and
-          prototype demonstration purposes. Any commercial deployment requires appropriate
-          regulatory approvals (RBI, IRDAI) which are the sole responsibility of the deploying
-          operator.
+          <strong>2. Website ownership.</strong> The platform is operated by the deploying entity
+          and must comply with applicable regulatory approvals, including those required by the RBI,
+          IRDAI, or other competent authorities.
         </p>
         <p>
-          <strong>3. Use of information.</strong> Any information you enter into a form on this demo
-          is stored in the browser's memory only, resets on refresh, and is not transmitted to any
-          real backend. Do not enter genuine identity data such as your real Aadhaar or PAN.
+          <strong>3. Use of information.</strong> Information entered into the platform is used
+          solely to process your request and to fulfil legal, compliance, and service obligations.
+          You should not submit any information that is not required for the relevant request.
         </p>
         <p>
           <strong>4. No advisory relationship.</strong> Product descriptions, rates, tenures,
-          premiums, and eligibility criteria shown on this site are illustrative sample values. They
-          do not constitute financial, tax or investment advice, and do not create any
-          advisor–client relationship.
+          premiums, and eligibility criteria shown on this site are illustrative and may be subject
+          to change. They do not constitute financial, tax, or investment advice, and do not create
+          any advisor–client relationship unless expressly agreed in writing.
         </p>
         <p>
-          <strong>5. Trademarks.</strong> Brand references to SBI, LIC or any other bank/insurer are
-          for demonstration only. No affiliation, sponsorship or endorsement is implied.
+          <strong>5. Trademarks.</strong> Brand references to financial institutions or insurers are
+          for informational purposes and do not imply endorsement unless expressly stated.
         </p>
         <p>
-          <strong>6. Intellectual property.</strong> Layout, copy, code and generated imagery are
-          provided under a demo license. Redistribution requires written permission from the
-          creator.
+          <strong>6. Intellectual property.</strong> The platform content, branding, and code are
+          owned by the operator unless otherwise noted. Redistribution requires the operator’s
+          written consent.
         </p>
         <p>
-          <strong>7. Limitation of liability.</strong> The creator is not liable for any decision
-          taken by any user on the basis of information shown on this demo.
+          <strong>7. Limitation of liability.</strong> The platform operator is not liable for
+          decisions taken by users based solely on information provided on the site, except where
+          liability is imposed by law.
         </p>
         <p>
-          <strong>8. Contact.</strong> For questions about this demo, write to{" "}
-          <em>care@instantfundsforyou.demo</em>. Real financial complaints must be addressed to your
-          actual regulated service provider.
+          <strong>8. Contact.</strong> Questions may be sent to <em>care@instantfunds.example</em>.
+          Complaints related to regulated products should be directed to the relevant service
+          provider or ombudsman authority.
         </p>
       </div>
     </div>

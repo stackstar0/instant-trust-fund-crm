@@ -92,7 +92,7 @@ export function EmiCalculator({
           </div>
         </div>
         <p className="text-xs text-white/70">
-          Indicative EMI for demo purposes; actual EMI depends on bank policy.
+          Indicative EMI based on the selected inputs; actual approval and pricing depend on lender policy.
         </p>
       </div>
     </Card>

@@ -30,18 +30,32 @@ const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
 connectDB().then(() => {
-  console.log("[SERVER] Database ready. No demo data seeded.");
+  console.log("[SERVER] Database ready.");
 });
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+const frontendOrigin = process.env.FRONTEND_URL || "http://localhost:8080";
+const allowedOrigins = [
+  frontendOrigin,
+  "http://localhost:3000",
+  "http://127.0.0.1:8080",
+  "http://127.0.0.1:3000",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:3000", // change if your frontend runs on another port
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS policy violation"));
+      }
+    },
     credentials: true,
-  })
+  }),
 );
 
 app.use(helmet());

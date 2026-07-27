@@ -6,6 +6,18 @@ import { AuditLogModel } from "../models/AuditLog";
 import { AppError } from "../middlewares/errorMiddleware";
 import { encryptField, decryptField } from "../utils/crypto";
 
+const getStringParam = (value: string | string[] | undefined): string | undefined => {
+  if (Array.isArray(value)) return value[0];
+  return value;
+};
+
+const buildApplicationLookup = (id: string) => ({
+  $or: [
+    { applicationId: id },
+    ...(id.match(/^[0-9a-fA-F]{24}$/) ? [{ _id: id }] : [])
+  ]
+});
+
 export const apply = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { fullName, mobile, email, aadhaar, pan, productType, productKind, amount, branch, bank, insuranceType, referralCode } = req.body;
@@ -45,7 +57,7 @@ export const apply = async (req: AuthRequest, res: Response, next: NextFunction)
       insuranceType,
       referralCode,
       assignedTo
-    });
+    } as any);
 
     await AuditLogModel.create({
       action: "CREATE_APPLICATION",
@@ -72,16 +84,19 @@ export const getApplications = async (req: AuthRequest, res: Response, next: Nex
     const { status, productKind, search, page = 1, limit = 50 } = req.query;
     const user = req.user!;
     const filterQuery: any = {};
+    const statusValue = typeof status === "string" ? status : undefined;
+    const productKindValue = typeof productKind === "string" ? productKind : undefined;
+    const searchValue = typeof search === "string" ? search : undefined;
 
     // 1) Enforce Ownership: Customer can only view their own applications
     if (user.role === "customer") {
       filterQuery.userId = user.id;
     } else {
       // Admins/Assistants can filter by assignment if needed or view all
-      if (productKind) filterQuery.productKind = productKind;
-      if (status) filterQuery.status = status;
-      if (search) {
-        const query = search.toString().trim();
+      if (productKindValue) filterQuery.productKind = productKindValue;
+      if (statusValue) filterQuery.status = statusValue;
+      if (searchValue) {
+        const query = searchValue.trim();
         filterQuery.$or = [
           { fullName: { $regex: query, $options: "i" } },
           { email: { $regex: query, $options: "i" } },
@@ -121,12 +136,14 @@ export const getApplications = async (req: AuthRequest, res: Response, next: Nex
 
 export const getApplicationDetails = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params; // applicationId or _id
+    const id = getStringParam(req.params.id); // applicationId or _id
     const user = req.user!;
 
-    const application = await ApplicationModel.findOne({
-      $or: [{ applicationId: id }, { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }]
-    }.filter(Boolean) as any);
+    if (!id) {
+      return next(new AppError("Application identifier is required.", 400));
+    }
+
+    const application = await ApplicationModel.findOne(buildApplicationLookup(id));
 
     if (!application) {
       return next(new AppError("Application not found.", 404));
@@ -159,17 +176,19 @@ export const getApplicationDetails = async (req: AuthRequest, res: Response, nex
 
 export const updateStatus = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = getStringParam(req.params.id);
     const { status } = req.body;
     const user = req.user!;
+
+    if (!id) {
+      return next(new AppError("Application identifier is required.", 400));
+    }
 
     if (!["Pending", "Approved", "Rejected", "In Review"].includes(status)) {
       return next(new AppError("Invalid application status.", 400));
     }
 
-    const application = await ApplicationModel.findOne({
-      $or: [{ applicationId: id }, { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }]
-    }.filter(Boolean) as any);
+    const application = await ApplicationModel.findOne(buildApplicationLookup(id));
 
     if (!application) {
       return next(new AppError("Application not found.", 404));
@@ -201,12 +220,14 @@ export const updateStatus = async (req: AuthRequest, res: Response, next: NextFu
 
 export const deleteApplication = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = getStringParam(req.params.id);
     const user = req.user!;
 
-    const application = await ApplicationModel.findOne({
-      $or: [{ applicationId: id }, { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }]
-    }.filter(Boolean) as any);
+    if (!id) {
+      return next(new AppError("Application identifier is required.", 400));
+    }
+
+    const application = await ApplicationModel.findOne(buildApplicationLookup(id));
 
     if (!application) {
       return next(new AppError("Application not found.", 404));
@@ -239,11 +260,15 @@ export const deleteApplication = async (req: AuthRequest, res: Response, next: N
 
 export const uploadDoc = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { applicationId } = req.params;
+    const applicationId = getStringParam(req.params.applicationId);
     const file = req.file;
 
     if (!file) {
       return next(new AppError("Please upload a file.", 400));
+    }
+
+    if (!applicationId) {
+      return next(new AppError("Application identifier is required.", 400));
     }
 
     const application = await ApplicationModel.findOne({ applicationId });
@@ -258,7 +283,7 @@ export const uploadDoc = async (req: AuthRequest, res: Response, next: NextFunct
       originalName: file.originalname,
       mimeType: file.mimetype,
       fileSize: file.size
-    });
+    } as any);
 
     // Append to application's documents list
     application.documents.push(file.filename);

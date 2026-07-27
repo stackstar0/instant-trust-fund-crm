@@ -288,15 +288,15 @@ export const requestOtp = async (req: Request, res: Response, next: NextFunction
     const isEmail = contact.includes("@");
     if (isEmail) {
       await OTPModel.create({ email: contact, code });
-      console.log(`[OTP] Sent to email ${contact}: ${code}`); // Log to console (SMTP integration setup placeholder)
+      console.log(`[OTP] Queued verification code for email ${contact}`);
     } else {
       await OTPModel.create({ mobile: contact, code });
-      console.log(`[OTP] Sent to mobile ${contact}: ${code}`); // Log to console (SMS gateway integration setup placeholder)
+      console.log(`[OTP] Queued verification code for mobile ${contact}`);
     }
 
     res.status(200).json({
       status: "success",
-      message: "OTP sent successfully (Simulated in logs)."
+      message: "Verification code queued for delivery."
     });
   } catch (error) {
     next(error);

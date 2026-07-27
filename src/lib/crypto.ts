@@ -1,5 +1,5 @@
-// Simulates AES-256-GCM field-level encryption for frontend demonstration/storage.
-// Output format matches standard enterprise payload: iv:ciphertext:tag
+// Frontend-safe placeholder for field-level masking in the browser.
+// Production deployments should use server-side encryption only.
 export function encryptField(text: string, secretKey: string = "ify-crm-enterprise-key-2026"): string {
   if (!text) return "";
   
@@ -15,7 +15,7 @@ export function encryptField(text: string, secretKey: string = "ify-crm-enterpri
     ciphertext += ("0" + (charCode ^ keyChar).toString(16)).slice(-2);
   }
   
-  // Mock authentic tag verification string
+  // Placeholder auth tag for local-only masking; server-side encryption is authoritative.
   const authTag = Math.floor(Math.random() * 1000000).toString(16);
   
   return `${iv}:${ciphertext}:${authTag}`;

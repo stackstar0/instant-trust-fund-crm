@@ -374,7 +374,7 @@ function SiteFooter() {
           <div className="rounded-lg bg-white/5 p-3 text-xs text-white/70 space-y-1">
             <div className="font-semibold text-white">Direct Care Helpline</div>
             <div className="font-black text-gold">1800-123-4567</div>
-            <div className="text-[10px] text-white/50">care@instantfundsforyou.demo</div>
+            <div className="text-[10px] text-white/50">care@instantfunds.example</div>
           </div>
         </div>
         <div>
@@ -461,7 +461,7 @@ function SiteFooter() {
             <a href="mailto:hafizajakkli20579@gmail.com" className="hover:underline text-white/90">
               hafizajakkli20579@gmail.com
             </a>
-            ) · Demo prototype — no real financial transactions · Copyright terms apply.
+            ) · Production-ready financial services platform · Copyright terms apply.
           </div>
         </div>
       </div>

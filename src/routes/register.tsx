@@ -15,15 +15,15 @@ export const Route = createFileRoute("/register")({
 function RegisterPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  
+
   const [formData, setFormData] = useState({
     fullName: "",
     mobile: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,17 +33,17 @@ function RegisterPage() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
-    
+
     if (formData.password.length < 8) {
       toast.error("Password must be at least 8 characters long");
       return;
     }
-    
+
     setIsLoading(true);
     try {
       const data = await fetchAPI("/auth/register", {
@@ -52,15 +52,17 @@ function RegisterPage() {
           fullName: formData.fullName,
           mobile: formData.mobile,
           email: formData.email,
-          password: formData.password
-        })
+          password: formData.password,
+        }),
       });
-      
+
       login(data.user);
       toast.success(`Account created successfully. Welcome, ${data.user.fullName}!`);
       navigate({ to: "/dashboard" });
-    } catch (error: any) {
-      toast.error(error.message || "Failed to register. Please try again.");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Failed to register. Please try again.";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +81,7 @@ function RegisterPage() {
         <form onSubmit={handleRegister} className="space-y-4">
           <div className="space-y-1">
             <label className="text-sm font-semibold text-brand-navy">Full Name</label>
-            <input 
+            <input
               type="text"
               name="fullName"
               className="w-full flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -92,7 +94,7 @@ function RegisterPage() {
 
           <div className="space-y-1">
             <label className="text-sm font-semibold text-brand-navy">Mobile Number</label>
-            <input 
+            <input
               type="tel"
               name="mobile"
               className="w-full flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -105,7 +107,7 @@ function RegisterPage() {
 
           <div className="space-y-1">
             <label className="text-sm font-semibold text-brand-navy">Email Address</label>
-            <input 
+            <input
               type="email"
               name="email"
               className="w-full flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -119,8 +121,8 @@ function RegisterPage() {
           <div className="space-y-1">
             <label className="text-sm font-semibold text-brand-navy">Password</label>
             <div className="relative">
-              <input 
-                type={showPassword ? "text" : "password"} 
+              <input
+                type={showPassword ? "text" : "password"}
                 name="password"
                 className="w-full flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary pr-10"
                 placeholder="••••••••"
@@ -128,8 +130,8 @@ function RegisterPage() {
                 onChange={handleChange}
                 required
               />
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-2.5 text-muted-foreground hover:text-brand-navy"
               >
@@ -137,10 +139,10 @@ function RegisterPage() {
               </button>
             </div>
           </div>
-          
+
           <div className="space-y-1">
             <label className="text-sm font-semibold text-brand-navy">Confirm Password</label>
-            <input 
+            <input
               type="password"
               name="confirmPassword"
               className="w-full flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -151,8 +153,8 @@ function RegisterPage() {
             />
           </div>
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full bg-primary hover:bg-brand-navy h-11 text-base font-medium transition-all mt-4"
             disabled={isLoading}
           >
@@ -162,7 +164,10 @@ function RegisterPage() {
         </form>
 
         <div className="mt-6 text-center text-sm text-muted-foreground">
-          Already have an account? <Link to="/login" className="text-primary font-semibold hover:underline">Log in</Link>
+          Already have an account?{" "}
+          <Link to="/login" className="text-primary font-semibold hover:underline">
+            Log in
+          </Link>
         </div>
       </Card>
     </div>

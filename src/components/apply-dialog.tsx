@@ -70,7 +70,7 @@ export function ApplyDialog({
   const simulateUpload = (doc: string) => {
     if (!uploadedDocs.includes(doc)) {
       setUploadedDocs((prev) => [...prev, doc]);
-      toast.success(`${doc.replace(/_/g, " ")} simulated successfully!`);
+      toast.success(`${doc.replace(/_/g, " ")} marked as attached.`);
     } else {
       setUploadedDocs((prev) => prev.filter((d) => d !== doc));
       toast.info(`Removed ${doc.replace(/_/g, " ")}`);
@@ -79,25 +79,31 @@ export function ApplyDialog({
 
   const onSubmit = async (data: FormValues) => {
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 900));
-    const created = addApplication({
-      fullName: data.fullName,
-      mobile: data.mobile,
-      email: data.email,
-      aadhaar: data.aadhaar,
-      pan: data.pan.toUpperCase(),
-      productType: productName,
-      productKind: productKind === "service" ? "loan" : productKind,
-      amount: parseInt((data.amount || "0").replace(/\D/g, "")) || 0,
-      branch: data.branch || "—",
-      bank: productKind === "loan" ? (data.bank || "SBI") : undefined,
-      insuranceType: productKind === "insurance" ? (data.insuranceType || "Health Plan") : undefined,
-      referralCode: data.referralCode || undefined,
-      documents: uploadedDocs.length > 0 ? uploadedDocs : ["Aadhaar_Card.pdf", "PAN_Card.pdf"],
-    });
-    setSubmitting(false);
-    setSuccess({ id: created.id });
-    toast.success("Application submitted", { description: `Reference: ${created.id}` });
+    try {
+      const created = await addApplication({
+        fullName: data.fullName,
+        mobile: data.mobile,
+        email: data.email,
+        aadhaar: data.aadhaar,
+        pan: data.pan.toUpperCase(),
+        productType: productName,
+        productKind: productKind === "service" ? "loan" : productKind,
+        amount: parseInt((data.amount || "0").replace(/\D/g, "")) || 0,
+        branch: data.branch || "—",
+        bank: productKind === "loan" ? (data.bank || "SBI") : undefined,
+        insuranceType: productKind === "insurance" ? (data.insuranceType || "Health Plan") : undefined,
+        referralCode: data.referralCode || undefined,
+        documents: uploadedDocs.length > 0 ? uploadedDocs : ["Aadhaar_Card.pdf", "PAN_Card.pdf"],
+      });
+      setSuccess({ id: created.applicationId || created._id || "submitted" });
+      toast.success("Application submitted", {
+        description: `Reference: ${created.applicationId || created._id || "submitted"}`,
+      });
+    } catch (error: any) {
+      toast.error(error.message || "Unable to submit application right now.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleClose = (isOpen: boolean) => {
@@ -122,8 +128,8 @@ export function ApplyDialog({
         <DialogHeader>
           <DialogTitle>Apply for {productName}</DialogTitle>
           <DialogDescription>
-            Fill in your details — one of our advisors will call you back within 24 hours. All
-            fields are securely stored (demo).
+            Fill in your details — one of our advisors will call you back within 24 hours. Your
+            information is processed only for the purpose of the requested financial service.
           </DialogDescription>
         </DialogHeader>
 

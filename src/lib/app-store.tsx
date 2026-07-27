@@ -1,7 +1,8 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode, useEffect, useMemo, useState } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { fetchAPI } from "@/lib/api";
 
-// Stubbed AppStore to prevent compilation errors in legacy dashboard files
-// while they are being migrated to the real MongoDB API.
+// Legacy UI pages can still consume a safe context shape, but they now use the authenticated backend when available.
 interface AppStoreContextType {
   currentUser: any;
   setCurrentUser: (u: any) => void;
@@ -18,31 +19,55 @@ interface AppStoreContextType {
   addTask: (t: any) => void;
   updateTask: (id: string, updates: any) => void;
   deleteTask: (id: string) => void;
+  addApplication: (payload: any) => Promise<any>;
 }
 
 const StubStoreContext = createContext<AppStoreContextType | undefined>(undefined);
 
 export function AppStoreProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    if (user) {
+      setCurrentUser({ ...user, name: user.fullName || user.email || "User" });
+    } else {
+      setCurrentUser(null);
+    }
+  }, [user]);
+
+  const addApplication = async (payload: any) => {
+    const response = await fetchAPI("/applications/apply", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    return response.application;
+  };
+
+  const value = useMemo(
+    () => ({
+      currentUser,
+      setCurrentUser,
+      customers: [],
+      addCustomer: () => {},
+      updateCustomerStatus: () => {},
+      deleteCustomer: () => {},
+      sms: [],
+      addSms: () => {},
+      notifications: [],
+      addNotification: () => {},
+      dismissNotification: () => {},
+      tasks: [],
+      addTask: () => {},
+      updateTask: () => {},
+      deleteTask: () => {},
+      addApplication,
+    }),
+    [currentUser]
+  );
+
   return (
-    <StubStoreContext.Provider
-      value={{
-        currentUser: null,
-        setCurrentUser: () => {},
-        customers: [],
-        addCustomer: () => {},
-        updateCustomerStatus: () => {},
-        deleteCustomer: () => {},
-        sms: [],
-        addSms: () => {},
-        notifications: [],
-        addNotification: () => {},
-        dismissNotification: () => {},
-        tasks: [],
-        addTask: () => {},
-        updateTask: () => {},
-        deleteTask: () => {},
-      }}
-    >
+    <StubStoreContext.Provider value={value}>
       {children}
     </StubStoreContext.Provider>
   );

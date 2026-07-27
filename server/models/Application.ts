@@ -1,7 +1,7 @@
-import { Schema, model, Document as MongooseDocument } from "mongoose";
+import { Schema, model, Document as MongooseDocument, Types } from "mongoose";
 
 export interface IApplication extends MongooseDocument {
-  userId?: Schema.Types.ObjectId; // References User if registered
+  userId?: Types.ObjectId | string; // References User if registered
   applicationId: string; // Friendly unique identifier (e.g. IFY10001)
   fullName: string;
   mobile: string;

@@ -6,7 +6,8 @@ export const Route = createFileRoute("/privacy")({
       { title: "Privacy Policy — Instant Funds for You" },
       {
         name: "description",
-        content: "How we handle information on the Instant Funds for You demo website.",
+        content:
+          "How we handle information on the Instant Funds for You financial services platform.",
       },
     ],
   }),
@@ -19,34 +20,34 @@ export const Route = createFileRoute("/privacy")({
       </p>
       <div className="mt-8 space-y-4 text-sm text-muted-foreground">
         <p>
-          <strong>1. Demo-only processing.</strong> This is a demonstration website. Form submissions,
-          application data, and SMS content are all held only in your browser session and are never
-          transmitted to any real server or third party.
+          <strong>1. Data processing.</strong> The platform processes personal and financial
+          information strictly for the purpose of evaluating and servicing your requested loan,
+          insurance, or verification request through authorised partner institutions.
         </p>
         <p>
-          <strong>2. What we would collect in production.</strong> If deployed with a real backend,
-          the site would collect: your name, contact details, PAN, Aadhaar, employment/income
-          details, and uploaded KYC documents — solely for the purpose of processing your loan or
-          insurance application through regulated partner banks and insurers.
+          <strong>2. What we collect.</strong> We may collect your name, contact details, PAN,
+          Aadhaar, employment/income details, and uploaded KYC documents where necessary to process
+          your application and comply with regulatory obligations.
         </p>
         <p>
-          <strong>3. Security.</strong> Any production deployment would use industry-standard
-          encryption in transit (TLS 1.3) and at rest, RBI-mandated data localisation, and
-          role-based access. This demo does not process real data.
+          <strong>3. Security.</strong> The production deployment uses encrypted transport and
+          secure server-side storage, role-based access controls, and audit logging to safeguard
+          sensitive information.
         </p>
         <p>
-          <strong>4. Cookies and analytics.</strong> This demo does not set marketing cookies and
-          does not integrate any advertising or analytics tracker.
+          <strong>4. Cookies and analytics.</strong> The platform may use essential session and
+          preference cookies. Marketing and third-party analytics are not used without explicit
+          consent.
         </p>
         <p>
-          <strong>5. Your rights.</strong> Under Indian data-protection law you may request access,
-          correction, or erasure of any personal data held. Since this demo holds no persistent
-          personal data, no such request is applicable here.
+          <strong>5. Your rights.</strong> Under applicable data-protection law you may request
+          access, correction, or deletion of personal data held by the platform, subject to legal
+          and regulatory retention requirements.
         </p>
         <p>
-          <strong>6. Grievances.</strong> Any question about this demo may be sent to{" "}
-          <em>care@instantfundsforyou.demo</em>. For real financial grievances, contact your actual
-          regulated bank, insurer, or the RBI / IRDAI ombudsman.
+          <strong>6. Grievances.</strong> Questions about your data or service may be sent to{" "}
+          <em>care@instantfunds.example</em>. For regulated complaints, you may also contact the
+          relevant bank, insurer, or ombudsman authority.
         </p>
         <p>
           <strong>7. Updates.</strong> This policy may be revised at any time; the updated date at

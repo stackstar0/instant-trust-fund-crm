@@ -15,7 +15,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  
+
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -27,19 +27,21 @@ function LoginPage() {
       toast.error("Please enter your email or mobile number and password");
       return;
     }
-    
+
     setIsLoading(true);
     try {
       const data = await fetchAPI("/auth/login", {
         method: "POST",
-        body: JSON.stringify({ loginId, password })
+        body: JSON.stringify({ loginId, password }),
       });
-      
+
       login(data.user);
       toast.success(`Welcome back, ${data.user.fullName}`);
       navigate({ to: "/dashboard" });
-    } catch (error: any) {
-      toast.error(error.message || "Failed to login. Check your credentials.");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Failed to login. Check your credentials.";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -58,8 +60,8 @@ function LoginPage() {
         <form onSubmit={handleLogin} className="space-y-5">
           <div className="space-y-1">
             <label className="text-sm font-semibold text-brand-navy">Email or Mobile Number</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               className="w-full flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               placeholder="name@example.com or 9876543210"
               value={loginId}
@@ -71,19 +73,21 @@ function LoginPage() {
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <label className="text-sm font-semibold text-brand-navy">Password</label>
-              <button type="button" className="text-xs text-primary hover:underline">Forgot Password?</button>
+              <button type="button" className="text-xs text-primary hover:underline">
+                Forgot Password?
+              </button>
             </div>
             <div className="relative">
-              <input 
-                type={showPassword ? "text" : "password"} 
+              <input
+                type={showPassword ? "text" : "password"}
                 className="w-full flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary pr-10"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-2.5 text-muted-foreground hover:text-brand-navy"
               >
@@ -93,12 +97,18 @@ function LoginPage() {
           </div>
 
           <div className="flex items-center">
-            <input type="checkbox" id="remember" className="mr-2 rounded border-gray-300 text-primary focus:ring-primary" />
-            <label htmlFor="remember" className="text-sm text-muted-foreground">Remember me for 30 days</label>
+            <input
+              type="checkbox"
+              id="remember"
+              className="mr-2 rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            <label htmlFor="remember" className="text-sm text-muted-foreground">
+              Remember me for 30 days
+            </label>
           </div>
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full bg-primary hover:bg-brand-navy h-11 text-base font-medium transition-all"
             disabled={isLoading}
           >
@@ -108,7 +118,10 @@ function LoginPage() {
         </form>
 
         <div className="mt-6 text-center text-sm text-muted-foreground">
-          Don't have an account? <Link to="/register" className="text-primary font-semibold hover:underline">Register here</Link>
+          Don't have an account?{" "}
+          <Link to="/register" className="text-primary font-semibold hover:underline">
+            Register here
+          </Link>
         </div>
       </Card>
     </div>

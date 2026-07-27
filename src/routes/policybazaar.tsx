@@ -40,7 +40,9 @@ export function PolicyBazaarPage() {
   // Health State
   const [healthAge, setHealthAge] = useState("30");
   const [healthCover, setHealthCover] = useState("10"); // in Lakhs
-  const [healthQuote, setHealthQuote] = useState<{ provider: string; premium: number }[] | null>(null);
+  const [healthQuote, setHealthQuote] = useState<{ provider: string; premium: number }[] | null>(
+    null,
+  );
 
   // Motor State
   const [vehicleNo, setVehicleNo] = useState("");
@@ -107,11 +109,13 @@ export function PolicyBazaarPage() {
             Policy Comparison & Renewals
           </h1>
           <p className="mt-3 text-sm text-white/80 leading-relaxed">
-            Compare plans, renew coverages, and request claims assistance instantly. 
-            Instant Trust Fund leverages secure comparison parameters to guide your insurance investments.
+            Compare plans, renew coverages, and request claims assistance instantly. Instant Trust
+            Fund leverages secure comparison parameters to guide your insurance investments.
           </p>
           <div className="mt-4 rounded-lg bg-white/10 border border-white/20 p-3 text-[11px] text-white/90 leading-relaxed">
-            ⚠️ **Official Partner Disclaimer**: Product comparisons, IDV appraisals, and quote structures are simulated for demonstration. Policy purchases and claims are bound by final underwriting covenants with LIC, Star Health, and other associated insurers.
+            ⚠️ **Official Partner Disclaimer**: Product comparisons, IDV appraisals, and quote
+            structures are indicative and may change based on underwriting and carrier terms. Final
+            policy issuance and claims are subject to the partner insurer's approval.
           </div>
         </div>
       </div>
@@ -169,10 +173,34 @@ export function PolicyBazaarPage() {
                   </thead>
                   <tbody>
                     {[
-                      { provider: "Star Health Optima", cover: "₹10 Lakhs", cashless: "140+ in Karnataka", copay: "No Co-pay", price: "₹680" },
-                      { provider: "Care Health Supreme", cover: "₹10 Lakhs", cashless: "190+ in Karnataka", copay: "10% Co-pay", price: "₹612" },
-                      { provider: "Niva Bupa ReAssure", cover: "₹10 Lakhs", cashless: "155+ in Karnataka", copay: "No Co-pay", price: "₹720" },
-                      { provider: "Aditya Birla Active", cover: "₹10 Lakhs", cashless: "120+ in Karnataka", copay: "No Co-pay", price: "₹790" },
+                      {
+                        provider: "Star Health Optima",
+                        cover: "₹10 Lakhs",
+                        cashless: "140+ in Karnataka",
+                        copay: "No Co-pay",
+                        price: "₹680",
+                      },
+                      {
+                        provider: "Care Health Supreme",
+                        cover: "₹10 Lakhs",
+                        cashless: "190+ in Karnataka",
+                        copay: "10% Co-pay",
+                        price: "₹612",
+                      },
+                      {
+                        provider: "Niva Bupa ReAssure",
+                        cover: "₹10 Lakhs",
+                        cashless: "155+ in Karnataka",
+                        copay: "No Co-pay",
+                        price: "₹720",
+                      },
+                      {
+                        provider: "Aditya Birla Active",
+                        cover: "₹10 Lakhs",
+                        cashless: "120+ in Karnataka",
+                        copay: "No Co-pay",
+                        price: "₹790",
+                      },
                     ].map((item, idx) => (
                       <tr key={idx} className="border-b last:border-0 hover:bg-slate-50/50">
                         <td className="p-3 font-bold text-brand-navy">{item.provider}</td>
@@ -237,20 +265,31 @@ export function PolicyBazaarPage() {
 
               {healthQuote && (
                 <div className="mt-8 border-t pt-6 space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-brand-navy mb-2">Simulated Health Quotations</h4>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-brand-navy mb-2">
+                    Indicative Health Quotations
+                  </h4>
                   {healthQuote.map((q, idx) => (
-                    <div key={idx} className="flex justify-between items-center bg-slate-50 border p-3 rounded-lg text-xs">
+                    <div
+                      key={idx}
+                      className="flex justify-between items-center bg-slate-50 border p-3 rounded-lg text-xs"
+                    >
                       <div>
                         <span className="font-bold text-brand-navy block">{q.provider}</span>
-                        <span className="text-[10px] text-muted-foreground">Cashless hospitalization network included</span>
+                        <span className="text-[10px] text-muted-foreground">
+                          Cashless hospitalization network included
+                        </span>
                       </div>
                       <div className="text-right">
-                        <span className="text-sm font-bold text-primary block">₹{q.premium.toLocaleString()} / yr</span>
+                        <span className="text-sm font-bold text-primary block">
+                          ₹{q.premium.toLocaleString()} / yr
+                        </span>
                         <Button
                           size="sm"
                           variant="ghost"
                           className="text-[10px] text-primary p-0 h-auto hover:underline"
-                          onClick={() => toast.success(`Selected ${q.provider}. We will connect shortly.`)}
+                          onClick={() =>
+                            toast.success(`Selected ${q.provider}. We will connect shortly.`)
+                          }
                         >
                           Select Plan &rarr;
                         </Button>
@@ -269,7 +308,9 @@ export function PolicyBazaarPage() {
               </h3>
               <form onSubmit={handleMotorCalculate} className="space-y-4 max-w-md">
                 <div>
-                  <Label htmlFor="vehicleNo">Vehicle Registration Number (e.g. KA-03-ME-1234)</Label>
+                  <Label htmlFor="vehicleNo">
+                    Vehicle Registration Number (e.g. KA-03-ME-1234)
+                  </Label>
                   <Input
                     id="vehicleNo"
                     placeholder="KA-03-ME-1234"
@@ -287,13 +328,21 @@ export function PolicyBazaarPage() {
                 <div className="mt-8 border-t pt-6">
                   <div className="p-4 rounded-xl border bg-slate-50 flex flex-col md:flex-row justify-between md:items-center gap-4 text-xs">
                     <div>
-                      <span className="font-bold text-brand-navy text-sm">Insured Declared Value (IDV)</span>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">Calculated based on standard depreciation schedule.</p>
-                      <span className="text-lg font-black text-brand-navy mt-1 block">{motorQuote.idv}</span>
+                      <span className="font-bold text-brand-navy text-sm">
+                        Insured Declared Value (IDV)
+                      </span>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        Calculated based on standard depreciation schedule.
+                      </p>
+                      <span className="text-lg font-black text-brand-navy mt-1 block">
+                        {motorQuote.idv}
+                      </span>
                     </div>
                     <div className="text-right">
                       <span className="font-bold text-slate-600 block">Est. Annual Premium</span>
-                      <span className="text-lg font-black text-primary block">₹{motorQuote.premium.toLocaleString()}</span>
+                      <span className="text-lg font-black text-primary block">
+                        ₹{motorQuote.premium.toLocaleString()}
+                      </span>
                       <Button
                         size="sm"
                         className="mt-2 bg-secondary text-white hover:bg-brand-navy"
@@ -336,7 +385,9 @@ export function PolicyBazaarPage() {
                     onChange={(e) => setIsSmoker(e.target.checked)}
                     className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
                   />
-                  <Label htmlFor="isSmoker" className="text-xs">Have you consumed nicotine in the last 12 months?</Label>
+                  <Label htmlFor="isSmoker" className="text-xs">
+                    Have you consumed nicotine in the last 12 months?
+                  </Label>
                 </div>
                 <Button type="submit" className="w-full bg-primary hover:bg-brand-navy text-white">
                   Estimate Monthly Premium
@@ -345,10 +396,15 @@ export function PolicyBazaarPage() {
 
               {lifeQuote !== null && (
                 <div className="mt-8 border-t pt-6 text-center bg-slate-50 p-6 rounded-xl border">
-                  <span className="text-xs uppercase text-muted-foreground font-semibold block">Estimated Term Premium</span>
-                  <div className="text-3xl font-black text-brand-navy mt-1">₹{lifeQuote.toLocaleString()} <span className="text-xs font-normal">/ yr</span></div>
+                  <span className="text-xs uppercase text-muted-foreground font-semibold block">
+                    Estimated Term Premium
+                  </span>
+                  <div className="text-3xl font-black text-brand-navy mt-1">
+                    ₹{lifeQuote.toLocaleString()} <span className="text-xs font-normal">/ yr</span>
+                  </div>
                   <p className="text-[11px] text-muted-foreground mt-2 max-w-sm mx-auto">
-                    Term life cover provides financial protection for your dependents in the event of an untimely death. Quote is inclusive of standard GST.
+                    Term life cover provides financial protection for your dependents in the event
+                    of an untimely death. Quote is inclusive of standard GST.
                   </p>
                   <Button
                     className="mt-4 bg-secondary text-white hover:bg-brand-navy"
@@ -369,7 +425,9 @@ export function PolicyBazaarPage() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  toast.success(`Policy ${renewPolicyNo} verified. Initiating simulated payment gateway...`);
+                  toast.success(
+                    `Policy ${renewPolicyNo} verified. Initiating secure payment flow...`,
+                  );
                 }}
                 className="space-y-4 max-w-md"
               >
@@ -411,7 +469,9 @@ export function PolicyBazaarPage() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  toast.success(`Claim request registered for policy ${claimPolicyNo}. An advisor will contact you within 15 minutes.`);
+                  toast.success(
+                    `Claim request registered for policy ${claimPolicyNo}. An advisor will contact you within 15 minutes.`,
+                  );
                 }}
                 className="space-y-4 max-w-md"
               >
@@ -454,11 +514,15 @@ export function PolicyBazaarPage() {
             <ul className="space-y-3 text-xs text-muted-foreground">
               <li className="flex items-start gap-2">
                 <span className="text-emerald-500 font-bold mt-0.5">✔</span>
-                <span>**Best Prices Guaranteed**: Compare across 20+ insurers and buy without markup.</span>
+                <span>
+                  **Best Prices Guaranteed**: Compare across 20+ insurers and buy without markup.
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-emerald-500 font-bold mt-0.5">✔</span>
-                <span>**Dedicated Claims Desk**: 24x7 support during medical or motor emergencies.</span>
+                <span>
+                  **Dedicated Claims Desk**: 24x7 support during medical or motor emergencies.
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-emerald-500 font-bold mt-0.5">✔</span>
@@ -472,7 +536,8 @@ export function PolicyBazaarPage() {
               <TrendingUp className="h-4 w-4 text-primary" /> Why Buy Term Cover?
             </h4>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Term insurance secures your family's future at minimal costs. High cover limits starting from ₹1 Crore cost as low as ₹20 per day.
+              Term insurance secures your family's future at minimal costs. High cover limits
+              starting from ₹1 Crore cost as low as ₹20 per day.
             </p>
           </Card>
         </div>

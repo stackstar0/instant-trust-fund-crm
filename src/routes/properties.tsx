@@ -12,9 +12,7 @@ function PropertiesList() {
     <div className="mx-auto max-w-7xl px-6 py-10">
       <div className="mb-8">
         <h1 className="text-3xl font-black text-brand-navy">Available Properties</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Explore our real estate portfolio.
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">Explore our real estate portfolio.</p>
       </div>
 
       <Card className="p-12 text-center border-dashed border-2 shadow-sm flex flex-col items-center">

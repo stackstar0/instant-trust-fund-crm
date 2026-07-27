@@ -637,7 +637,7 @@ function LandingPage() {
             <Badge className="bg-gold text-dark-navy font-bold px-2 py-0.5">Powered by TransUnion</Badge>
             <h2 className="text-2xl font-black md:text-3xl text-white">Check Your CIBIL Score Online</h2>
             <p className="text-xs text-white/90 max-w-xl">
-              Understand your creditworthiness, access personalized home loan interest matches, and download detailed bureau records instantly. Simulated verification fee ₹499 applies.
+              Understand your creditworthiness, access personalized loan eligibility guidance, and track bureau requests securely. Charges apply only when an authorised provider confirms a request.
             </p>
           </div>
           <div className="md:col-span-4 flex flex-col gap-2">
@@ -654,7 +654,7 @@ function LandingPage() {
             </Button>
             <Button
               className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/30 font-bold"
-              onClick={() => toast.success("Simulated Loan eligibility check activated...")}
+              onClick={() => toast.success("Loan eligibility request initiated.")}
             >
               Eligibility Report
             </Button>
