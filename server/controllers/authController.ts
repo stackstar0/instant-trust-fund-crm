@@ -331,6 +331,74 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
+export const updateMe = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const authUser = (req as any).user;
+    if (!authUser) {
+      return next(new AppError("User not found", 404));
+    }
+
+    const { fullName, email, mobile, dob } = req.body;
+    const updateData: Record<string, unknown> = {};
+
+    if (typeof fullName === "string" && fullName.trim().length > 0) {
+      updateData.fullName = fullName.trim();
+    }
+    if (typeof email === "string" && email.trim().length > 0) {
+      updateData.email = email.trim().toLowerCase();
+    }
+    if (typeof mobile === "string" && mobile.trim().length > 0) {
+      updateData.mobile = mobile.trim();
+    }
+    if (typeof dob === "string") {
+      updateData.dob = dob.trim();
+    }
+
+    if (updateData.email) {
+      const existingEmail = await UserModel.findOne({
+        email: updateData.email as string,
+        _id: { $ne: authUser.id },
+      });
+      if (existingEmail) {
+        return next(new AppError("Email is already in use by another account.", 400));
+      }
+    }
+
+    if (updateData.mobile) {
+      const existingMobile = await UserModel.findOne({
+        mobile: updateData.mobile as string,
+        _id: { $ne: authUser.id },
+      });
+      if (existingMobile) {
+        return next(new AppError("Mobile number is already in use by another account.", 400));
+      }
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(authUser.id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedUser) {
+      return next(new AppError("Unable to update profile.", 500));
+    }
+
+    res.status(200).json({
+      status: "success",
+      user: {
+        id: updatedUser._id,
+        fullName: updatedUser.fullName,
+        email: updatedUser.email,
+        mobile: updatedUser.mobile,
+        dob: updatedUser.dob,
+        role: updatedUser.role,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getMe = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = (req as any).user;
@@ -339,7 +407,7 @@ export const getMe = async (req: Request, res: Response, next: NextFunction) => 
     }
     res.status(200).json({
       status: "success",
-      user
+      user,
     });
   } catch (error) {
     next(error);

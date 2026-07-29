@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register, login, logout, refresh, requestOtp, verifyOtp, getMe } from "../controllers/authController";
+import { register, login, logout, refresh, requestOtp, verifyOtp, getMe, updateMe } from "../controllers/authController";
 import { authRateLimiter } from "../middlewares/securityMiddleware";
 import { protect } from "../middlewares/authMiddleware";
 
@@ -13,6 +13,7 @@ router.post("/refresh", refresh);
 
 // Protected routes
 router.get("/me", protect, getMe);
+router.patch("/me", protect, updateMe);
 
 // OTP routes
 router.post("/request-otp", authRateLimiter, requestOtp);

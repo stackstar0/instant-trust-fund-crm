@@ -4,6 +4,7 @@ export interface IUser extends MongooseDocument {
   fullName: string;
   email?: string;
   mobile?: string;
+  dob?: string;
   passwordHash: string;
   role: "customer";
   status: "active" | "suspended";
@@ -49,6 +50,11 @@ const UserSchema = new Schema<IUser>(
       trim: true,
       index: true,
       match: [/^[6-9]\d{9}$/, "Please provide a valid 10-digit Indian mobile number"],
+    },
+    dob: {
+      type: String,
+      trim: true,
+      default: undefined,
     },
     passwordHash: { type: String, required: true, select: false },
     role: { type: String, default: "customer", enum: ["customer"], immutable: true },

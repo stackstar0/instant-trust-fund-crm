@@ -8,6 +8,7 @@ export interface User {
   fullName: string;
   email?: string;
   mobile?: string;
+  dob?: string;
   role: Role;
   permissions?: string[];
 }
