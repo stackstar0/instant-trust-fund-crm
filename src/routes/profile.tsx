@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState, type FormEvent } from "react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth, type User } from "@/lib/auth-context";
 import { fetchAPI } from "@/lib/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -28,6 +28,10 @@ type ApplicationsResponse = {
 type ActivityResponse = {
   items: ActivityItem[];
 };
+
+interface UpdateProfileResponse {
+  user?: User;
+}
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "My Profile — IFY CRM" }] }),
@@ -82,7 +86,11 @@ function ProfilePage() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const updateProfileMutation = useMutation<unknown, unknown, { fullName: string; email: string; mobile: string; dob: string }>({
+  const updateProfileMutation = useMutation<
+    UpdateProfileResponse,
+    unknown,
+    { fullName: string; email: string; mobile: string; dob: string }
+  >({
     mutationFn: async (payload: { fullName: string; email: string; mobile: string; dob: string }) => {
       return await fetchAPI("/auth/me", {
         method: "PATCH",
@@ -190,8 +198,8 @@ function ProfilePage() {
               </div>
 
               <div className="sm:col-span-2">
-                <Button type="submit" className="flex w-full items-center justify-center gap-2" disabled={updateProfileMutation.isMutating}>
-                  {updateProfileMutation.isMutating ? "Saving..." : "Save changes"}
+                <Button type="submit" className="flex w-full items-center justify-center gap-2" disabled={updateProfileMutation.isPending}>
+                  {updateProfileMutation.isPending ? "Saving..." : "Save changes"}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
