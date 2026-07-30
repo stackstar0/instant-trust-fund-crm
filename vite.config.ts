@@ -15,9 +15,10 @@ export default defineConfig(({ command }) => ({
     react(),
     command === "build"
       ? nitro({
-          defaultPreset:
-            process.env.NITRO_PRESET || (process.env.VERCEL ? "vercel" : "cloudflare-module"),
-        })
+        defaultPreset:
+          process.env.NITRO_PRESET ||
+          (process.env.VERCEL ? "vercel" : "node-server")
+      })
       : null,
   ].filter(Boolean),
   css: { transformer: "lightningcss" },
