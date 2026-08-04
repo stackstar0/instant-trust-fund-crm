@@ -6,7 +6,10 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import path from "path";
+import { fileURLToPath } from "url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import { connectDB } from "./config/db";
 import { errorHandler } from "./middlewares/errorMiddleware";
 import { apiRateLimiter } from "./middlewares/securityMiddleware";
@@ -92,7 +95,7 @@ app.get("/api/v1/health", (req, res) => {
 const clientBuildPath = path.join(__dirname, "../../.output/public");
 app.use(express.static(clientBuildPath));
 
-app.get("*", (req, res) => {
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(clientBuildPath, "index.html"));
 });
 
