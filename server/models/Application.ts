@@ -46,14 +46,13 @@ const ApplicationSchema = new Schema<IApplication>(
 );
 
 // Pre-save hook to generate sequential / auto-increment style Application IDs
-ApplicationSchema.pre("validate", async function (next) {
+ApplicationSchema.pre("validate", async function () {
   if (!this.applicationId) {
     // Generate a random but structured ID for this instance if needed,
     // or let the service compute a sequential counter.
     const count = await model("Application").countDocuments();
     this.applicationId = `IFY${(10000 + count + 1).toString()}`;
   }
-  next();
 });
 
 export const ApplicationModel = model<IApplication>("Application", ApplicationSchema);
