@@ -89,7 +89,7 @@ app.get("/api/v1/health", (req, res) => {
 });
 
 // Serve static React build in production
-const clientBuildPath = path.join(__dirname, "../../dist");
+const clientBuildPath = path.join(__dirname, "../../.output/public");
 app.use(express.static(clientBuildPath));
 
 app.get("*", (req, res) => {
