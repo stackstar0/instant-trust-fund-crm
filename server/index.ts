@@ -27,24 +27,18 @@ import settingsRoutes from "./routes/settingsRoutes";
 import bhoomiRoutes from "./routes/bhoomiRoutes";
 
 // Seed scripts
-import { seedAdmins } from "./scripts/seedSuperAdmin";
-import { importCustomerData } from "./scripts/importCustomers";
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB and run initial seeds
+// Connect to MongoDB
 connectDB().then(async () => {
   console.log("[SERVER] Database connected.");
-  try {
-    await seedAdmins();
-    await importCustomerData();
-  } catch (err) {
-    console.error("[SERVER] Seeding/Import error:", err);
-  }
 });
 
 // Middlewares
+app.set("trust proxy", 1); // Trust first proxy (Nginx) for secure cookies and rate limiting
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

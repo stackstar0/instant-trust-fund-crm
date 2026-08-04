@@ -16,7 +16,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "server:dev": "tsx watch server/index.ts",
-    "dev:all": "concurrently \"npm run dev:client\" \"npm run server:dev\""
+    "dev:all": "concurrently \"npm run dev:client\" \"npm run server:dev\"",
+    "db:seed": "tsx server/scripts/runSeeder.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1095.0",

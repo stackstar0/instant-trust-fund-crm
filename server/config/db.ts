@@ -15,6 +15,11 @@ export const connectDB = async (): Promise<string> => {
   }
 
   // Local fallback
+  if (process.env.NODE_ENV === "production") {
+    console.error("[DATABASE] FATAL ERROR: Cannot connect to MongoDB Atlas in production. Crashing...");
+    process.exit(1);
+  }
+
   try {
     const localUri = "mongodb://127.0.0.1:27017/ify_crm";
     const conn = await mongoose.connect(localUri, { serverSelectionTimeoutMS: 3000 });
