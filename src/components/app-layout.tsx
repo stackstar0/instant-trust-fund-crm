@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { type ReactNode, useState, useMemo } from "react";
 import { useAppStore } from "@/lib/app-store";
+import { useAuth } from "@/lib/auth-context";
 import {
   Home,
   Landmark,
@@ -126,6 +127,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { currentUser } = useAppStore();
+  const { logout } = useAuth();
 
   const visibleAdminNav = useMemo(() => {
     if (!currentUser) return [];
@@ -205,6 +207,18 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 >
                   {currentUser.role === "super_admin" || currentUser.role === "assistant_admin" ? "Console" : "Profile"}
                 </Link>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    logout().then(() => {
+                      window.location.href = "/";
+                    });
+                  }}
+                  className="hidden sm:inline-flex h-8 px-3 text-xs"
+                >
+                  Logout
+                </Button>
               </>
             ) : (
               <Link
@@ -344,6 +358,21 @@ export function AppLayout({ children }: { children: ReactNode }) {
                       />
                     ))}
                   </>
+                )}
+                {currentUser && (
+                  <div className="mt-4 px-2">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent/60"
+                      onClick={() => {
+                        logout().then(() => {
+                          window.location.href = "/";
+                        });
+                      }}
+                    >
+                      Logout
+                    </Button>
+                  </div>
                 )}
               </nav>
             </aside>
