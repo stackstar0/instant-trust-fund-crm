@@ -7,11 +7,13 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  redirect,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth-context";
 import { AppLayout } from "@/components/app-layout";
+import { fetchAPI } from "@/lib/api";
 
 import appCss from "../styles.css?url";
 import { reportError } from "../lib/error-reporting";
@@ -75,6 +77,75 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: async ({ context, location }) => {
+    const path = location.pathname;
+
+    // List of routes that bypass auth checks
+    const publicPaths = [
+      "/",
+      "/login",
+      "/register",
+      "/admin/login",
+      "/assistant/login",
+      "/privacy",
+      "/terms",
+    ];
+
+    if (publicPaths.includes(path)) {
+      return;
+    }
+
+    let user: any = null;
+    try {
+      user = await context.queryClient.ensureQueryData({
+        queryKey: ["auth", "me"],
+        queryFn: async () => {
+          const data = await fetchAPI("/auth/me");
+          return data.user;
+        },
+        staleTime: 5 * 60 * 1000,
+      });
+    } catch {
+      user = null;
+    }
+
+    if (!user) {
+      if (path.startsWith("/admin")) {
+        throw redirect({ to: "/admin/login" });
+      }
+      if (path.startsWith("/assistant")) {
+        throw redirect({ to: "/assistant/login" });
+      }
+      throw redirect({ to: "/login" });
+    }
+
+    // Role-based authorization
+    if (path.startsWith("/admin")) {
+      if (user.role !== "super_admin" && user.role !== "assistant_admin") {
+        throw redirect({ to: "/admin/login" });
+      }
+    }
+
+    if (path.startsWith("/assistant")) {
+      if (user.role !== "assistant_admin") {
+        throw redirect({ to: "/assistant/login" });
+      }
+    }
+
+    // Customer route protection
+    if (
+      path.startsWith("/dashboard") ||
+      path.startsWith("/cibil") ||
+      path.startsWith("/profile")
+    ) {
+      if (user.role !== "customer") {
+        if (user.role === "super_admin" || user.role === "assistant_admin") {
+          throw redirect({ to: "/admin" });
+        }
+        throw redirect({ to: "/login" });
+      }
+    }
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },

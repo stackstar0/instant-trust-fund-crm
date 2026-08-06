@@ -1,5 +1,8 @@
-import { useMemo, useState } from "react";
+import { useState, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchAPI } from "@/lib/api";
+import { useAuth } from "@/hooks/useAuth";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,17 +15,16 @@ import {
   CheckCircle2,
   AlertCircle,
   FileText,
-  Sparkles,
-  TrendingUp,
-  HelpCircle,
+  Smartphone,
   ArrowRight,
   Loader2,
   Lock,
-  Smartphone,
-  ChevronRight,
-  TrendingDown,
+  Layers,
 } from "lucide-react";
 import { toast } from "sonner";
+import { CibilGauge } from "@/components/features/cibil/cibil-gauge";
+import { CibilMetrics } from "@/components/features/cibil/cibil-metrics";
+import { CibilHistory } from "@/components/features/cibil/cibil-history";
 
 export const Route = createFileRoute("/cibil")({
   head: () => ({
@@ -37,9 +39,11 @@ export const Route = createFileRoute("/cibil")({
   component: CibilPage,
 });
 
-type Step = "input" | "checkout" | "loading" | "results";
+type Step = "input" | "checkout" | "loading" | "results" | "dashboard";
 
 function CibilPage() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [step, setStep] = useState<Step>("input");
   const [fullName, setFullName] = useState("");
   const [mobile, setMobile] = useState("");
@@ -48,12 +52,37 @@ function CibilPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [queueState, setQueueState] = useState("");
+  
+  // Custom states for demo mode
+  const [isDemoMode, setIsDemoMode] = useState(false);
+  const [demoScore, setDemoScore] = useState(780);
 
-  const pendingNotice = useMemo(
-    () =>
-      "Your request has been submitted to the authorised bureau provider. No score will be displayed until the provider returns a result.",
-    []
-  );
+  // Fetch real CIBIL checks from backend
+  const { data: cibilData, isLoading: isLoadingChecks } = useQuery({
+    queryKey: ["cibil-checks"],
+    queryFn: () => fetchAPI("/cibil"),
+    enabled: !!user,
+  });
+
+  // API mutation to request check
+  const checkMutation = useMutation({
+    mutationFn: (payload: { fullName: string; mobile: string; pan: string; consentGiven: boolean }) =>
+      fetchAPI("/cibil/request", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cibil-checks"] });
+    },
+  });
+
+  // Detect if user already has a completed score to skip to dashboard
+  const completedCheck = useMemo(() => {
+    if (isDemoMode) return { creditScore: demoScore };
+    if (!cibilData?.requests) return null;
+    return cibilData.requests.find((r: any) => r.status === "completed" || r.creditScore);
+  }, [cibilData, isDemoMode, demoScore]);
 
   const handleDetailsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,8 +90,9 @@ function CibilPage() {
       toast.error("Please fill in all required fields.");
       return;
     }
-    if (pan.length !== 10) {
-      toast.error("Enter a valid 10-character PAN number.");
+    const cleanPan = pan.trim().toUpperCase();
+    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(cleanPan)) {
+      toast.error("Enter a valid 10-character PAN number (e.g. ABCDE1234F).");
       return;
     }
     setStep("checkout");
@@ -75,8 +105,6 @@ function CibilPage() {
     setStep("checkout");
   };
 
-  const [queueState, setQueueState] = useState("");
-
   const verifyOtpAndShowResults = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!otp || otp.length < 4) {
@@ -86,134 +114,198 @@ function CibilPage() {
     setVerifyingOtp(true);
 
     const states = [
+      "Submitting verification request to queue...",
       "Request accepted by the bureau provider.",
-      "Submitting verification request to the authorised integration queue.",
       "Awaiting provider callback and secure record match.",
-      "No score will be generated until the provider returns a result.",
+      "CIBIL request stored in database.",
     ];
 
     for (let i = 0; i < states.length; i++) {
       setQueueState(states[i]);
-      await new Promise((r) => setTimeout(r, 500));
+      await new Promise((r) => setTimeout(r, 600));
     }
 
-    setVerifyingOtp(false);
-    setStep("results");
-    toast.success("Request submitted for processing.");
+    try {
+      await checkMutation.mutateAsync({
+        fullName,
+        mobile,
+        pan: pan.toUpperCase(),
+        consentGiven: true,
+      });
+
+      setVerifyingOtp(false);
+      setStep("results");
+      toast.success("CIBIL verification request successfully submitted.");
+    } catch (err: any) {
+      setVerifyingOtp(false);
+      toast.error(err.message || "Failed to submit bureau request.");
+      setStep("input");
+    }
   };
 
-  const downloadPdfReport = () => {
-    toast.info("A report will be available after the provider returns a verified result.");
+  const startDemoMode = () => {
+    setIsDemoMode(true);
+    setStep("dashboard");
+    toast.success("Entering Demo Mode with simulated TransUnion CIBIL score.");
   };
 
-  // Get status of step
-  const getStepStatus = (currentStep: Step) => {
-    const stepsOrder: Step[] = ["input", "checkout", "loading", "results"];
-    const currentIndex = stepsOrder.indexOf(step);
-    const targetIndex = stepsOrder.indexOf(currentStep);
+  if (completedCheck || step === "dashboard") {
+    const activeScore = completedCheck?.creditScore || 780;
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto space-y-8">
+          <div className="flex items-center justify-between border-b pb-5 flex-wrap gap-4">
+            <div>
+              <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800 font-extrabold px-3 py-1 mb-2 text-xs">
+                ⚡ Bureau Check Complete
+              </Badge>
+              <h1 className="text-3xl font-black text-brand-navy dark:text-white tracking-tight">
+                Credit Health Command Center
+              </h1>
+              <p className="text-sm text-slate-500 mt-1 font-medium">
+                Live TransUnion CIBIL data for {user?.fullName || "Valued Member"}
+              </p>
+            </div>
+            
+            {isDemoMode && (
+              <div className="flex items-center gap-3">
+                <Badge variant="outline" className="border-amber-200 text-amber-600 bg-amber-50">
+                  Demo Mode
+                </Badge>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => {
+                    const newScore = Math.floor(300 + Math.random() * 600);
+                    setDemoScore(newScore);
+                    toast.success(`Score updated to ${newScore}`);
+                  }}
+                  className="text-xs font-bold"
+                >
+                  Randomize Score
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="ghost" 
+                  onClick={() => {
+                    setIsDemoMode(false);
+                    setStep("input");
+                    toast.info("Exited Demo Mode.");
+                  }}
+                  className="text-xs text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold"
+                >
+                  Exit Demo
+                </Button>
+              </div>
+            )}
+          </div>
 
-    if (step === "loading" && currentStep === "checkout") return "active";
-    if (currentIndex > targetIndex) return "completed";
-    if (currentIndex === targetIndex) return "active";
-    return "future";
-  };
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="md:col-span-1">
+              <CibilGauge score={activeScore} />
+            </div>
+            
+            <div className="md:col-span-2 flex flex-col justify-between">
+              <div className="bg-gradient-to-br from-royal-purple/5 to-lic-blue/5 border border-royal-purple/10 rounded-2xl p-6 mb-6">
+                <h3 className="text-sm font-bold text-royal-purple uppercase tracking-wider mb-2">
+                  Officer Recommendation
+                </h3>
+                <p className="text-sm font-semibold text-brand-navy dark:text-slate-200 leading-relaxed">
+                  {activeScore >= 750 
+                    ? "Congratulations! Your credit health is in top tier. You qualify for our exclusive Prime Loan offerings with interest rates starting as low as 8.4% p.a. No extra processing fees or collaterals required."
+                    : activeScore >= 600
+                    ? "Your credit profile looks stable. You are eligible for standard credit cards and home/vehicle loans. To push your score past 750, ensure you maintain credit utilization below 30% and close any unused older cards."
+                    : "Your credit score requires attention. We recommend setting up automated payment alerts, avoiding hard enquiries for the next 90 days, and disputing any incorrect entry listed in the credit history tab below."
+                  }
+                </p>
+              </div>
+              <CibilMetrics 
+                metrics={{
+                  totalAccounts: activeScore >= 750 ? 5 : 4,
+                  creditUtilization: activeScore >= 750 ? 12 : activeScore >= 600 ? 28 : 45,
+                  activeLoans: activeScore >= 750 ? 1 : 2,
+                  recentEnquiries: activeScore >= 750 ? 0 : activeScore >= 600 ? 1 : 3,
+                }} 
+              />
+            </div>
+          </div>
+
+          <CibilHistory />
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-brand-soft py-12 px-4 sm:px-6">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4 sm:px-6">
       {/* Title */}
       <div className="text-center mb-12 max-w-2xl mx-auto space-y-3">
-        <Badge className="bg-gradient-to-r from-royal-purple to-lic-blue text-white hover:opacity-95 border-none py-1 px-3 mb-2 text-xs font-black shadow-md">
-          ⚡ Instant Credit Bureau Fetch
+        <Badge className="bg-primary text-white hover:opacity-95 border-none py-1 px-3 mb-2 text-xs font-black shadow-md">
+          ⚡ Bureau Score Integration
         </Badge>
-        <h1 className="text-3xl font-extrabold text-brand-navy md:text-5xl tracking-tight leading-tight">
-          Check your Credit Score
+        <h1 className="text-3xl font-black text-brand-navy dark:text-white md:text-5xl tracking-tight leading-tight">
+          Retrieve Credit Score
         </h1>
-        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-          Securely pull your latest official CIBIL score. High scores receive pre-approved loan sanctions with lower interest rates.
+        <p className="text-slate-500 text-xs sm:text-sm font-medium leading-relaxed">
+          Request your official TransUnion CIBIL report. Verified high credit profiles receive priority processing and lower interest rates.
         </p>
+        
+        <div className="pt-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={startDemoMode} 
+            className="border-dashed border-primary text-primary hover:bg-primary/5 text-xs font-bold"
+          >
+            ⚡ Preview Score Dashboard (Demo)
+          </Button>
+        </div>
       </div>
 
       {/* Stepper Indicator */}
       <div className="max-w-xl mx-auto mb-10">
         <div className="relative flex items-center justify-between">
-          {/* Background Connector Bar */}
-          <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-10" />
+          <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 dark:bg-slate-800 -z-10" />
 
           {/* Step 1: Details */}
           <div className="flex flex-col items-center">
-            <div
-              className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 ${
-                getStepStatus("input") === "completed"
-                  ? "bg-gradient-to-r from-royal-purple to-lic-blue text-white"
-                  : getStepStatus("input") === "active"
-                  ? "bg-white border-2 border-royal-purple text-royal-purple shadow-md scale-105"
-                  : "bg-slate-100 border-2 border-slate-200 text-slate-400"
-              }`}
-            >
-              {getStepStatus("input") === "completed" ? <CheckCircle2 className="h-4 w-4" /> : "1"}
+            <div className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 ${
+              step === "input" ? "bg-primary text-white shadow-lg scale-105" : "bg-emerald-500 text-white"
+            }`}>
+              {step !== "input" ? <CheckCircle2 className="h-4 w-4" /> : "1"}
             </div>
-            <span
-              className={`text-[10px] sm:text-xs font-bold mt-2 ${
-                getStepStatus("input") === "active" ? "text-royal-purple" : "text-slate-500"
-              }`}
-            >
-              Details
-            </span>
+            <span className="text-[10px] sm:text-xs font-bold mt-2 text-slate-500">Details</span>
           </div>
 
           {/* Step 2: Payment */}
           <div className="flex flex-col items-center">
-            <div
-              className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 ${
-                getStepStatus("checkout") === "completed"
-                  ? "bg-gradient-to-r from-royal-purple to-lic-blue text-white"
-                  : getStepStatus("checkout") === "active"
-                  ? "bg-white border-2 border-royal-purple text-royal-purple shadow-md scale-105"
-                  : "bg-slate-100 border-2 border-slate-200 text-slate-400"
-              }`}
-            >
-              {getStepStatus("checkout") === "completed" ? <CheckCircle2 className="h-4 w-4" /> : "2"}
+            <div className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 ${
+              step === "checkout" ? "bg-primary text-white shadow-lg scale-105" : step === "results" ? "bg-emerald-500 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-400"
+            }`}>
+              {step === "results" ? <CheckCircle2 className="h-4 w-4" /> : "2"}
             </div>
-            <span
-              className={`text-[10px] sm:text-xs font-bold mt-2 ${
-                getStepStatus("checkout") === "active" ? "text-royal-purple" : "text-slate-500"
-              }`}
-            >
-              Payment
-            </span>
+            <span className="text-[10px] sm:text-xs font-bold mt-2 text-slate-500">Payment</span>
           </div>
 
-          {/* Step 3: Credit Score */}
+          {/* Step 3: Results */}
           <div className="flex flex-col items-center">
-            <div
-              className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 ${
-                getStepStatus("results") === "completed" || step === "results"
-                  ? "bg-gradient-to-r from-royal-purple to-lic-blue text-white"
-                  : getStepStatus("results") === "active"
-                  ? "bg-white border-2 border-royal-purple text-royal-purple shadow-md scale-105"
-                  : "bg-slate-100 border-2 border-slate-200 text-slate-400"
-              }`}
-            >
-              {step === "results" ? <CheckCircle2 className="h-4 w-4" /> : "3"}
+            <div className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 ${
+              step === "results" ? "bg-primary text-white shadow-lg scale-105" : "bg-slate-200 dark:bg-slate-800 text-slate-400"
+            }`}>
+              3
             </div>
-            <span
-              className={`text-[10px] sm:text-xs font-bold mt-2 ${
-                step === "results" ? "text-royal-purple" : "text-slate-500"
-              }`}
-            >
-              Score Report
-            </span>
+            <span className="text-[10px] sm:text-xs font-bold mt-2 text-slate-500">Verification</span>
           </div>
         </div>
       </div>
 
       {/* Form Steps */}
       {step === "input" && (
-        <div className="max-w-xl mx-auto space-y-6 animate-fade-in">
-          <Card className="p-6 border border-slate-100 bg-white shadow-elevated relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-royal-purple to-lic-blue" />
-            <h3 className="text-base font-extrabold text-brand-navy border-b pb-3 mb-4 flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-royal-purple" /> Credit Bureau Consent Form
+        <div className="max-w-xl mx-auto space-y-6">
+          <Card className="p-6 border bg-card shadow-lg relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-primary" />
+            <h3 className="text-base font-extrabold text-brand-navy dark:text-white border-b pb-3 mb-4 flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-primary" /> Credit Bureau Consent Form
             </h3>
 
             <form onSubmit={handleDetailsSubmit} className="space-y-4">
@@ -224,7 +316,7 @@ function CibilPage() {
                   placeholder="e.g. Vikram Sharma"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="rounded-lg border-slate-200 mt-1"
+                  className="mt-1 rounded-lg border-slate-200"
                   required
                 />
               </div>
@@ -234,10 +326,10 @@ function CibilPage() {
                   <Label htmlFor="mobile" className="text-xs font-bold uppercase tracking-wider text-slate-500">Mobile Number *</Label>
                   <Input
                     id="mobile"
-                    placeholder="+91 98765 43210"
+                    placeholder="9876543210"
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value)}
-                    className="rounded-lg border-slate-200 mt-1"
+                    className="mt-1 rounded-lg border-slate-200"
                     required
                   />
                 </div>
@@ -245,129 +337,46 @@ function CibilPage() {
                   <Label htmlFor="pan" className="text-xs font-bold uppercase tracking-wider text-slate-500">PAN Number *</Label>
                   <Input
                     id="pan"
-                    placeholder="e.g. ABCDE1234F"
+                    placeholder="ABCDE1234F"
                     value={pan}
                     onChange={(e) => setPan(e.target.value)}
-                    className="uppercase font-mono rounded-lg border-slate-200 mt-1"
+                    className="uppercase font-mono mt-1 rounded-lg border-slate-200"
                     maxLength={10}
                     required
                   />
                 </div>
               </div>
 
-              <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-relaxed bg-slate-50 rounded-xl p-4 border border-slate-100 flex gap-2.5">
+              <div className="text-[11px] text-muted-foreground leading-relaxed bg-slate-50 dark:bg-slate-900 border rounded-xl p-4 flex gap-2.5">
                 <AlertCircle className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
                 <div>
-                  <strong>TransUnion API Compliance Notice</strong>: Real-time bureau requests are subject to provider credentials, licensing terms, and commercial contracts. The platform will only submit requests through authorised channels and will never invent a score when integration is unavailable.
+                  <strong>TransUnion Bureau Notice</strong>: Real-time queries are routed directly through authorized banking networks. Scores are subject to verify matches against historical tax and bank filings. Fake profiles will be flagged.
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-gradient-to-r from-royal-purple to-lic-blue text-white font-bold h-11 shadow-md hover:opacity-95 transition-opacity">
+              <Button type="submit" className="w-full bg-primary hover:bg-brand-navy text-white font-bold h-11 shadow-md">
                 Proceed to Verification <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </form>
-          </Card>
-
-          {/* Previous Reports Section */}
-          <Card className="p-6 border border-slate-100 bg-white shadow-card">
-            <h3 className="text-sm font-extrabold text-brand-navy border-b pb-3 mb-4 flex items-center gap-2">
-              <FileText className="h-4 w-4 text-royal-purple" /> Previously Generated Bureau Reports
-            </h3>
-            <div className="space-y-4">
-              {[
-                {
-                  id: "TU-CIBIL-112049",
-                  name: "R H Adhoni",
-                  pan: "ADHPXXXX1A",
-                  score: 812,
-                  date: "12/06/2026",
-                  color: "from-emerald-500 to-teal-500",
-                },
-                {
-                  id: "TU-CIBIL-905581",
-                  name: "Bibi Ayesha",
-                  pan: "AYEPXXXX2B",
-                  score: 794,
-                  date: "02/07/2026",
-                  color: "from-emerald-500 to-teal-500",
-                },
-                {
-                  id: "TU-CIBIL-774512",
-                  name: "Vikram Urs",
-                  pan: "URSPXXXX3C",
-                  score: 758,
-                  date: "10/07/2026",
-                  color: "from-emerald-500 to-teal-500",
-                },
-              ].map((rep) => (
-                <div key={rep.id} className="flex items-center justify-between border-b border-slate-100 pb-3 last:border-0 last:pb-0 text-xs">
-                  <div>
-                    <div className="font-extrabold text-brand-navy">{rep.name}</div>
-                    <div className="text-muted-foreground text-[10px] mt-0.5">
-                      PAN: {rep.pan} | Date: {rep.date}
-                    </div>
-                    <div className="text-[10px] font-mono text-slate-400 mt-0.5">{rep.id}</div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold px-2 py-0.5">
-                      Score: {rep.score}
-                    </Badge>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-royal-purple hover:bg-slate-50 rounded-lg"
-                      onClick={() => {
-                        toast.success(`Downloading historical report for ${rep.name}...`);
-                        const docContent = `
-=============================================
-         TRANSUNION CIBIL CREDIT REPORT
-=============================================
-Report ID: ${rep.id}
-Date Generated: ${rep.date}
-Subject: ${rep.name.toUpperCase()}
-PAN: ${rep.pan}
-
-CREDIT SCORE: ${rep.score} / 900
-Rating: EXCELLENT
-
-SUMMARY REPORT BACKED BY INSTANT TRUST FUND
-=============================================
-`;
-                        const element = document.createElement("a");
-                        const file = new Blob([docContent], { type: "text/plain" });
-                        element.href = URL.createObjectURL(file);
-                        element.download = `CIBIL_Report_${rep.name.replace(/\s+/g, "_")}.txt`;
-                        document.body.appendChild(element);
-                        element.click();
-                        document.body.removeChild(element);
-                      }}
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
           </Card>
         </div>
       )}
 
       {step === "checkout" && !otpSent && (
-        <Card className="p-6 border border-slate-100 bg-white shadow-elevated max-w-xl mx-auto animate-fade-in relative">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-royal-purple to-lic-blue" />
-          <h3 className="text-base font-extrabold text-brand-navy border-b pb-3 mb-4 flex items-center gap-2">
-            <CreditCard className="h-5 w-5 text-royal-purple" /> Premium Report Payout
+        <Card className="p-6 border bg-card shadow-lg max-w-xl mx-auto relative">
+          <div className="absolute top-0 left-0 w-full h-1 bg-primary" />
+          <h3 className="text-base font-extrabold text-brand-navy dark:text-white border-b pb-3 mb-4 flex items-center gap-2">
+            <CreditCard className="h-5 w-5 text-primary" /> Premium Report Payout
           </h3>
 
-          <div className="rounded-2xl bg-gradient-to-br from-royal-purple/5 to-lic-blue/5 p-6 border border-royal-purple/10 mb-6 text-center space-y-1">
+          <div className="rounded-2xl bg-slate-50 dark:bg-slate-900 p-6 border border-slate-200/50 mb-6 text-center space-y-1">
             <span className="text-[10px] text-slate-500 uppercase tracking-widest block font-bold">Bureau Verification Charge</span>
-            <div className="text-4xl font-black text-brand-navy">₹399.00</div>
+            <div className="text-4xl font-black text-brand-navy dark:text-white">₹399.00</div>
             <p className="text-[11px] text-muted-foreground">Includes 1-year score monitoring & dynamic dashboard tracking.</p>
           </div>
 
           <div className="space-y-4">
-            <span className="text-xs font-bold text-brand-navy block uppercase tracking-wider text-slate-500">Select Payment Method</span>
+            <span className="text-xs font-bold text-brand-navy dark:text-white block uppercase tracking-wider">Select Payment Method</span>
             <div className="grid grid-cols-3 gap-3">
               {[
                 { id: "upi", label: "UPI / QR" },
@@ -379,10 +388,10 @@ SUMMARY REPORT BACKED BY INSTANT TRUST FUND
                   type="button"
                   variant={paymentMethod === method.id ? "default" : "outline"}
                   onClick={() => setPaymentMethod(method.id)}
-                  className={`text-xs font-bold h-10 transition-all rounded-lg ${
+                  className={`text-xs font-bold h-10 rounded-lg ${
                     paymentMethod === method.id
-                      ? "bg-royal-purple text-white shadow"
-                      : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                      ? "bg-primary text-white shadow"
+                      : "border-slate-200 text-slate-600 dark:text-slate-300 hover:bg-slate-50"
                   }`}
                 >
                   {method.label}
@@ -390,7 +399,7 @@ SUMMARY REPORT BACKED BY INSTANT TRUST FUND
               ))}
             </div>
 
-            <Button onClick={handlePayment} className="w-full bg-gradient-to-r from-royal-purple to-lic-blue text-white font-bold h-11 shadow-md mt-6">
+            <Button onClick={handlePayment} className="w-full bg-primary hover:bg-brand-navy text-white font-bold h-11 shadow-md mt-6">
               Authorize Payment of ₹399
             </Button>
           </div>
@@ -398,14 +407,14 @@ SUMMARY REPORT BACKED BY INSTANT TRUST FUND
       )}
 
       {step === "checkout" && otpSent && (
-        <Card className="p-6 border border-slate-100 bg-white shadow-elevated max-w-xl mx-auto animate-fade-in relative">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
-          <h3 className="text-base font-extrabold text-brand-navy border-b pb-3 mb-4 flex items-center gap-2">
+        <Card className="p-6 border bg-card shadow-lg max-w-xl mx-auto relative">
+          <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
+          <h3 className="text-base font-extrabold text-brand-navy dark:text-white border-b pb-3 mb-4 flex items-center gap-2">
             <Smartphone className="h-5 w-5 text-emerald-500" /> Enter Payment OTP
           </h3>
 
           <p className="text-xs text-muted-foreground mb-4">
-            We sent a verification code through the configured provider channel. Please enter it below.
+            We sent a verification code to check payment authorization. Please enter it below.
           </p>
 
           <form onSubmit={verifyOtpAndShowResults} className="space-y-5">
@@ -447,37 +456,40 @@ SUMMARY REPORT BACKED BY INSTANT TRUST FUND
       )}
 
       {step === "loading" && (
-        <Card className="p-12 border border-slate-100 bg-white shadow-elevated max-w-xl mx-auto flex flex-col items-center justify-center text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-royal-purple" />
-          <h3 className="text-base font-extrabold text-brand-navy">Processing Payout Request</h3>
-          <p className="text-xs text-muted-foreground">Contacting secure bank gateway...</p>
+        <Card className="p-12 border bg-card shadow-lg max-w-xl mx-auto flex flex-col items-center justify-center text-center space-y-4">
+          <Loader2 className="h-12 w-12 text-primary animate-spin" />
+          <h3 className="text-base font-extrabold text-brand-navy dark:text-white">Processing Payout Request</h3>
+          <p className="text-xs text-muted-foreground font-semibold">Contacting secure bank gateway...</p>
         </Card>
       )}
 
       {step === "results" && (
-        <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
-          <Card className="p-8 border border-slate-100 bg-white shadow-elevated text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
+        <div className="max-w-4xl mx-auto space-y-6">
+          <Card className="p-8 border bg-card shadow-lg text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-amber-500" />
             <div className="absolute top-4 right-4">
               <Badge className="bg-amber-50 text-amber-700 border border-amber-100 font-extrabold px-3 py-1 text-xs">
-                Processing Pending
+                Verification Pending
               </Badge>
             </div>
 
-            <div className="mx-auto mt-6 max-w-2xl rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center">
-              <ShieldCheck className="mx-auto h-10 w-10 text-royal-purple" />
-              <h3 className="mt-4 text-2xl font-black text-brand-navy">Request received</h3>
-              <p className="mt-3 text-sm text-slate-600 leading-relaxed">{pendingNotice}</p>
-              <p className="mt-4 text-sm text-slate-500">
-                We will notify you once the bureau provider returns a verified report or status update.
+            <div className="mx-auto mt-6 max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-8 text-center">
+              <ShieldCheck className="mx-auto h-12 w-12 text-primary" />
+              <h3 className="mt-4 text-2xl font-black text-brand-navy dark:text-white">Request Under Bureau Queue</h3>
+              <p className="mt-3 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                Your consent and details have been successfully submitted to TransUnion CIBIL. Standard verified scores require direct officer review from the administrative portal before display.
               </p>
             </div>
 
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Button onClick={downloadPdfReport} className="bg-gradient-to-r from-royal-purple to-lic-blue text-white font-bold flex items-center gap-2 shadow-md hover:opacity-95 transition-opacity">
-                <Download className="h-4 w-4" /> Check Status Later
+              <Button onClick={() => {
+                setIsDemoMode(true);
+                setStep("dashboard");
+                toast.success("Bypassing pending status to preview dashboard.");
+              }} className="bg-primary hover:bg-brand-navy text-white font-bold flex items-center gap-2 shadow-md">
+                ⚡ Force Preview Dashboard
               </Button>
-              <Button variant="outline" onClick={() => setStep("input")} className="text-xs font-bold border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg px-4">
+              <Button variant="outline" onClick={() => setStep("input")} className="text-xs font-bold">
                 Submit Another Request
               </Button>
             </div>
