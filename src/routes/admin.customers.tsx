@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchAPI, getAuthToken } from "@/lib/api";
+import { api, fetchAPI } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -56,26 +56,19 @@ function AdminCustomers() {
               formData.append("file", file);
 
               try {
-                const token = getAuthToken();
-                const response = await fetch("http://localhost:5000/api/v1/customers/upload-bulk", {
-                  method: "POST",
+                const response = await api.post("/customers/upload-bulk", formData, {
                   headers: {
-                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
                   },
-                  body: formData,
                 });
                 
-                const result = await response.json();
+                const result = response.data;
                 
-                if (response.ok) {
-                  toast.success(`Success! Imported ${result.count} records.`);
-                  queryClient.invalidateQueries({ queryKey: ["customers"] });
-                } else {
-                  toast.error(result.message || "Failed to upload bulk data.");
-                }
-              } catch (error) {
+                toast.success(`Success! Imported ${result.count} records.`);
+                queryClient.invalidateQueries({ queryKey: ["customers"] });
+              } catch (error: any) {
                 console.error("Upload error:", error);
-                toast.error("An error occurred during file upload.");
+                toast.error(error.response?.data?.message || "An error occurred during file upload.");
               } finally {
                 setIsUploading(false);
                 if (fileInputRef.current) fileInputRef.current.value = "";

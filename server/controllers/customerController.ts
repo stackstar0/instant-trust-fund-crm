@@ -4,7 +4,7 @@ import { CustomerModel } from "../models/Customer";
 import { AuditLogModel } from "../models/AuditLog";
 import { AppError } from "../middlewares/errorMiddleware";
 import * as xlsx from "xlsx";
-import pdfParse from "pdf-parse";
+const pdfParse = require("pdf-parse");
 import { PropertyRequestModel } from "../models/PropertyRequest";
 
 export const getCustomers = async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -115,7 +115,7 @@ export const createCustomer = async (req: AuthRequest, res: Response, next: Next
       action: "CREATE_CUSTOMER",
       actorId: req.user?.id || "system",
       actorEmail: req.user?.email || "system",
-      actorRole: req.user?.role || "super_admin",
+      actorRole: (req.user?.role as any) || "super_admin",
       targetId: customer._id.toString(),
       details: `Created customer profile for ${fullName} (${cleanMobile})`,
     });
@@ -147,7 +147,7 @@ export const updateCustomer = async (req: AuthRequest, res: Response, next: Next
       action: "UPDATE_CUSTOMER",
       actorId: req.user?.id || "system",
       actorEmail: req.user?.email || "system",
-      actorRole: req.user?.role || "super_admin",
+      actorRole: (req.user?.role as any) || "super_admin",
       targetId: customer._id.toString(),
       details: `Updated customer profile ${customer.fullName}`,
     });
@@ -177,7 +177,7 @@ export const deleteCustomer = async (req: AuthRequest, res: Response, next: Next
       action: "DELETE_CUSTOMER",
       actorId: req.user?.id || "system",
       actorEmail: req.user?.email || "system",
-      actorRole: req.user?.role || "super_admin",
+      actorRole: (req.user?.role as any) || "super_admin",
       targetId: customer._id.toString(),
       details: `Soft deleted customer ${customer.fullName}`,
     });
@@ -288,7 +288,7 @@ export const bulkUploadCustomers = async (req: AuthRequest, res: Response, next:
       action: "BULK_IMPORT",
       actorId: req.user?.id || "system",
       actorEmail: req.user?.email || "system",
-      actorRole: req.user?.role || "super_admin",
+      actorRole: (req.user?.role as any) || "super_admin",
       targetId: "BULK",
       details: `Imported ${importedCount} records from ${fileName}`,
     });
