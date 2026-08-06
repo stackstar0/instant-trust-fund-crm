@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AppStoreProvider } from "@/lib/app-store";
 import {
   Outlet,
@@ -210,19 +211,22 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <AppStoreProvider>
-          <AppLayout>
-            <Outlet />
-          </AppLayout>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <AppStoreProvider>
+            <AppLayout>
+              <Outlet />
+            </AppLayout>
 
-          <Toaster richColors position="top-right" />
-        </AppStoreProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+            <Toaster richColors position="top-right" />
+          </AppStoreProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   );
 
 }

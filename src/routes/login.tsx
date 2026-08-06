@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "@/lib/auth-context";
 import { fetchAPI } from "@/lib/api";
 import { Card } from "@/components/ui/card";
@@ -41,6 +42,24 @@ function LoginPage() {
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Failed to login. Check your credentials.";
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    setIsLoading(true);
+    try {
+      const data = await fetchAPI("/auth/google", {
+        method: "POST",
+        body: JSON.stringify({ token: credentialResponse.credential }),
+      });
+      login(data.user);
+      toast.success(`Welcome, ${data.user.fullName}`);
+      navigate({ to: "/dashboard" });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Google login failed.";
       toast.error(message);
     } finally {
       setIsLoading(false);
@@ -115,6 +134,26 @@ function LoginPage() {
             {isLoading ? "Signing in..." : "Sign In"}
             {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
           </Button>
+
+          <div className="relative flex items-center py-2">
+            <div className="flex-grow border-t border-muted"></div>
+            <span className="flex-shrink-0 mx-4 text-muted-foreground text-sm">or continue with</span>
+            <div className="flex-grow border-t border-muted"></div>
+          </div>
+
+          <div className="flex justify-center w-full">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                toast.error("Google login failed");
+              }}
+              useOneTap
+              theme="outline"
+              size="large"
+              shape="rectangular"
+              width="100%"
+            />
+          </div>
         </form>
 
         <div className="mt-6 text-center text-sm text-muted-foreground">
