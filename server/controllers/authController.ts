@@ -124,19 +124,19 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     let role: "super_admin" | "assistant_admin" | "customer" = "customer";
 
     // Check Super Admin
-    foundUser = await AdminModel.findOne({ email: queryId });
+    foundUser = await AdminModel.findOne({ email: queryId }).select("+passwordHash");
     if (foundUser) {
       role = "super_admin";
     } else {
       // Check Assistant Admin
-      foundUser = await AdminAssistantModel.findOne({ email: queryId });
+      foundUser = await AdminAssistantModel.findOne({ email: queryId }).select("+passwordHash");
       if (foundUser) {
         role = "assistant_admin";
       } else {
         // Check standard User
         foundUser = await UserModel.findOne({
           $or: [{ email: queryId }, { mobile: loginId }]
-        });
+        }).select("+passwordHash");
       }
     }
 
