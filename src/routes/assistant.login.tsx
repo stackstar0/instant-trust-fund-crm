@@ -42,7 +42,7 @@ function AssistantLoginPage() {
 
       login(data.user);
       toast.success("Assistant access granted.");
-      navigate({ to: "/admin" }); // Assuming both admins go to the /admin route but RBAC restricts view
+      navigate({ to: "/admin/tasks" }); // Route assistant directly to their assigned tasks
     } catch (error: any) {
       toast.error(error.message || "Failed to login. Check your credentials.");
     } finally {

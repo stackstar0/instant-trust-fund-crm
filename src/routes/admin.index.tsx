@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth-context";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAPI } from "@/lib/api";
 import { Card } from "@/components/ui/card";
@@ -42,10 +43,16 @@ function StatCard({ title, value, Icon, tone = "primary" }: any) {
 }
 
 function AdminDashboard() {
+  const { user } = useAuth();
+
   const { data: appData, isLoading } = useQuery({
     queryKey: ["all-applications"],
     queryFn: () => fetchAPI("/applications/"),
   });
+
+  if (user?.role === "assistant_admin") {
+    return <Navigate to="/admin/tasks" replace />;
+  }
 
   if (isLoading) {
     return <div className="p-10 text-center animate-pulse">Loading Live CRM Data...</div>;

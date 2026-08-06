@@ -140,8 +140,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       path.startsWith("/profile")
     ) {
       if (user.role !== "customer") {
-        if (user.role === "super_admin" || user.role === "assistant_admin") {
+        if (user.role === "super_admin") {
           throw redirect({ to: "/admin" });
+        }
+        if (user.role === "assistant_admin") {
+          throw redirect({ to: "/admin/tasks" });
         }
         throw redirect({ to: "/login" });
       }

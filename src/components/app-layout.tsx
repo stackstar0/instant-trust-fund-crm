@@ -202,7 +202,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                   )}
                 </div>
                 <Link
-                  to={currentUser.role === "super_admin" || currentUser.role === "assistant_admin" ? "/admin" : "/profile"}
+                  to={currentUser.role === "super_admin" ? "/admin" : currentUser.role === "assistant_admin" ? "/admin/tasks" : "/profile"}
                   className="hidden rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition hover:bg-brand-navy sm:inline-flex"
                 >
                   {currentUser.role === "super_admin" || currentUser.role === "assistant_admin" ? "Console" : "Profile"}
