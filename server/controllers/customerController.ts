@@ -4,6 +4,8 @@ import { CustomerModel } from "../models/Customer";
 import { AuditLogModel } from "../models/AuditLog";
 import { AppError } from "../middlewares/errorMiddleware";
 import * as xlsx from "xlsx";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const pdfParse = require("pdf-parse");
 import { PropertyRequestModel } from "../models/PropertyRequest";
 
