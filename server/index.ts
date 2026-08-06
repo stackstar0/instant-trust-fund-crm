@@ -33,8 +33,10 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
+import { seedAdmins } from "./scripts/seedSuperAdmin";
 connectDB().then(async () => {
   console.log("[SERVER] Database connected.");
+  await seedAdmins();
 });
 
 // Middlewares
