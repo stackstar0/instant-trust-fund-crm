@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { fetchAPI } from "@/lib/api";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchAPI, getAuthToken } from "@/lib/api";
 import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,9 @@ function AdminCustomers() {
   const [search, setSearch] = useState("");
   const [source, setSource] = useState("");
   const [page, setPage] = useState(1);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["customers", search, source, page],
@@ -37,9 +41,59 @@ function AdminCustomers() {
             Manage real imported customer records, KYC profiles, and privacy controls.
           </p>
         </div>
-        <Badge className="bg-emerald-500/10 text-emerald-600 px-3 py-1 text-xs font-semibold">
-          {total.toLocaleString()} Verified Records
-        </Badge>
+        <div className="flex gap-3 items-center">
+          <input
+            type="file"
+            accept=".xlsx,.xls,.csv,.pdf"
+            className="hidden"
+            ref={fileInputRef}
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+
+              setIsUploading(true);
+              const formData = new FormData();
+              formData.append("file", file);
+
+              try {
+                const token = getAuthToken();
+                const response = await fetch("http://localhost:5000/api/v1/customers/upload-bulk", {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: formData,
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                  toast.success(`Success! Imported ${result.count} records.`);
+                  queryClient.invalidateQueries({ queryKey: ["customers"] });
+                } else {
+                  toast.error(result.message || "Failed to upload bulk data.");
+                }
+              } catch (error) {
+                console.error("Upload error:", error);
+                toast.error("An error occurred during file upload.");
+              } finally {
+                setIsUploading(false);
+                if (fileInputRef.current) fileInputRef.current.value = "";
+              }
+            }}
+          />
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+          >
+            {isUploading ? "Uploading..." : "Bulk Upload (Excel/PDF)"}
+          </Button>
+          <Badge className="bg-emerald-500/10 text-emerald-600 px-3 py-1 text-xs font-semibold">
+            {total.toLocaleString()} Verified Records
+          </Badge>
+        </div>
       </div>
 
       {/* Search and Filters */}
