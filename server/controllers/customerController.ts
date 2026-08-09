@@ -1,6 +1,12 @@
 import { Response, NextFunction } from "express";
+import mongoose from "mongoose";
 import { AuthRequest } from "../middlewares/authMiddleware";
 import { CustomerModel } from "../models/Customer";
+import { UserModel } from "../models/User";
+import { LoanModel } from "../models/Loan";
+import { PaymentHistoryModel } from "../models/PaymentHistory";
+import { InsuranceModel } from "../models/Insurance";
+import { SmsLogModel } from "../models/SmsLog";
 import { AuditLogModel } from "../models/AuditLog";
 import { AppError } from "../middlewares/errorMiddleware";
 
@@ -182,6 +188,59 @@ export const deleteCustomer = async (req: AuthRequest, res: Response, next: Next
     res.status(200).json({
       status: "success",
       message: "Customer record deleted successfully.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCustomer360 = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.params.id;
+    const userRole = req.user?.role;
+    
+    // Find user (customer)
+    // Redact panNumber and aadhaarNumber if AssistantAdmin
+    const userQuery = UserModel.findById(userId);
+    if (userRole === "AssistantAdmin" || userRole === "assistant_admin") {
+      userQuery.select("-panNumber -aadhaarNumber");
+    } else {
+      userQuery.select("+panNumber +aadhaarNumber");
+    }
+    
+    const user = await userQuery.lean();
+    if (!user) {
+      return next(new AppError("User not found.", 404));
+    }
+
+    // Fetch related records concurrently
+    const objectIdUserId = new mongoose.Types.ObjectId(userId);
+    const [loans, payments, insurance, smsLogs] = await Promise.all([
+      LoanModel.find({ userId: objectIdUserId }).sort({ createdAt: -1 }).lean(),
+      PaymentHistoryModel.find({ userId: objectIdUserId }).sort({ paymentDate: -1 }).lean(),
+      InsuranceModel.find({ userId: objectIdUserId }).sort({ endDate: -1 }).lean(),
+      SmsLogModel.find({ userId: objectIdUserId }).sort({ sentAt: -1 }).limit(50).lean()
+    ]);
+
+    let analytics = null;
+    if (userRole === "Admin" || userRole === "super_admin") {
+      analytics = {
+        totalLoans: loans.length,
+        totalOutstanding: loans.reduce((acc, loan) => acc + loan.outstandingAmount, 0),
+        totalPayments: payments.reduce((acc, payment) => acc + payment.amountPaid, 0)
+      };
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        profile: user,
+        loans,
+        payments,
+        insurance,
+        smsLogs,
+        ...(analytics ? { analytics } : {})
+      }
     });
   } catch (error) {
     next(error);

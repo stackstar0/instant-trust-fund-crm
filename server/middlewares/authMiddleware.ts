@@ -17,7 +17,7 @@ if (!JWT_REFRESH_SECRET) {
   throw new Error("[FATAL] JWT_REFRESH_SECRET environment variable is not set. Server cannot start.");
 }
 
-export type UserRole = "super_admin" | "assistant_admin" | "customer";
+export type UserRole = "super_admin" | "assistant_admin" | "customer" | "Admin" | "AssistantAdmin" | "User";
 
 export interface AuthRequest extends Request {
   user?: {

@@ -5,6 +5,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 import { connectDB } from "./config/db";
 import { errorHandler } from "./middlewares/errorMiddleware";
@@ -20,6 +21,11 @@ import propertyRoutes from "./routes/propertyRoutes";
 import taskRoutes from "./routes/taskRoutes";
 import crmRoutes from "./routes/crmRoutes";
 import settingsRoutes from "./routes/settingsRoutes";
+import importRoutes from "./routes/importRoutes";
+import loanRoutes from "./routes/loanRoutes";
+import insuranceRoutes from "./routes/insuranceRoutes";
+import smsRoutes from "./routes/smsRoutes";
+import bhoomiRoutes from "./routes/bhoomiRoutes";
 
 // Seed scripts
 import { seedAdmins } from "./scripts/seedSuperAdmin";
@@ -34,6 +40,10 @@ connectDB().then(async () => {
   try {
     await seedAdmins();
     await importCustomerData();
+    
+    // Initialize scheduled jobs
+    const { initLoanScheduler } = await import("./utils/loanScheduler");
+    initLoanScheduler();
   } catch (err) {
     console.error("[SERVER] Seeding/Import error:", err);
   }
@@ -70,19 +80,42 @@ app.use(morgan("dev"));
 app.use(apiRateLimiter);
 
 // Routes
-app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/applications", applicationRoutes);
-app.use("/api/v1/customers", customerRoutes);
-app.use("/api/v1/payments", paymentRoutes);
-app.use("/api/v1/cibil", cibilRoutes);
-app.use("/api/v1/properties", propertyRoutes);
-app.use("/api/v1/tasks", taskRoutes);
-app.use("/api/v1/crm", crmRoutes);
-app.use("/api/v1/settings", settingsRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/applications", applicationRoutes);
+app.use("/api/customers", customerRoutes);
+app.use("/api/payments", paymentRoutes);
+app.use("/api/cibil", cibilRoutes);
+app.use("/api/properties", propertyRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/crm", crmRoutes);
+app.use("/api/settings", settingsRoutes);
+app.use("/api/import", importRoutes);
+app.use("/api/loans", loanRoutes);
+app.use("/api/insurance", insuranceRoutes);
+app.use("/api/sms", smsRoutes);
+app.use("/api/bhoomi", bhoomiRoutes);
 
 // Health check endpoint
-app.get("/api/v1/health", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// Serve static files from React build
+const clientDistPath = path.join(__dirname, "../../client/dist");
+app.use(express.static(clientDistPath));
+
+// Fallback to client/dist (if deployed flat, might be ../dist)
+const fallbackDistPath = path.join(__dirname, "../dist");
+app.use(express.static(fallbackDistPath));
+
+// Catch-all route to return index.html for client-side routing
+app.get("*", (req, res) => {
+  // First try the typical local dev path, then the deployed path
+  res.sendFile(path.join(clientDistPath, "index.html"), (err) => {
+    if (err) {
+      res.sendFile(path.join(fallbackDistPath, "index.html"));
+    }
+  });
 });
 
 // Error handler (LAST)

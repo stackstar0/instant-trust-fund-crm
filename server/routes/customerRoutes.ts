@@ -6,14 +6,16 @@ import {
   createCustomer,
   updateCustomer,
   deleteCustomer,
+  getCustomer360,
 } from "../controllers/customerController";
 
 const router = Router();
 
 router.use(protect);
 
-router.get("/", restrictTo("super_admin", "assistant_admin"), getCustomers);
-router.get("/:id", restrictTo("super_admin", "assistant_admin"), getCustomerById);
+router.get("/", restrictTo("super_admin", "assistant_admin", "Admin", "AssistantAdmin"), getCustomers);
+router.get("/360/:id", getCustomer360);
+router.get("/:id", restrictTo("super_admin", "assistant_admin", "Admin", "AssistantAdmin"), getCustomerById);
 router.post("/", restrictTo("super_admin", "assistant_admin"), createCustomer);
 router.put("/:id", restrictTo("super_admin", "assistant_admin"), updateCustomer);
 router.delete("/:id", restrictTo("super_admin"), deleteCustomer);
