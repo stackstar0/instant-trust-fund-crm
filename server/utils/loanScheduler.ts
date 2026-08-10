@@ -102,7 +102,7 @@ const processAutomatedSms = async () => {
           msgType: "text",
           mobile: user.phone,
           msg: messageText,
-          entityId: template.dltEntityId,
+          entityId: process.env.AIRTEL_DLT_ENTITY_ID || process.env.MESSAGEBOT_ENTITY_ID || "1701158000000000000",
           templateId: template.dltTemplateId
         }
       });
@@ -112,10 +112,12 @@ const processAutomatedSms = async () => {
         userId: user._id,
         loanId: loan._id,
         phone: user.phone,
-        templateId: template.dltTemplateId,
+        dltTemplateId: template.dltTemplateId,
+        headerUsed: template.header,
+        category: template.category,
         messageText,
         status: "SENT",
-        providerResponse: JSON.stringify(response.data)
+        providerMessageId: response.data?.messageId || response.data?.id || "MSG-SUCCESS"
       });
     } catch (err: any) {
       // Log failure
@@ -123,10 +125,12 @@ const processAutomatedSms = async () => {
         userId: user._id,
         loanId: loan._id,
         phone: user.phone,
-        templateId: template.dltTemplateId,
+        dltTemplateId: template.dltTemplateId,
+        headerUsed: template.header,
+        category: template.category,
         messageText,
         status: "FAILED",
-        providerResponse: err.message
+        failureReason: err.message
       });
       console.error(`[CRON] Failed to send SMS to ${user.phone}:`, err.message);
     }
