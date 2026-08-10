@@ -16,7 +16,7 @@ export function generateSecureSignedUrl(fileKey: string, expiresInMinutes: numbe
     .update(`${fileKey}:${expiresAt}`)
     .digest("hex");
 
-  return `/api/v1/documents/download/${encodeURIComponent(fileKey)}?expires=${expiresAt}&signature=${signature}`;
+  return `/api/documents/download/${encodeURIComponent(fileKey)}?expires=${expiresAt}&signature=${signature}`;
 }
 
 export function verifySignedUrl(fileKey: string, expires: number, signature: string): boolean {

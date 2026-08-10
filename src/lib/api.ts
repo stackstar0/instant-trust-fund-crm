@@ -1,4 +1,4 @@
-export const API_URL = import.meta.env.VITE_API_URL || "/api/v1";
+export const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
   const url = `${API_URL}${endpoint}`;
@@ -14,7 +14,9 @@ export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `API request failed: ${response.statusText}`);
+    throw new Error(
+      errorData.message || `API request failed (${response.status} ${response.statusText || "Error"})`
+    );
   }
 
   return response.json();
