@@ -109,8 +109,8 @@ const processAutomatedSms = async () => {
 
       // Log success
       await SmsLogModel.create({
-        userId: user._id.toString(),
-        loanId: loan._id.toString(),
+        userId: user._id,
+        loanId: loan._id,
         phone: user.phone,
         templateId: template.dltTemplateId,
         messageText,
@@ -120,8 +120,8 @@ const processAutomatedSms = async () => {
     } catch (err: any) {
       // Log failure
       await SmsLogModel.create({
-        userId: user._id.toString(),
-        loanId: loan._id.toString(),
+        userId: user._id,
+        loanId: loan._id,
         phone: user.phone,
         templateId: template.dltTemplateId,
         messageText,

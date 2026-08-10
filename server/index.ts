@@ -43,7 +43,9 @@ connectDB().then(async () => {
     
     // Initialize scheduled jobs
     const { initLoanScheduler } = await import("./utils/loanScheduler");
+    const { startDailyScheduler } = await import("./schedulers/dailyScheduler");
     initLoanScheduler();
+    startDailyScheduler();
   } catch (err) {
     console.error("[SERVER] Seeding/Import error:", err);
   }

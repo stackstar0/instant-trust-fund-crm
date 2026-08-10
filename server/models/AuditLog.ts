@@ -6,7 +6,7 @@ export interface IAuditLog extends MongooseDocument {
   actorEmail: string;
   actorRole: "super_admin" | "assistant_admin" | "customer" | "Admin" | "AssistantAdmin" | "User";
   targetId?: string;
-  details?: Schema.Types.Mixed;
+  details?: any;
   ipAddress?: string;
   device?: string;
   createdAt: Date;

@@ -1,8 +1,8 @@
-import { Schema, model, Document as MongooseDocument } from "mongoose";
+import mongoose, { Schema, model, Document as MongooseDocument } from "mongoose";
 
 export interface ILoan extends MongooseDocument {
   loanId: string;
-  userId: Schema.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
   loanType: "Home Loan" | "Business Loan" | "Vehicle Loan" | "Personal Loan";
   principalAmount: number;
   interestRate: number;

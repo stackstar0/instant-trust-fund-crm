@@ -1,8 +1,8 @@
-import { Schema, model, Document as MongooseDocument } from "mongoose";
+import mongoose, { Schema, model, Document as MongooseDocument } from "mongoose";
 
 export interface IPaymentHistory extends MongooseDocument {
-  loanId: Schema.Types.ObjectId;
-  userId: Schema.Types.ObjectId;
+  loanId: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
   amountPaid: number;
   paymentDate: Date;
   paymentMethod: string;

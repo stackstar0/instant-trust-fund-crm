@@ -1,8 +1,8 @@
-import { Schema, model, Document as MongooseDocument } from "mongoose";
+import mongoose, { Schema, model, Document as MongooseDocument } from "mongoose";
 
 export interface IInsurance extends MongooseDocument {
   policyNumber: string;
-  userId: Schema.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
   policyType: "Life" | "Health" | "Motor" | "Property";
   premiumAmount: number;
   frequency: "Monthly" | "Quarterly" | "Yearly";

@@ -214,7 +214,7 @@ export const getCustomer360 = async (req: AuthRequest, res: Response, next: Next
     }
 
     // Fetch related records concurrently
-    const objectIdUserId = new mongoose.Types.ObjectId(userId);
+    const objectIdUserId = new mongoose.Types.ObjectId(userId as string);
     const [loans, payments, insurance, smsLogs] = await Promise.all([
       LoanModel.find({ userId: objectIdUserId }).sort({ createdAt: -1 }).lean(),
       PaymentHistoryModel.find({ userId: objectIdUserId }).sort({ paymentDate: -1 }).lean(),

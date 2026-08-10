@@ -1,14 +1,21 @@
-import { Schema, model, Document as MongooseDocument } from "mongoose";
+import mongoose, { Schema, model, Document as MongooseDocument } from "mongoose";
 
 export interface ISmsLog extends MongooseDocument {
-  userId?: Schema.Types.ObjectId;
-  loanId?: Schema.Types.ObjectId;
+  userId?: mongoose.Types.ObjectId;
+  loanId?: mongoose.Types.ObjectId;
+  insuranceId?: mongoose.Types.ObjectId;
   phone: string;
-  templateId: string;
+  dltTemplateId: string;
+  headerUsed: string;
+  category: "TRANSACTIONAL" | "SERVICE_IMPLICIT" | "PROMOTIONAL";
   messageText: string;
-  sentAt: Date;
-  providerResponse?: string;
-  status: "SENT" | "DELIVERED" | "FAILED";
+  variableData?: Map<string, string> | Record<string, any>;
+  providerMessageId?: string;
+  peTmChainId?: string;
+  status: "QUEUED" | "SENT" | "DELIVERED" | "FAILED" | "REJECTED_DND" | "SCRUBBED_LOCAL";
+  failureReason?: string;
+  sentAt?: Date;
+  deliveredAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,16 +24,27 @@ const SmsLogSchema = new Schema<ISmsLog>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User" },
     loanId: { type: Schema.Types.ObjectId, ref: "Loan" },
+    insuranceId: { type: Schema.Types.ObjectId, ref: "Insurance" },
     phone: { type: String, required: true, index: true },
-    templateId: { type: String, required: true },
+    dltTemplateId: { type: String, required: true },
+    headerUsed: { type: String, required: true },
+    category: { 
+      type: String, 
+      enum: ["TRANSACTIONAL", "SERVICE_IMPLICIT", "PROMOTIONAL"], 
+      required: true 
+    },
     messageText: { type: String, required: true },
-    sentAt: { type: Date, required: true, default: Date.now },
-    providerResponse: { type: String },
+    variableData: { type: Map, of: String },
+    providerMessageId: { type: String },
+    peTmChainId: { type: String },
     status: { 
       type: String, 
-      enum: ["SENT", "DELIVERED", "FAILED"], 
-      default: "SENT" 
+      enum: ["QUEUED", "SENT", "DELIVERED", "FAILED", "REJECTED_DND", "SCRUBBED_LOCAL"], 
+      default: "QUEUED" 
     },
+    failureReason: { type: String },
+    sentAt: { type: Date },
+    deliveredAt: { type: Date },
   },
   { timestamps: true }
 );
