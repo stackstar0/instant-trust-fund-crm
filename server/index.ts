@@ -81,24 +81,24 @@ app.use(helmet());
 app.use(morgan("dev"));
 app.use(apiRateLimiter);
 
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/applications", applicationRoutes);
-app.use("/api/customers", customerRoutes);
-app.use("/api/payments", paymentRoutes);
-app.use("/api/cibil", cibilRoutes);
-app.use("/api/properties", propertyRoutes);
-app.use("/api/tasks", taskRoutes);
-app.use("/api/crm", crmRoutes);
-app.use("/api/settings", settingsRoutes);
-app.use("/api/import", importRoutes);
-app.use("/api/loans", loanRoutes);
-app.use("/api/insurance", insuranceRoutes);
-app.use("/api/sms", smsRoutes);
-app.use("/api/bhoomi", bhoomiRoutes);
+// Routes - supports both /api and /api/v1 prefixes for production & hostinger compatibility
+app.use(["/api/auth", "/api/v1/auth"], authRoutes);
+app.use(["/api/applications", "/api/v1/applications"], applicationRoutes);
+app.use(["/api/customers", "/api/v1/customers"], customerRoutes);
+app.use(["/api/payments", "/api/v1/payments"], paymentRoutes);
+app.use(["/api/cibil", "/api/v1/cibil"], cibilRoutes);
+app.use(["/api/properties", "/api/v1/properties"], propertyRoutes);
+app.use(["/api/tasks", "/api/v1/tasks"], taskRoutes);
+app.use(["/api/crm", "/api/v1/crm"], crmRoutes);
+app.use(["/api/settings", "/api/v1/settings"], settingsRoutes);
+app.use(["/api/import", "/api/v1/import"], importRoutes);
+app.use(["/api/loans", "/api/v1/loans"], loanRoutes);
+app.use(["/api/insurance", "/api/v1/insurance"], insuranceRoutes);
+app.use(["/api/sms", "/api/v1/sms"], smsRoutes);
+app.use(["/api/bhoomi", "/api/v1/bhoomi"], bhoomiRoutes);
 
 // Health check endpoint
-app.get("/api/health", (req, res) => {
+app.get(["/api/health", "/api/v1/health"], (req, res) => {
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
