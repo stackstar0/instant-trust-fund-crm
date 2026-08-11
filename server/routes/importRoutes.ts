@@ -127,66 +127,71 @@ router.post("/validate", async (req, res) => {
 
 // Stage 3: Commit
 router.post("/commit", async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  
   try {
     const { validData } = req.body;
     if (!validData || !Array.isArray(validData)) {
       return res.status(400).json({ error: "Missing validData array" });
     }
 
-    const newUsers = [];
-    const newLoans = [];
+    const userOperations = [];
+    const loanOperations = [];
 
     for (const row of validData) {
-      // 1. Create User
-      const user = new UserModel({
-        name: row.name,
-        email: row.email || undefined,
-        phone: String(row.phone).trim(),
-        role: "User",
-        panNumber: row.panNumber,
-        aadhaarNumber: row.aadhaarNumber,
-        address: row.address,
+      const userId = new mongoose.Types.ObjectId();
+      
+      // 1. Prepare User insert operation
+      userOperations.push({
+        insertOne: {
+          document: {
+            _id: userId,
+            name: row.name,
+            email: row.email || undefined,
+            phone: String(row.phone).trim(),
+            role: "User",
+            panNumber: row.panNumber,
+            aadhaarNumber: row.aadhaarNumber,
+            address: row.address,
+          }
+        }
       });
-      newUsers.push(user);
 
-      // 2. Create Loan if applicable
+      // 2. Prepare Loan insert operation if applicable
       if (row.loanType && row.principalAmount) {
-        const loan = new LoanModel({
-          loanId: row.loanId || `LN-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-          userId: user._id,
-          loanType: row.loanType,
-          principalAmount: Number(row.principalAmount),
-          interestRate: Number(row.interestRate || 10),
-          tenureMonths: Number(row.tenureMonths || 12),
-          startDate: row.startDate ? new Date(row.startDate) : new Date(),
-          endDate: row.endDate ? new Date(row.endDate) : new Date(new Date().setMonth(new Date().getMonth() + Number(row.tenureMonths || 12))),
-          emiAmount: Number(row.emiAmount || 0),
-          emiDueDate: Number(row.emiDueDate || 1),
-          outstandingAmount: Number(row.principalAmount),
-          nextEmiDate: row.nextEmiDate ? new Date(row.nextEmiDate) : new Date(new Date().setDate(Number(row.emiDueDate || 1))),
-          status: "ACTIVE"
+        const tenure = Number(row.tenureMonths || 12);
+        const startDate = row.startDate ? new Date(row.startDate) : new Date();
+        const endDate = row.endDate ? new Date(row.endDate) : new Date(new Date(startDate).setMonth(startDate.getMonth() + tenure));
+        
+        loanOperations.push({
+          insertOne: {
+            document: {
+              loanId: row.loanId || `LN-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+              userId: userId,
+              loanType: row.loanType,
+              principalAmount: Number(row.principalAmount),
+              interestRate: Number(row.interestRate || 10),
+              tenureMonths: tenure,
+              startDate: startDate,
+              endDate: endDate,
+              emiAmount: Number(row.emiAmount || 0),
+              emiDueDate: Number(row.emiDueDate || 1),
+              outstandingAmount: Number(row.principalAmount),
+              nextEmiDate: row.nextEmiDate ? new Date(row.nextEmiDate) : new Date(new Date(startDate).setDate(Number(row.emiDueDate || 1))),
+              status: "ACTIVE"
+            }
+          }
         });
-        newLoans.push(loan);
       }
     }
 
-    if (newUsers.length > 0) {
-      await UserModel.insertMany(newUsers, { session });
+    if (userOperations.length > 0) {
+      await UserModel.bulkWrite(userOperations);
     }
-    if (newLoans.length > 0) {
-      await LoanModel.insertMany(newLoans, { session });
+    if (loanOperations.length > 0) {
+      await LoanModel.bulkWrite(loanOperations);
     }
 
-    await session.commitTransaction();
-    session.endSession();
-
-    res.json({ message: "Import completed successfully", importedUsers: newUsers.length, importedLoans: newLoans.length });
+    res.json({ message: "Import completed successfully", importedUsers: userOperations.length, importedLoans: loanOperations.length });
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
     console.error("Commit error:", error);
     res.status(500).json({ error: "Commit failed" });
   }

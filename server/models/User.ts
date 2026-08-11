@@ -8,6 +8,8 @@ export interface IUser extends MongooseDocument {
   panNumber?: string;
   aadhaarNumber?: string;
   address?: string;
+  googleId?: string;
+  picture?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,6 +23,8 @@ const UserSchema = new Schema<IUser>(
     panNumber: { type: String, select: false },
     aadhaarNumber: { type: String, select: false },
     address: { type: String },
+    googleId: { type: String, sparse: true },
+    picture: { type: String },
   },
   { timestamps: true }
 );
