@@ -2,6 +2,7 @@ import mongoose, { Schema, model, Document as MongooseDocument } from "mongoose"
 
 export interface ISmsLog extends MongooseDocument {
   userId?: mongoose.Types.ObjectId;
+  customerId?: mongoose.Types.ObjectId;
   loanId?: mongoose.Types.ObjectId;
   insuranceId?: mongoose.Types.ObjectId;
   phone: string;
@@ -23,6 +24,7 @@ export interface ISmsLog extends MongooseDocument {
 const SmsLogSchema = new Schema<ISmsLog>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User" },
+    customerId: { type: Schema.Types.ObjectId, ref: "Customer" },
     loanId: { type: Schema.Types.ObjectId, ref: "Loan" },
     insuranceId: { type: Schema.Types.ObjectId, ref: "Insurance" },
     phone: { type: String, required: true, index: true },

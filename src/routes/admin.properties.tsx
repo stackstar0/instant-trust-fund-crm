@@ -4,6 +4,8 @@ import { fetchAPI } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Shield, CheckCircle2, Clock } from "lucide-react";
+// @ts-ignore
+import { PropertyMap } from "@/components/PropertyMap";
 
 export const Route = createFileRoute("/admin/properties")({
   head: () => ({ meta: [{ title: "Property Verification CRM — IFY CRM" }] }),
@@ -33,31 +35,8 @@ function AdminProperties() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3 mb-8">
-        <Card className="lg:col-span-2 p-6 border shadow-sm flex flex-col justify-between bg-slate-900 text-white min-h-[300px] rounded-xl relative overflow-hidden">
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px]"></div>
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 text-blue-400 font-bold text-sm mb-2">
-              <MapPin className="h-5 w-5" /> OpenStreetMap & GIS Land Survey Engine
-            </div>
-            <p className="text-xs text-slate-300 max-w-md">
-              Interactive satellite & parcel survey map layer. Double click pin to inspect land survey numbers, village boundary, and verification status.
-            </p>
-          </div>
-
-          <div className="relative z-10 mt-12 grid grid-cols-3 gap-4 border-t border-white/10 pt-4 text-center">
-            <div>
-              <div className="text-xl font-black text-emerald-400">{requests.filter((r: any) => r.status === "Verified").length}</div>
-              <div className="text-[10px] uppercase text-slate-400 font-semibold">Verified Parcels</div>
-            </div>
-            <div>
-              <div className="text-xl font-black text-amber-400">{requests.filter((r: any) => r.status === "Pending").length}</div>
-              <div className="text-[10px] uppercase text-slate-400 font-semibold">Pending Audits</div>
-            </div>
-            <div>
-              <div className="text-xl font-black text-blue-400">Karnataka</div>
-              <div className="text-[10px] uppercase text-slate-400 font-semibold">Primary Region</div>
-            </div>
-          </div>
+        <Card className="lg:col-span-2 border shadow-sm rounded-xl overflow-hidden min-h-[350px] relative">
+          <PropertyMap />
         </Card>
 
         <Card className="p-6 border shadow-sm">

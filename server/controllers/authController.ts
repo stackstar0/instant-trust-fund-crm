@@ -66,9 +66,9 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
     // Create user
     const newUser = await UserModel.create({
-      fullName,
+      name: fullName,
       email: email ? email.toLowerCase() : undefined,
-      mobile,
+      phone: mobile,
       passwordHash,
       referralCode,
     });
@@ -98,9 +98,9 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       status: "success",
       user: {
         id: newUser._id,
-        fullName: newUser.fullName,
+        fullName: newUser.name,
         email: newUser.email,
-        mobile: newUser.mobile,
+        mobile: newUser.phone,
         role: newUser.role
       }
     });
@@ -124,19 +124,19 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     let role: "super_admin" | "assistant_admin" | "customer" = "customer";
 
     // Check Super Admin
-    foundUser = await AdminModel.findOne({ email: queryId });
+    foundUser = await AdminModel.findOne({ email: queryId }).select("+passwordHash");
     if (foundUser) {
       role = "super_admin";
     } else {
       // Check Assistant Admin
-      foundUser = await AdminAssistantModel.findOne({ email: queryId });
+      foundUser = await AdminAssistantModel.findOne({ email: queryId }).select("+passwordHash");
       if (foundUser) {
         role = "assistant_admin";
       } else {
         // Check standard User
         foundUser = await UserModel.findOne({
           $or: [{ email: queryId }, { mobile: loginId }]
-        });
+        }).select("+passwordHash");
       }
     }
 
@@ -387,9 +387,9 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
       status: "success",
       user: {
         id: updatedUser._id,
-        fullName: updatedUser.fullName,
+        fullName: updatedUser.name,
         email: updatedUser.email,
-        mobile: updatedUser.mobile,
+        mobile: updatedUser.phone,
         dob: updatedUser.dob,
         role: updatedUser.role,
       },

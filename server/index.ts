@@ -6,6 +6,10 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import { connectDB } from "./config/db";
 import { errorHandler } from "./middlewares/errorMiddleware";
@@ -21,7 +25,7 @@ import propertyRoutes from "./routes/propertyRoutes";
 import taskRoutes from "./routes/taskRoutes";
 import crmRoutes from "./routes/crmRoutes";
 import settingsRoutes from "./routes/settingsRoutes";
-import importRoutes from "./routes/importRoutes";
+import importRoutes from "./routes/import";
 import loanRoutes from "./routes/loanRoutes";
 import insuranceRoutes from "./routes/insuranceRoutes";
 import smsRoutes from "./routes/smsRoutes";
@@ -104,22 +108,41 @@ app.get(["/api/health", "/api/v1/health"], (req, res) => {
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Serve static files from React build
-const clientDistPath = path.join(__dirname, "../../client/dist");
-app.use(express.static(clientDistPath));
+// Configure multiple static files lookup paths to avoid 403/404 on different environments
+const staticPaths = [
+  path.join(__dirname, "../../client/dist"),
+  path.join(__dirname, "../dist"),
+  path.join(process.cwd(), "dist"),
+  path.join(process.cwd(), "client/dist"),
+];
 
-// Fallback to client/dist (if deployed flat, might be ../dist)
-const fallbackDistPath = path.join(__dirname, "../dist");
-app.use(express.static(fallbackDistPath));
+staticPaths.forEach((staticPath) => {
+  app.use(express.static(staticPath));
+});
 
 // Catch-all route to return index.html for client-side routing
-app.get("*", (req, res) => {
-  // First try the typical local dev path, then the deployed path
-  res.sendFile(path.join(clientDistPath, "index.html"), (err) => {
-    if (err) {
-      res.sendFile(path.join(fallbackDistPath, "index.html"));
+app.get(/.*/, (req, res) => {
+  let fileSent = false;
+  for (const staticPath of staticPaths) {
+    const indexPath = path.join(staticPath, "index.html");
+    res.sendFile(indexPath, (err) => {
+      if (!err) {
+        fileSent = true;
+      }
+    });
+    if (fileSent) break;
+  }
+  // Ultimate fallback if sendFile callbacks fail synchronously (or to prevent unhandled response)
+  setTimeout(() => {
+    if (!res.headersSent) {
+      // Try sending from first path or dynamic resolve
+      res.sendFile(path.resolve(staticPaths[0], "index.html"), (err) => {
+        if (err && !res.headersSent) {
+          res.status(404).send("React application build not found. Please run npm run build.");
+        }
+      });
     }
-  });
+  }, 100);
 });
 
 // Error handler (LAST)

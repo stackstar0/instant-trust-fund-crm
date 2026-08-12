@@ -1,8 +1,10 @@
 import cron from "node-cron";
-import { LoanModel } from "../models/Loan";
+import { LoanAccountModel } from "../models/LoanAccount";
+import { CustomerModel } from "../models/Customer";
 import { SmsTemplateModel } from "../models/SmsTemplate";
 import { SmsLogModel } from "../models/SmsLog";
-import { dispatchSmsJob } from "../queues/smsQueue";
+import { sendDltSms } from "../utils/dltSmsEngine";
+import { compileAndValidateSmsText } from "../utils/templateCompiler";
 
 export const startDailyScheduler = () => {
   // Run daily at 08:00 AM IST (02:30 AM UTC)
@@ -46,14 +48,14 @@ export const executeDailyEmiJourney = async () => {
     dltStatus: "APPROVED",
   });
 
-  // 2. Query Non-Closed Loans
-  const activeLoans = await LoanModel.find({ status: { $ne: "CLOSED" } }).populate("userId");
+  // 2. Query Non-Closed LoanAccounts
+  const activeLoans = await LoanAccountModel.find({ status: { $ne: "CLOSED" } }).populate("customerId");
 
   let processedCount = 0;
 
   for (const loan of activeLoans) {
-    const user = loan.userId as any;
-    if (!user || !user.phone) continue;
+    const customer = loan.customerId as any;
+    if (!customer || !customer.mobile) continue;
 
     let newStatus = loan.status;
 
@@ -67,7 +69,7 @@ export const executeDailyEmiJourney = async () => {
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
       if (diffDays < 0) {
-        newStatus = diffDays < -30 ? "DELINQUENT" : "OVERDUE";
+        newStatus = "OVERDUE";
       } else if (diffDays <= 3 && diffDays >= 0) {
         newStatus = "DUE_SOON";
       } else {
@@ -80,26 +82,19 @@ export const executeDailyEmiJourney = async () => {
       await loan.save();
     }
 
-    // 3. Notification Logic with Same-Day Idempotency Check
+    // 3. Notification Logic
     const nextEmiDate = new Date(loan.nextEmiDate);
     nextEmiDate.setHours(0, 0, 0, 0);
 
     const variableMap = {
-      customer_name: user.name || user.fullName || "Customer",
+      customer_name: customer.name || customer.fullName || "Customer",
       emi_amount: `₹${loan.emiAmount.toLocaleString("en-IN")}`,
       loan_number: loan.loanId,
       due_date: nextEmiDate.toLocaleDateString("en-IN"),
     };
 
-    const smsPayload = {
-      userId: user._id,
-      loanId: loan._id,
-      phone: user.phone,
-    };
-
     let targetTemplate = null;
 
-    // Determine target notification scenario
     if (nextEmiDate.getTime() === threeDaysFromNow.getTime() && reminderTemplate) {
       targetTemplate = reminderTemplate;
     } else if (nextEmiDate.getTime() === today.getTime() && dueTodayTemplate) {
@@ -117,7 +112,17 @@ export const executeDailyEmiJourney = async () => {
       });
 
       if (!alreadySent) {
-        await dispatchSmsJob(smsPayload, targetTemplate, variableMap);
+        const compilation = compileAndValidateSmsText(targetTemplate, variableMap);
+        
+        await sendDltSms({
+          phone: customer.mobile,
+          dltTemplateId: targetTemplate.dltTemplateId,
+          messageText: compilation.compiledText,
+          header: targetTemplate.header,
+          category: targetTemplate.category,
+          customerId: customer._id,
+        });
+
         processedCount++;
       }
     }
