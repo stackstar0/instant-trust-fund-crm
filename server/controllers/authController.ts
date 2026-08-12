@@ -88,7 +88,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     await AuditLogModel.create({
       action: "REGISTER",
       actorId: newUser._id.toString(),
-      actorEmail: newUser.email || newUser.mobile || "",
+      actorEmail: newUser.email || newUser.phone || "",
       actorRole: "customer",
       ipAddress: req.ip,
       device: req.headers["user-agent"]
