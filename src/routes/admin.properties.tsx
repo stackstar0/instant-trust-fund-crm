@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchAPI } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, CheckCircle2 } from "lucide-react";
+import { MapPin, Shield, CheckCircle2, Clock } from "lucide-react";
+// @ts-ignore
 import PropertyMap from "@/components/PropertyMap";
 
 export const Route = createFileRoute("/admin/properties")({
@@ -35,9 +36,9 @@ function AdminProperties() {
 
       <div className="grid gap-6 lg:grid-cols-3 mb-8">
         {/* Interactive Property Map */}
-        <div className="lg:col-span-2 shadow-sm rounded-xl overflow-hidden border">
+        <Card className="lg:col-span-2 border shadow-sm rounded-xl overflow-hidden min-h-[350px] relative">
           <PropertyMap properties={requests} />
-        </div>
+        </Card>
 
         <Card className="p-6 border shadow-sm">
           <h3 className="text-base font-bold text-brand-navy border-b pb-3 mb-4 flex items-center gap-2">

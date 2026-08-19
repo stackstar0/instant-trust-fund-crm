@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 export const connectDB = async (): Promise<string> => {
+  if (mongoose.connection.readyState === 1) {
+    console.log(`[DATABASE] Already connected to: ${mongoose.connection.host}`);
+    return mongoose.connection.host;
+  }
+
   const primaryUri = process.env.MONGODB_URI;
 
   if (primaryUri && !primaryUri.includes("<password>")) {

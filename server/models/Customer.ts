@@ -7,7 +7,9 @@ import { Schema, model, Document as MongooseDocument } from "mongoose";
  */
 export interface ICustomer extends MongooseDocument {
   // Identity
+  customerId?: string;
   fullName: string;
+  name?: string; // alias
   normalizedName: string; // lowercase, trimmed for dedup
   fatherName?: string;
   dateOfBirth?: Date;
@@ -20,7 +22,9 @@ export interface ICustomer extends MongooseDocument {
 
   // Documents (encrypted at rest)
   aadhaar?: string;             // encrypted
+  aadhaarNumber?: string;       // alias
   pan?: string;                 // encrypted
+  panNumber?: string;           // alias
 
   // Address
   addressLine1?: string;
@@ -29,6 +33,7 @@ export interface ICustomer extends MongooseDocument {
   district?: string;
   state?: string;
   pincode?: string;
+  address?: string;
 
   // Business context
   occupation?: string;
@@ -43,11 +48,13 @@ export interface ICustomer extends MongooseDocument {
   assignedAgentId?: Schema.Types.ObjectId;
 
   // KYC
-  kycStatus: "not_started" | "pending" | "verified" | "rejected";
+  kycStatus: "PENDING" | "VERIFIED" | "REJECTED" | "pending" | "verified" | "rejected" | "not_started";
   kycVerifiedAt?: Date;
   kycVerifiedBy?: string;
 
-  // Notes
+  // Enterprise additions
+  referralCode?: string;
+  assignedStaffId?: Schema.Types.ObjectId;
   notes?: string;
   tags?: string[];
 
@@ -63,7 +70,8 @@ export interface ICustomer extends MongooseDocument {
 const CustomerSchema = new Schema<ICustomer>(
   {
     // Identity
-    fullName: { type: String, required: true, trim: true, maxlength: 150 },
+    customerId: { type: String, trim: true, index: true },
+    fullName: { type: String, required: true, trim: true, maxlength: 150, alias: "name" },
     normalizedName: { type: String, required: true, lowercase: true, trim: true, index: true },
     fatherName: { type: String, trim: true },
     dateOfBirth: { type: Date },
@@ -81,8 +89,8 @@ const CustomerSchema = new Schema<ICustomer>(
     email: { type: String, trim: true, lowercase: true },
 
     // Encrypted documents
-    aadhaar: { type: String, select: false },  // encrypted, only select explicitly
-    pan: { type: String, select: false },      // encrypted, only select explicitly
+    aadhaar: { type: String, select: false, alias: "aadhaarNumber" },  // encrypted, only select explicitly
+    pan: { type: String, select: false, alias: "panNumber" },      // encrypted, only select explicitly
 
     // Address
     addressLine1: { type: String, trim: true },
@@ -91,6 +99,7 @@ const CustomerSchema = new Schema<ICustomer>(
     district: { type: String, trim: true },
     state: { type: String, trim: true },
     pincode: { type: String, trim: true, match: [/^\d{6}$/, "Invalid pincode"] },
+    address: { type: String, trim: true },
 
     // Business
     occupation: { type: String, trim: true },
@@ -107,18 +116,19 @@ const CustomerSchema = new Schema<ICustomer>(
     importBatchId: { type: Schema.Types.ObjectId, ref: "ImportBatch", index: true },
     isImported: { type: Boolean, default: false },
     assignedAgent: { type: String },
-    assignedAgentId: { type: Schema.Types.ObjectId, ref: "AdminAssistant" },
+    assignedAgentId: { type: Schema.Types.ObjectId, ref: "AdminAssistant", alias: "assignedStaffId" },
 
     // KYC
     kycStatus: {
       type: String,
-      default: "not_started",
-      enum: ["not_started", "pending", "verified", "rejected"],
+      default: "pending",
+      enum: ["PENDING", "VERIFIED", "REJECTED", "pending", "verified", "rejected", "not_started"],
     },
     kycVerifiedAt: { type: Date },
     kycVerifiedBy: { type: String },
 
-    // Notes
+    // Enterprise additions
+    referralCode: { type: String, trim: true },
     notes: { type: String, maxlength: 2000 },
     tags: { type: [String], default: [] },
 
@@ -127,7 +137,7 @@ const CustomerSchema = new Schema<ICustomer>(
     deletedAt: { type: Date },
     deletedBy: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 // Compound index for deduplication checks

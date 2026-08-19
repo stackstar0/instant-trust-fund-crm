@@ -7,7 +7,8 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Search, Filter, ShieldCheck, Phone, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import { Users, Search, Filter, ShieldCheck, Phone, MapPin, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Customer360 } from "@/components/Customer360";
 
 export const Route = createFileRoute("/admin/customers")({
   head: () => ({ meta: [{ title: "Customer CRM Database — IFY CRM" }] }),
@@ -21,6 +22,7 @@ function AdminCustomers() {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["customers", search, source, page],
@@ -32,13 +34,26 @@ function AdminCustomers() {
   const total = data?.total || 0;
   const totalPages = data?.pages || 1;
 
+  if (selectedCustomerId) {
+    return (
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        <div className="mb-4">
+          <Button onClick={() => setSelectedCustomerId(null)} variant="outline" size="sm" className="flex items-center gap-2">
+            <X className="h-4 w-4" /> Close 360° Profile
+          </Button>
+        </div>
+        <Customer360 customerId={selectedCustomerId} />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-black text-brand-navy">Customer CRM Database</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Manage real imported customer records, KYC profiles, and privacy controls.
+            Manage real imported customer records, KYC profiles, and privacy controls. Click on a record to view details.
           </p>
         </div>
         <div className="flex gap-3 items-center">
@@ -150,7 +165,7 @@ function AdminCustomers() {
                 </tr>
               ) : (
                 customers.map((c: any) => (
-                  <tr key={c._id} className="hover:bg-slate-50/60 transition">
+                  <tr key={c._id} className="hover:bg-slate-50/60 transition cursor-pointer" onClick={() => setSelectedCustomerId(c._id)}>
                     <td className="px-5 py-3.5 font-bold text-brand-navy">{c.fullName}</td>
                     <td className="px-5 py-3.5 font-mono text-xs text-slate-700">
                       <span className="inline-flex items-center gap-1">

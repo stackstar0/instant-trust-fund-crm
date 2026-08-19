@@ -1,6 +1,14 @@
 import { Response, NextFunction } from "express";
+import mongoose from "mongoose";
 import { AuthRequest } from "../middlewares/authMiddleware";
 import { CustomerModel } from "../models/Customer";
+import { UserModel } from "../models/User";
+import { LoanModel } from "../models/Loan";
+import { LoanAccountModel } from "../models/LoanAccount";
+import { PaymentHistoryModel } from "../models/PaymentHistory";
+import { InsuranceModel } from "../models/Insurance";
+import { InsurancePolicyModel } from "../models/InsurancePolicy";
+import { SmsLogModel } from "../models/SmsLog";
 import { AuditLogModel } from "../models/AuditLog";
 import { AppError } from "../middlewares/errorMiddleware";
 import * as xlsx from "xlsx";
@@ -299,6 +307,76 @@ export const bulkUploadCustomers = async (req: AuthRequest, res: Response, next:
       status: "success",
       message: `Successfully imported ${importedCount} customer records.`,
       count: importedCount,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCustomer360 = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.params.id;
+    const userRole = req.user?.role;
+    
+    // Find customer profile
+    const customerQuery = CustomerModel.findById(userId).select("+pan +aadhaar +panNumber +aadhaarNumber");
+    const customer = await customerQuery.lean();
+    if (!customer) {
+      return next(new AppError("Customer profile not found.", 404));
+    }
+
+    const isRedacted = userRole === "AssistantAdmin" || userRole === "assistant_admin";
+    const sanitizedProfile = { ...customer };
+    
+    if (isRedacted) {
+      sanitizedProfile.pan = "[Redacted - Admin Only]";
+      sanitizedProfile.panNumber = "[Redacted - Admin Only]";
+      sanitizedProfile.aadhaar = "[Redacted - Admin Only]";
+      sanitizedProfile.aadhaarNumber = "[Redacted - Admin Only]";
+    }
+
+    // Fetch related records concurrently (supporting both legacy & new collections)
+    const objectIdUserId = new mongoose.Types.ObjectId(userId as string);
+    const [loans, payments, insurance, smsLogs] = await Promise.all([
+      Promise.all([
+        LoanAccountModel.find({ customerId: objectIdUserId }).sort({ createdAt: -1 }).lean(),
+        LoanModel.find({ userId: objectIdUserId }).sort({ createdAt: -1 }).lean()
+      ]).then(([newLoans, oldLoans]) => [...newLoans, ...oldLoans]),
+
+      PaymentHistoryModel.find({ userId: objectIdUserId }).sort({ paymentDate: -1 }).lean(),
+
+      Promise.all([
+        InsurancePolicyModel.find({ customerId: objectIdUserId }).sort({ createdAt: -1 }).lean(),
+        InsuranceModel.find({ userId: objectIdUserId }).sort({ endDate: -1 }).lean()
+      ]).then(([newIns, oldIns]) => [...newIns, ...oldIns]),
+
+      SmsLogModel.find({ $or: [{ customerId: objectIdUserId }, { userId: objectIdUserId }] })
+        .sort({ sentAt: -1 })
+        .limit(50)
+        .lean()
+    ]);
+
+    let analytics: any = null;
+    if (isRedacted) {
+      analytics = "[Redacted - Admin Only]";
+    } else {
+      analytics = {
+        totalLoans: loans.length,
+        totalOutstanding: loans.reduce((acc, loan) => acc + (loan.outstandingAmount || 0), 0),
+        totalPayments: payments.reduce((acc, payment) => acc + (payment.amountPaid || 0), 0)
+      };
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        profile: sanitizedProfile,
+        loans,
+        payments,
+        insurance,
+        smsLogs,
+        analytics
+      }
     });
   } catch (error) {
     next(error);

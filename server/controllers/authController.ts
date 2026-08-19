@@ -66,9 +66,9 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
     // Create user
     const newUser = await UserModel.create({
-      fullName,
+      name: fullName,
       email: email ? email.toLowerCase() : undefined,
-      mobile,
+      phone: mobile,
       passwordHash,
       referralCode,
     });
@@ -88,7 +88,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     await AuditLogModel.create({
       action: "REGISTER",
       actorId: newUser._id.toString(),
-      actorEmail: newUser.email || newUser.mobile || "",
+      actorEmail: newUser.email || newUser.phone || "",
       actorRole: "customer",
       ipAddress: req.ip,
       device: req.headers["user-agent"]
@@ -98,9 +98,9 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       status: "success",
       user: {
         id: newUser._id,
-        fullName: newUser.fullName,
+        fullName: newUser.name,
         email: newUser.email,
-        mobile: newUser.mobile,
+        mobile: newUser.phone,
         role: newUser.role
       }
     });
@@ -387,9 +387,9 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
       status: "success",
       user: {
         id: updatedUser._id,
-        fullName: updatedUser.fullName,
+        fullName: updatedUser.name,
         email: updatedUser.email,
-        mobile: updatedUser.mobile,
+        mobile: updatedUser.phone,
         dob: updatedUser.dob,
         role: updatedUser.role,
       },
